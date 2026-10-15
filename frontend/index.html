@@ -7,126 +7,192 @@
 <title>Nabu Risk Review</title>
 <style>
 :root {
-  --bg: #f5f5f2; --surface: #ffffff; --border: #e2e1dc; --ink: #1d1d1b; --ink-2: #5c5a55; --ink-3: #8b8881;
-  --accent: #4f6b1f; --accent-tint: #eef3e0; --good: #1f8a4c; --good-tint: #e4f3e9;
-  --bad: #c2412d; --bad-tint: #fbe8e4; --wait: #8a6d1a; --wait-tint: #f8f0da;
+  --bg: #f3f4f8; --surface: #ffffff; --border: #e3e5ec; --ink: #171a24; --ink-2: #565b6b; --ink-3: #8a8fa0;
+  --side: #161b2e; --side-ink: #c9cede; --side-ink-2: #7f879e; --side-hover: #232a42;
+  --accent: #4f46e5; --accent-tint: #eceafd;
+  --good: #16a34a; --good-tint: #e5f6eb; --bad: #dc2626; --bad-tint: #fdeaea; --wait: #d97706; --wait-tint: #fdf2e1;
+  --c-est: #4f46e5; --c-dep: #ea580c; --c-gap: #0d9488; --c-oth: #8a8fa0;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #141513; --surface: #1d1f1b; --border: #32352f; --ink: #ecede8; --ink-2: #b3b5ab; --ink-3: #868a7f;
-    --accent: #c5dc7a; --accent-tint: #2a3320; --good: #5cc98a; --good-tint: #17301f;
-    --bad: #ef7d68; --bad-tint: #3a1f19; --wait: #e2bf5c; --wait-tint: #352c14;
+    --bg: #0f1220; --surface: #181c2c; --border: #2a3047; --ink: #e9ebf3; --ink-2: #aab0c3; --ink-3: #7a8199;
+    --side: #0b0e19; --side-hover: #1b2135;
+    --accent: #8b85ff; --accent-tint: #25234a;
+    --good: #4ade80; --good-tint: #133022; --bad: #f87171; --bad-tint: #3a1a1d; --wait: #fbbf24; --wait-tint: #3a2c10;
+    --c-est: #8b85ff; --c-dep: #fb923c; --c-gap: #2dd4bf;
   }
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
-.wrap { max-width: 1080px; margin: 0 auto; padding: 24px 16px 48px; }
-header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
-.brand { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
-.brand img { width: 34px; height: 34px; }
-.brand small { font-size: 13px; font-weight: 400; color: var(--ink-2); }
+.app { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 100vh; }
+aside { background: var(--side); color: var(--side-ink); padding: 20px 16px; display: flex; flex-direction: column; gap: 20px; }
+.brand { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 650; color: #fff; letter-spacing: -0.02em; }
+.brand img { width: 32px; height: 32px; }
+.brand small { display: block; font-size: 11px; font-weight: 400; color: var(--side-ink-2); letter-spacing: 0; }
+.side-h { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--side-ink-2); margin: 0 0 8px; }
+aside select { width: 100%; font: inherit; font-size: 13px; color: #fff; background: var(--side-hover); border: 1px solid #2c3450; border-radius: 8px; padding: 7px 10px; }
+#team { display: grid; gap: 2px; }
+.agent { display: flex; align-items: center; gap: 10px; font-size: 13px; padding: 6px 8px; border-radius: 6px; color: var(--side-ink); transition: background .3s, color .3s; }
+.agent .dot { width: 8px; height: 8px; border-radius: 50%; background: #3a4260; transition: background .3s, box-shadow .3s; }
+.agent.active { background: var(--side-hover); color: #fff; }
+.agent.active .dot { background: #4ade80; box-shadow: 0 0 0 4px rgba(74, 222, 128, .2); }
+.side-foot { margin-top: auto; font-size: 11.5px; color: var(--side-ink-2); line-height: 1.5; }
+main { padding: 22px 28px 40px; min-width: 0; }
+.top { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-bottom: 18px; }
+.top h1 { font-size: 20px; margin: 0; letter-spacing: -0.01em; }
+.top .sub { color: var(--ink-2); font-size: 13px; }
+.top .sub b { color: var(--ink); font-variant-numeric: tabular-nums; }
 .controls { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; }
-select, button { font: inherit; font-size: 13px; }
-select { color: var(--ink); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; }
-.btn { background: var(--accent); color: var(--surface); border: 0; border-radius: 8px; padding: 7px 14px; cursor: pointer; font-weight: 500; }
-.btn.ghost { background: transparent; color: var(--ink-2); border: 1px solid var(--border); }
+button { font: inherit; font-size: 13px; }
+.btn { background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: 8px 14px; cursor: pointer; font-weight: 500; }
+.btn.ghost { background: var(--surface); color: var(--ink-2); border: 1px solid var(--border); }
 .btn:disabled { opacity: .6; cursor: default; }
-.pill { font-size: 12px; padding: 3px 10px; border-radius: 999px; background: var(--accent-tint); color: var(--accent); }
-.asof { margin: 20px 0 4px; color: var(--ink-2); }
-.asof b { color: var(--ink); font-size: 18px; font-variant-numeric: tabular-nums; }
-.tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 16px 0 20px; }
-.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
-.tile b { display: block; font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
-.tile span { color: var(--ink-2); font-size: 12px; }
-.tile.open b { color: var(--wait); } .tile.hit b { color: var(--good); } .tile.miss b { color: var(--bad); }
-#team { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; align-items: center; }
-#team .lbl { color: var(--ink-3); font-size: 12px; margin-right: 4px; }
-.agent { font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); color: var(--ink-2); background: var(--surface); transition: background .3s, color .3s, border-color .3s; }
-.agent.active { background: var(--accent); color: var(--surface); border-color: var(--accent); }
-.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+.pill { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: var(--wait-tint); color: var(--wait); font-weight: 500; }
+.pill.live { background: var(--good-tint); color: var(--good); }
+.kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin-bottom: 16px; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; gap: 12px; align-items: center; border-top: 3px solid var(--c, var(--accent)); }
+.kpi .ic { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; font-size: 17px; font-weight: 700; background: var(--t, var(--accent-tint)); color: var(--c, var(--accent)); flex: none; }
+.kpi b { display: block; font-size: 24px; font-weight: 650; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; line-height: 1.15; }
+.kpi span { color: var(--ink-2); font-size: 12px; }
+.kpi.open { --c: var(--wait); --t: var(--wait-tint); } .kpi.hit { --c: var(--good); --t: var(--good-tint); }
+.kpi.miss { --c: var(--bad); --t: var(--bad-tint); } .kpi.acc { --c: var(--accent); --t: var(--accent-tint); }
+.kpi.epics { --c: var(--c-gap); --t: color-mix(in srgb, var(--c-gap) 14%, transparent); }
+.grid { display: grid; gap: 14px; margin-bottom: 14px; }
+.g3 { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1.4fr); }
+.g2 { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); align-items: start; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; min-width: 0; }
+.card h2 { font-size: 14px; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+.card h2 .hint { margin-left: auto; font-size: 12px; font-weight: 400; color: var(--ink-3); }
+.donut { display: flex; align-items: center; gap: 16px; }
+.donut svg { width: 120px; height: 120px; flex: none; }
+.legend { display: grid; gap: 6px; font-size: 12.5px; }
+.legend i, .key i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.legend b { font-variant-numeric: tabular-nums; margin-left: 4px; }
+.bars { display: grid; gap: 12px; }
+.bar-row .lbl { display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 4px; }
+.bar-row .lbl span { color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: var(--bg); }
+.bar > div { height: 100%; transition: width .4s; }
+.key { display: flex; gap: 12px; font-size: 12px; color: var(--ink-2); margin-top: 12px; flex-wrap: wrap; }
+#timeline svg { width: 100%; height: 150px; display: block; }
+#timeline text { font-size: 10px; fill: var(--ink-3); }
+.empty-s { color: var(--ink-3); font-size: 12.5px; padding: 20px 0; text-align: center; }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin: -4px 0 12px; }
 .tab { background: none; border: 0; border-bottom: 2px solid transparent; padding: 8px 12px; color: var(--ink-2); cursor: pointer; }
-.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); font-weight: 500; }
-.tab .n { color: var(--ink-3); margin-left: 4px; font-variant-numeric: tabular-nums; }
-.risk { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
+.tab[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+.tab .n { display: inline-block; min-width: 20px; margin-left: 6px; padding: 0 6px; border-radius: 999px; background: var(--bg); color: var(--ink-2); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+#risks { max-height: 760px; overflow: auto; padding-right: 4px; }
+.risk { border: 1px solid var(--border); border-left: 4px solid var(--rc, var(--c-oth)); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
 .risk.flash { animation: flash 1.5s ease-out; }
 @keyframes flash { from { box-shadow: 0 0 0 3px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
-.risk .top { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; margin-bottom: 4px; }
-.risk .epic { font-weight: 600; }
+.risk.estimator { --rc: var(--c-est); } .risk.dependency_hunter { --rc: var(--c-dep); } .risk.gap_finder { --rc: var(--c-gap); }
+.risk .head { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin-bottom: 4px; }
+.tag { font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 6px; color: var(--rc); background: color-mix(in srgb, var(--rc) 13%, transparent); }
+.conf { font-size: 11.5px; color: var(--ink-3); }
+.risk .epic { font-weight: 600; margin: 2px 0; }
 .risk .epic code { font-family: var(--mono); font-size: 12px; color: var(--ink-2); font-weight: 400; margin-right: 6px; }
-.risk .meta { color: var(--ink-3); font-size: 12px; }
-.badge { margin-left: auto; font-size: 12px; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
+.badge { margin-left: auto; font-size: 11.5px; font-weight: 500; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
 .badge.wait { background: var(--wait-tint); color: var(--wait); }
 .badge.hit { background: var(--good-tint); color: var(--good); }
 .badge.miss { background: var(--bad-tint); color: var(--bad); }
-.risk .claim { margin: 2px 0 0; }
-.risk .fix { font-size: 13px; margin-top: 6px; padding: 6px 10px; border-left: 3px solid var(--accent); background: var(--accent-tint); border-radius: 4px; }
-.risk .detail { color: var(--ink-2); font-size: 12px; margin-top: 4px; }
+.risk .claim { margin: 2px 0 0; font-size: 13.5px; }
+.risk .fix { font-size: 13px; margin-top: 8px; padding: 7px 10px; border-radius: 6px; background: var(--accent-tint); }
+.risk .fix b { color: var(--accent); }
+.risk .detail { color: var(--ink-2); font-size: 12px; margin-top: 6px; }
 details { margin-top: 6px; font-size: 12px; color: var(--ink-2); }
 details summary { cursor: pointer; color: var(--accent); }
 details ul { margin: 6px 0 0; padding-left: 18px; }
 details code { font-family: var(--mono); font-size: 11.5px; color: var(--ink); }
 .empty { color: var(--ink-3); padding: 24px 4px; }
-.panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 20px; }
-.panel h2 { font-size: 14px; margin: 0 0 10px; }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+th { text-align: left; font-weight: 500; color: var(--ink-3); font-size: 11.5px; padding: 0 6px 6px; }
+td { padding: 7px 6px; border-top: 1px solid var(--border); vertical-align: top; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+td code { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
+.dots i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-left: 2px; }
+#new-panel { margin-bottom: 14px; }
 #plan-form { display: grid; gap: 10px; }
 #plan-form label { display: grid; gap: 4px; font-size: 12px; color: var(--ink-2); }
 #plan-form input, #plan-form textarea { font: inherit; font-size: 13px; color: var(--ink); background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 7px 9px; width: 100%; }
 #plan-form textarea { font-family: var(--mono); font-size: 12px; min-height: 80px; resize: vertical; }
 #plan-msg { font-size: 12px; color: var(--ink-2); }
-.activity summary { color: var(--ink-2); font-size: 13px; }
-#log { max-height: 320px; overflow: auto; margin-top: 8px; font-size: 12px; }
-.row { display: grid; grid-template-columns: 84px 130px 1fr; gap: 8px; padding: 4px 0; border-top: 1px solid var(--border); }
+#log { max-height: 330px; overflow: auto; font-size: 12px; }
+.row { display: grid; grid-template-columns: 78px 1fr; gap: 2px 8px; padding: 6px 0; border-top: 1px solid var(--border); }
 .row .when { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
-.row .who { color: var(--ink-2); font-weight: 500; }
-footer { margin-top: 28px; color: var(--ink-3); font-size: 12px; }
-@media (max-width: 700px) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } .controls { margin-left: 0; } .row { grid-template-columns: 84px 1fr; } .row > span:last-child { grid-column: 1 / -1; } }
+.row .who { color: var(--accent); font-weight: 600; }
+.row .msg { grid-column: 1 / -1; color: var(--ink-2); }
+@media (max-width: 1100px) { .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } .g3 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } #timeline { grid-column: 1 / -1; } }
+@media (max-width: 860px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  aside { gap: 14px; } #team { grid-template-columns: repeat(2, minmax(0, 1fr)); } .side-foot { display: none; }
+  main { padding: 18px 16px 32px; } .g2, .g3 { grid-template-columns: minmax(0, 1fr); } .controls { margin-left: 0; }
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div class="brand"><img src="assets/nabu-bird.svg" alt=""> Nabu <small>delivery risk review</small></div>
-    <div class="controls">
-      <select id="run" aria-label="Project run"></select>
-      <span id="status" class="pill">loading</span>
-      <button class="btn" id="reveal" hidden>Reveal what happened &rarr;</button>
-      <button class="btn ghost" id="new-toggle" hidden>Review a new epic</button>
+<div class="app">
+  <aside>
+    <div class="brand"><img src="assets/nabu-bird.svg" alt=""><div>Nabu<small>delivery risk review</small></div></div>
+    <div><p class="side-h">Project</p><select id="run" aria-label="Project run"></select></div>
+    <div><p class="side-h">Agent team</p><div id="team"></div></div>
+    <p class="side-foot">Each new epic is reviewed against the project's own history. Open risks are still waiting for their outcome; checked ones show how earlier warnings turned out.</p>
+  </aside>
+
+  <main>
+    <div class="top">
+      <div>
+        <h1>Delivery risk overview</h1>
+        <div class="sub">Data up to <b id="clock">-</b></div>
+      </div>
+      <div class="controls">
+        <span id="status" class="pill">loading</span>
+        <button class="btn ghost" id="new-toggle" hidden>Review a new epic</button>
+      </div>
     </div>
-  </header>
 
-  <p class="asof">Risks found using only what was known on <b id="clock">-</b></p>
-
-  <section class="panel" id="new-panel" hidden>
-    <h2>Review a new epic against the project's history</h2>
-    <form id="plan-form">
-      <label>Epic title<input id="plan-title" required value="Support Kafka as a message bus transport"></label>
-      <label>Tickets, one per line: title | points | component
-        <textarea id="plan-tickets" required>Kafka message bus implementation | 8 | Runtime
+    <section class="card" id="new-panel" hidden>
+      <h2>Review a new epic against the project's history</h2>
+      <form id="plan-form">
+        <label>Epic title<input id="plan-title" required value="Support Kafka as a message bus transport"></label>
+        <label>Tickets, one per line: title | points | component
+          <textarea id="plan-tickets" required>Kafka message bus implementation | 8 | Runtime
 Configure Kafka connection properties | 3 | Configuration
 Kafka source and sink stream modules | 5 | Stream Module</textarea></label>
-      <div><button class="btn" type="submit" id="plan-go">Review it</button> <span id="plan-msg"></span></div>
-    </form>
-  </section>
+        <div><button class="btn" type="submit" id="plan-go">Review it</button> <span id="plan-msg"></span></div>
+      </form>
+    </section>
 
-  <div class="tiles">
-    <div class="tile open"><b id="t-open">0</b><span>Open risks</span></div>
-    <div class="tile hit"><b id="t-hit">0</b><span>Came true</span></div>
-    <div class="tile miss"><b id="t-miss">0</b><span>Didn't happen</span></div>
-    <div class="tile"><b id="t-acc">-</b><span>Hit rate so far</span></div>
-  </div>
+    <div class="kpis">
+      <div class="kpi open"><div class="ic">!</div><div><b id="t-open">0</b><span>Open risks</span></div></div>
+      <div class="kpi hit"><div class="ic">&#10003;</div><div><b id="t-hit">0</b><span>Came true</span></div></div>
+      <div class="kpi miss"><div class="ic">&#10007;</div><div><b id="t-miss">0</b><span>Didn't happen</span></div></div>
+      <div class="kpi acc"><div class="ic">%</div><div><b id="t-acc">-</b><span>Hit rate so far</span></div></div>
+      <div class="kpi epics"><div class="ic">#</div><div><b id="t-epics">0</b><span>Epics reviewed</span></div></div>
+    </div>
 
-  <div id="team"><span class="lbl">Agents</span></div>
+    <div class="grid g3">
+      <section class="card"><h2>Risks by type</h2><div id="by-type"></div></section>
+      <section class="card"><h2>Outcomes by type<span class="hint">track record</span></h2><div id="by-outcome"></div>
+        <div class="key"><span><i style="background:var(--good)"></i>Came true</span><span><i style="background:var(--bad)"></i>Didn't happen</span><span><i style="background:var(--wait)"></i>Open</span></div></section>
+      <section class="card" id="timeline"><h2>Risks found per month</h2><div id="per-month"></div></section>
+    </div>
 
-  <div class="tabs" role="tablist">
-    <button class="tab" role="tab" data-tab="open" aria-selected="true">Open risks<span class="n" id="n-open">0</span></button>
-    <button class="tab" role="tab" data-tab="graded" aria-selected="false">Checked against outcome<span class="n" id="n-graded">0</span></button>
-  </div>
-  <div id="risks"><p class="empty">Risks appear here as the agents find them.</p></div>
-
-  <details class="activity"><summary>Agent activity log</summary><div id="log" role="log"></div></details>
-
-  <footer>Historical replay of real tracker data: each epic is reviewed one day after it was created, using only what was known then.</footer>
+    <div class="grid g2">
+      <section class="card">
+        <div class="tabs" role="tablist">
+          <button class="tab" role="tab" data-tab="open" aria-selected="true">Open risks<span class="n" id="n-open">0</span></button>
+          <button class="tab" role="tab" data-tab="graded" aria-selected="false">Checked against outcome<span class="n" id="n-graded">0</span></button>
+        </div>
+        <div id="risks"><p class="empty">Risks appear here as the agents find them.</p></div>
+      </section>
+      <div class="grid" style="margin:0">
+        <section class="card"><h2>Riskiest epics</h2><div id="epics"></div></section>
+        <section class="card"><h2>Agent activity<span class="hint">live log</span></h2><div id="log" role="log"></div></section>
+      </div>
+    </div>
+  </main>
 </div>
 <script src="config.js"></script>
 <script>
@@ -143,7 +209,7 @@ const API = (params.get("api") || window.NABU_API || "").replace(/\/$/, "");
 let run = params.get("run"), after = 0, data = null, tab = "open", seen = new Set(), firstRender = true;
 
 $("team").insertAdjacentHTML("beforeend", Object.entries(AGENT)
-  .map(([k, v]) => `<span class="agent" data-agent="${k}">${v}</span>`).join(""));
+  .map(([k, v]) => `<div class="agent" data-agent="${k}"><span class="dot"></span>${v}</div>`).join(""));
 for (const t of document.querySelectorAll(".tab")) t.onclick = () => {
   tab = t.dataset.tab;
   for (const x of document.querySelectorAll(".tab")) x.setAttribute("aria-selected", String(x === t));
@@ -169,10 +235,11 @@ async function init() {
   $("run").innerHTML = runs.map(r => `<option value="${esc(r.id)}" ${r.id === run ? "selected" : ""}>${esc(r.id === "xd-demo" ? "Spring XD" : r.id)}</option>`).join("");
   $("run").onchange = () => { params.set("run", $("run").value); location.search = params.toString(); };
   if (recorded) {
-    // A recorded run can pause at a cutoff: the risks found by then show first, then "Reveal" plays the rest.
+    // A recorded run is treated as "today" at pause_at; nothing after it is shown.
     pauseAt = (runs.find(r => r.id === run) || {}).pause_at || null;
-    recorded = await (await fetch(`runs/${encodeURIComponent(run)}.json`)).json();
-    $("reveal").onclick = () => { pauseAt = null; $("reveal").hidden = true; tab = "graded"; selectTab(); tick(); };
+    const full = await (await fetch(`runs/${encodeURIComponent(run)}.json`)).json();
+    if (pauseAt) full.log = full.log.filter(e => (e.sim_at || "") <= pauseAt);
+    recorded = full;
     tick();
   } else {
     $("new-toggle").hidden = false;
@@ -180,25 +247,23 @@ async function init() {
   }
 }
 
-function selectTab() { for (const x of document.querySelectorAll(".tab")) x.setAttribute("aria-selected", String(x.dataset.tab === tab)); }
 
-// Reveal one replay step (the log rows sharing a sim time) at a time, as if the run were live.
+// Show one replay step (the log rows sharing a sim time) at a time, as if the run were live.
 function tick() {
   const full = recorded, log = full.log;
   let end = shown;
-  if (pauseAt) { while (end < log.length && (log[end].sim_at || "") <= pauseAt) end++; }
+  if (pauseAt) end = log.length;
   else if (end < log.length) { const at = log[end].sim_at; while (end < log.length && log[end].sim_at === at) end++; }
   const clock = end ? log[end - 1].sim_at : null, done = end >= log.length;
   const upTo = t => clock && t && t <= clock;
   render({
-    run: { ...full.run, clock, status: done ? "finished" : pauseAt ? "paused at cutoff" : "replaying" },
+    run: { ...full.run, clock, status: pauseAt ? "up to date" : done ? "finished" : "replaying" },
     log: log.slice(shown, end),
     reviews: full.reviews.filter(v => upTo(v.as_of)),
     scores: Object.fromEntries(Object.entries(full.scores).filter(([, v]) => upTo(v.at))),
     items: full.items,
   });
   shown = end;
-  if (pauseAt) { $("reveal").hidden = false; return; }
   if (!done) setTimeout(tick, 600);
 }
 
@@ -220,11 +285,12 @@ function risksOf(s) {
 function render(s) {
   data = s;
   $("status").textContent = s.run.status;
+  $("status").classList.add("live");
   $("clock").textContent = day(s.run.clock) || "-";
   const log = $("log");
   for (const e of s.log) {
     log.insertAdjacentHTML("beforeend", `<div class="row"><span class="when">${esc(day(e.sim_at))}</span>` +
-      `<span class="who">${esc(AGENT[e.agent] || e.agent)}</span><span>${esc(e.message)}</span></div>`);
+      `<span class="who">${esc(AGENT[e.agent] || e.agent)}</span><span class="msg">${esc(e.message)}</span></div>`);
     if (!firstRender) queue.push(e.agent);
   }
   if (s.log.length) { after = s.log[s.log.length - 1].seq; log.scrollTop = log.scrollHeight; }
@@ -235,8 +301,64 @@ function render(s) {
   $("t-acc").textContent = graded.length ? `${Math.round(100 * hits / graded.length)}%` : "-";
   $("n-open").textContent = all.length - graded.length;
   $("n-graded").textContent = graded.length;
+  $("t-epics").textContent = s.reviews.length;
+  renderCharts(all);
   renderRisks();
   firstRender = false;
+}
+
+// Charts: everything below is drawn from risksOf(data), so it never shows a risk found after the clock.
+const TYPES = [["estimator", "var(--c-est)"], ["dependency_hunter", "var(--c-dep)"], ["gap_finder", "var(--c-gap)"]];
+const typeOf = r => TYPES.some(([k]) => k === r.agent) ? r.agent : "other";
+function renderCharts(all) {
+  const none = `<p class="empty-s">No risks found yet.</p>`;
+  // Donut of risks by type.
+  const counts = TYPES.map(([k, c]) => [k, c, all.filter(r => r.agent === k).length]).filter(x => x[2]);
+  if (!all.length) $("by-type").innerHTML = none;
+  else {
+    let acc = 0; const C = 2 * Math.PI * 40;
+    const arcs = counts.map(([, c, n]) => {
+      const len = C * n / all.length, a = `<circle r="40" cx="60" cy="60" fill="none" stroke="${c}" stroke-width="18" ` +
+        `stroke-dasharray="${len} ${C - len}" stroke-dashoffset="${-acc}" transform="rotate(-90 60 60)"/>`;
+      acc += len; return a;
+    }).join("");
+    $("by-type").innerHTML = `<div class="donut"><svg viewBox="0 0 120 120" role="img" aria-label="Risks by type">${arcs}` +
+      `<text x="60" y="58" text-anchor="middle" style="font-size:22px;font-weight:650;fill:var(--ink)">${all.length}</text>` +
+      `<text x="60" y="75" text-anchor="middle" style="font-size:10px;fill:var(--ink-3)">risks</text></svg>` +
+      `<div class="legend">${counts.map(([k, c, n]) => `<div><i style="background:${c}"></i>${RISK[k]}<b>${n}</b></div>`).join("")}</div></div>`;
+  }
+  // Stacked bars: came true / didn't happen / open, per type.
+  $("by-outcome").innerHTML = !all.length ? none : `<div class="bars">${TYPES.map(([k]) => {
+    const rs = all.filter(r => r.agent === k); if (!rs.length) return "";
+    const hit = rs.filter(r => r.score && r.score.hit).length, miss = rs.filter(r => r.score && !r.score.hit).length, open = rs.length - hit - miss;
+    const pct = n => `${100 * n / rs.length}%`, g = hit + miss;
+    return `<div class="bar-row"><div class="lbl">${RISK[k]}<span>${g ? Math.round(100 * hit / g) + "% hit · " : ""}${rs.length}</span></div>` +
+      `<div class="bar"><div style="width:${pct(hit)};background:var(--good)"></div><div style="width:${pct(miss)};background:var(--bad)"></div>` +
+      `<div style="width:${pct(open)};background:var(--wait);opacity:.55"></div></div></div>`;
+  }).join("")}</div>`;
+  // Column chart: risks found per month, stacked by type.
+  const months = [...new Set(all.map(r => (r.as_of || "").slice(0, 7)))].sort();
+  if (!months.length) { $("per-month").innerHTML = none; return; }
+  const W = 360, H = 150, pad = 18, bw = Math.min(26, (W - 8) / months.length - 4);
+  const per = months.map(m => TYPES.map(([k]) => all.filter(r => r.as_of.startsWith(m) && r.agent === k).length));
+  const max = Math.max(1, ...per.map(p => p.reduce((a, b) => a + b, 0)));
+  const step = (W - 8) / months.length;
+  const cols = per.map((p, i) => {
+    let y = H - pad; const x = 4 + i * step + (step - bw) / 2;
+    const rects = p.map((n, j) => { const h = (H - pad - 10) * n / max; y -= h; return n ? `<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="2" fill="${TYPES[j][1]}"><title>${months[i]}: ${n} ${RISK[TYPES[j][0]]}</title></rect>` : ""; }).join("");
+    const lbl = (months.length <= 12 || i % 2 === 0) ? `<text x="${x + bw / 2}" y="${H - 4}" text-anchor="middle">${months[i].slice(2).replace("-", "/")}</text>` : "";
+    return rects + lbl;
+  }).join("");
+  $("per-month").innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Risks found per month">` +
+    `<line x1="0" x2="${W}" y1="${H - pad}" y2="${H - pad}" stroke="var(--border)"/>${cols}</svg>` +
+    `<div class="key">${TYPES.map(([k, c]) => `<span><i style="background:${c}"></i>${RISK[k]}</span>`).join("")}</div>`;
+  // Epics with the most risks found so far.
+  const by = {};
+  for (const r of all) (by[r.epic] = by[r.epic] || { title: r.title, rs: [] }).rs.push(r);
+  const top = Object.entries(by).sort((a, b) => b[1].rs.length - a[1].rs.length).slice(0, 7);
+  $("epics").innerHTML = `<table><tr><th>Epic</th><th style="text-align:right">Risks</th></tr>${top.map(([e, v]) =>
+    `<tr><td><code>${esc(e)}</code><br>${esc(v.title)}</td><td class="num">${v.rs.length}<div class="dots">${v.rs.slice(0, 6).map(r =>
+      `<i style="background:${r.score ? (r.score.hit ? "var(--good)" : "var(--bad)") : "var(--wait)"}" title="${r.score ? (r.score.hit ? "came true" : "didn't happen") : "open"}"></i>`).join("")}</div></td></tr>`).join("")}</table>`;
 }
 
 // One concrete next step per risk, built from the numbers the agent already cited.
@@ -277,8 +399,9 @@ function renderRisks() {
     }).join("");
     const fresh = !firstRender && !seen.has(r.id + (r.score ? "s" : ""));
     seen.add(r.id + (r.score ? "s" : ""));
-    return `<article class="risk${fresh ? " flash" : ""}"><div class="top"><span class="epic"><code>${esc(r.epic)}</code>${esc(r.title)}</span>` +
-      `<span class="meta">${esc(RISK[r.agent] || r.agent)} · ${esc(r.confidence || "")} confidence · found ${esc(day(r.as_of))}</span>${badge}</div>` +
+    return `<article class="risk ${esc(r.agent)}${fresh ? " flash" : ""}"><div class="head"><span class="tag">${esc(RISK[r.agent] || r.agent)}</span>` +
+      `<span class="conf">${esc(r.confidence || "")} confidence · found ${esc(day(r.as_of))}</span>${badge}</div>` +
+      `<div class="epic"><code>${esc(r.epic)}</code>${esc(r.title)}</div>` +
       `<p class="claim">${esc(r.claim)}</p>` +
       `<div class="fix"><b>Suggested fix:</b> ${esc(fixFor(r))}</div>` +
       (r.score && r.score.detail ? `<div class="detail">Outcome: ${esc(r.score.detail)}</div>` : "") +
