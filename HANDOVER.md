@@ -1,6 +1,6 @@
 # Handover: picking up Nabu on a new machine
 
-State as of 15 Oct 2026, 11:15. Everything below is on `main`; PRs #1 to #8 are all merged and nothing is open.
+State as of 15 Oct 2026, 11:20. Everything below is on `main`; PRs #1 to #10 are all merged and nothing is open. Run `git pull` first on any existing checkout.
 
 **Today's deadlines:** judges shortlist at about 12:05, submissions close at 15:00, top-8 pitches at 16:00.
 
@@ -31,71 +31,67 @@ Check it works: `python -m unittest discover -s tests`
   ```
   This reads the whole file, so it takes a few minutes. No MySQL needed.
 
-## 3. Run the XD backtest (the commands that worked at 11:09)
+## 3. Run the XD backtest
 
-Run one at a time:
+Treat XD as one scope (no `--scope-by`): splitting it by component makes each scope too small to learn from. Run one at a time:
 
 ```
-python -m nabu tawos --input data/raw/xd.jsonl --output data/xd-canonical.jsonl --scope-by component
-python -m nabu --db data/xd.sqlite load data/xd-canonical.jsonl
-python -m nabu --db data/xd.sqlite replay --run xd1 --tenant tawos --scopes all --offline --quiet
+python -m nabu tawos --input data/raw/xd.jsonl --output data/xd-project.jsonl
+python -m nabu --db data/xd-project.sqlite load data/xd-project.jsonl
+python -m nabu --db data/xd-project.sqlite replay --run xd1 --tenant tawos --scopes XD --offline --quiet
 ```
 
-Expected output:
-- `tawos`: 3,707 work items, 1,536 with an epic, 714 links (399 cross-scope), 19 scopes (`XD`, `XD/Runtime`, `XD/Stream Module`, `XD/Batch`, ...).
-- `load`: `{"work_item": 3707, "link": 714, "event": 43227}`
-- `replay`: `{"reviews": 109, "hits": 9, "misses": 21}`
+**Headline result:** 109 epics reviewed, and the overrun warnings came true in 31 of 45 cases (69%). This is after PR #9, which stopped the gap finder warning about work past epics never actually added late.
 
-That means 109 epics reviewed and 30 warnings graded, of which 9 came true. That hit rate is weak for the pitch; the build thread was looking into which warning type is missing.
-
-Useful variants:
-- Drop `--offline` to have Claude phrase, judge and summarise (uses the API key, costs credits).
-- `--stop-after 5` pauses at a checkpoint; `python -m nabu --db data/xd.sqlite resume --run xd1` carries on.
-- `--viewer-scopes XD/Runtime` (with `--scopes all`) shows the ring-fence: warnings citing tickets outside the viewer's scope are suppressed.
-- `--pace 2` waits 2 seconds per step so an audience can follow.
-- `python -m nabu --db data/xd.sqlite show --run xd1 --epic <epic id>` prints one stored review.
-- Each `--run` name can only be started once; use a new name (`xd2`, ...) for a fresh run.
-
-**Safety-net demo** (synthetic data, works with no download):
+**Ring-fence:** show it on the demo data (two teams), not on XD:
 ```
 python -m nabu demo-data
 python -m nabu --db data/live-test.sqlite load data/demo.jsonl
 python -m nabu --db data/live-test.sqlite replay --run live2 --tenant demo --scopes payments,platform --viewer-scopes payments
 ```
+The reader sees only payments, so warnings citing platform tickets are suppressed.
 
-## 4. Run the dashboard
+Useful variants:
+- Drop `--offline` to have Claude phrase, judge and summarise (uses the API key, costs credits).
+- `--stop-after N` pauses at a checkpoint; `resume --run <name>` carries on.
+- `--pace 2` waits 2 seconds per step so an audience can follow.
+- `python -m nabu --db data/xd-project.sqlite show --run xd1 --epic <epic id>` prints one stored review.
+- Each `--run` name can only be started once; use a new name for a fresh run.
 
-Two terminals in the repo root:
+## 4. The live demo
 
+**Terminal 1:** fast-forward offline to just before the demo epics.
 ```
-python -m nabu.ui --db data/xd.sqlite --port 8000
+python -m nabu --db data/xd-project.sqlite replay --run xd-live --tenant tawos --scopes XD --offline --stop-after 9 --quiet
 ```
+**Terminal 2:** start the dashboard, then open `http://127.0.0.1:8000/?run=xd-live`.
 ```
-python -m nabu --db data/xd.sqlite replay --run xd2 --tenant tawos --scopes all --pace 2
+python -m nabu.ui --db data/xd-project.sqlite --port 8000
 ```
-
-Open `http://127.0.0.1:8000/?run=xd2`. The top strip shows the agent team lighting up as each acts; below are the log, reviews and accuracy curve.
+**Terminal 1:** run the next 32 steps with live Claude calls.
+```
+python -m nabu --db data/xd-project.sqlite resume --run xd-live --stop-after 32
+```
+This reviews XD-237 (Batch jobs on the runtime) and XD-468 (Hadoop distributions), then grades both when they finish; all their warnings came true in the offline run. Screen-record it as the backup. The top strip shows the agent team lighting up as each acts; below are the log, reviews and accuracy curve. To repeat it, use a new run name in place of `xd-live`.
 
 **Public link for judges (live from the laptop):**
 ```
 winget install --id Cloudflare.cloudflared
 cloudflared tunnel --url http://localhost:8000
 ```
-It prints a `https://....trycloudflare.com` link that works while the laptop and both commands are running. The dashboard is read-only.
+It prints a `https://....trycloudflare.com` link that works while the laptop and the dashboard are running. The dashboard is read-only.
 
-**Hosted page on Vercel (not deployed yet):** import Nabu-2 in Vercel, set Root Directory to `frontend` and Framework to Other, and deploy (no build step). Then open `https://<vercel-site>/?api=<tunnel link>&run=xd2`. If the tunnel is down, the page replays a recorded run from `frontend/runs/` so it never shows blank. `python -m nabu.ui --db data/xd.sqlite --export xd1` records a run there.
+**Hosted page on Vercel (not deployed yet):** import Nabu-2 in Vercel, set Root Directory to `frontend` and Framework to Other, and deploy (no build step). Then open `https://<vercel-site>/?api=<tunnel link>&run=xd-live`. If the tunnel is down, the page replays a recorded run from `frontend/runs/` so it never shows blank. `python -m nabu.ui --db data/xd-project.sqlite --export xd-live` records a run there.
 
 ## 5. Where things are
 
-- `README.md`: one-page summary. `docs/plan.md`: build plan. `docs/agents.md`: how the agents and the TAWOS adapter work. `docs/interface.md`: the dashboard. `docs/demo-projects.md`: why Spring XD, and the best demo epics (XD-3477 first, then XD-2356, XD-1694, XD-232).
+- `README.md`: one-page summary. `docs/plan.md`: build plan. `docs/agents.md`: how the agents and the TAWOS adapter work. `docs/interface.md`: the dashboard. `docs/demo-projects.md`: why Spring XD, and the best demo epics (the live demo now uses XD-237 and XD-468).
 - Code: `nabu/store.py` (ring-fenced store), `nabu/replay.py` (simulated clock, checkpoints), `nabu/agents/` (historian, specialists, critic, writer, scorekeeper), `nabu/adapters/` (TAWOS), `nabu/ui.py` and `frontend/` (dashboard).
 
 ## 6. Open work, in priority order
 
-1. Improve the XD hit rate (9 of 30) before the shortlist, or pitch around it (the accuracy curve rising over the run is the story).
-2. A live (non-offline) run on 3 to 5 XD epics to check the Claude wording on real tickets.
-3. Pick the viewer scope for the ring-fence demo (a component scope with plenty of cross-scope links).
-4. Screen-record one full run in the dashboard as a backup, and rehearse a 2-minute walkthrough.
-5. Deploy `frontend/` on Vercel.
-6. Three pitch slides: the problem, the agent-team diagram (`docs/architecture.png`), the backtest result.
-7. Dropped for today: GitHub Issues adapter, embeddings, Supabase.
+1. Run the live demo above on your machine and screen-record it as the backup (by 12:00).
+2. Rehearse a 2-minute walkthrough: the problem, the agent team, the 69% backtest, the ring-fence on demo data.
+3. Deploy `frontend/` on Vercel.
+4. Three pitch slides: the problem, the agent-team diagram (`docs/architecture.png`), the backtest result.
+5. Dropped for today: GitHub Issues adapter, embeddings, Supabase.
