@@ -7,35 +7,35 @@
 <title>Nabu Risk Review</title>
 <style>
 :root {
-  --bg: #f3f4f8; --surface: #ffffff; --border: #e3e5ec; --ink: #171a24; --ink-2: #565b6b; --ink-3: #8a8fa0;
-  --side: #161b2e; --side-ink: #c9cede; --side-ink-2: #7f879e; --side-hover: #232a42;
-  --accent: #4f46e5; --accent-tint: #eceafd;
-  --good: #16a34a; --good-tint: #e5f6eb; --bad: #dc2626; --bad-tint: #fdeaea; --wait: #d97706; --wait-tint: #fdf2e1;
-  --c-est: #4f46e5; --c-dep: #ea580c; --c-gap: #0d9488; --c-oth: #8a8fa0;
+  --bg: #f5f5f0; --surface: #ffffff; --border: #e2e1d8; --ink: #1d1d1b; --ink-2: #5c5a55; --ink-3: #8b8881;
+  --side: #1f2814; --side-ink: #d6dcc4; --side-ink-2: #8f9a78; --side-hover: #2e3a1f; --side-line: #3a4828;
+  --accent: #4f6b1f; --accent-tint: #eef3e0; --on-accent: #ffffff; --brand: #c5dc7a;
+  --good: #1f8a4c; --good-tint: #e4f3e9; --bad: #c2412d; --bad-tint: #fbe8e4; --wait: #b8860b; --wait-tint: #f8f0da;
+  --c-est: #5b7a1e; --c-dep: #c27c0e; --c-gap: #2f7d6d; --c-oth: #8b8881;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0f1220; --surface: #181c2c; --border: #2a3047; --ink: #e9ebf3; --ink-2: #aab0c3; --ink-3: #7a8199;
-    --side: #0b0e19; --side-hover: #1b2135;
-    --accent: #8b85ff; --accent-tint: #25234a;
-    --good: #4ade80; --good-tint: #133022; --bad: #f87171; --bad-tint: #3a1a1d; --wait: #fbbf24; --wait-tint: #3a2c10;
-    --c-est: #8b85ff; --c-dep: #fb923c; --c-gap: #2dd4bf;
+    --bg: #141513; --surface: #1d1f1b; --border: #32352f; --ink: #ecede8; --ink-2: #b3b5ab; --ink-3: #868a7f;
+    --side: #10140b; --side-hover: #222b17; --side-line: #2e3a1f;
+    --accent: #c5dc7a; --accent-tint: #2a3320; --on-accent: #1d1f1b;
+    --good: #5cc98a; --good-tint: #17301f; --bad: #ef7d68; --bad-tint: #3a1f19; --wait: #e2bf5c; --wait-tint: #352c14;
+    --c-est: #b5d06a; --c-dep: #e8a93c; --c-gap: #5fbfa9;
   }
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
 .app { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 100vh; }
 aside { background: var(--side); color: var(--side-ink); padding: 20px 16px; display: flex; flex-direction: column; gap: 20px; }
-.brand { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 650; color: #fff; letter-spacing: -0.02em; }
+.brand { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 650; color: var(--brand); letter-spacing: -0.02em; }
 .brand img { width: 32px; height: 32px; }
 .brand small { display: block; font-size: 11px; font-weight: 400; color: var(--side-ink-2); letter-spacing: 0; }
 .side-h { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--side-ink-2); margin: 0 0 8px; }
-aside select { width: 100%; font: inherit; font-size: 13px; color: #fff; background: var(--side-hover); border: 1px solid #2c3450; border-radius: 8px; padding: 7px 10px; }
+aside select { width: 100%; font: inherit; font-size: 13px; color: var(--side-ink); background: var(--side-hover); border: 1px solid var(--side-line); border-radius: 8px; padding: 7px 10px; }
 nav { display: grid; gap: 2px; }
 .nav { display: block; font-size: 13.5px; padding: 8px 10px; border-radius: 6px; color: var(--side-ink); text-decoration: none; }
 .nav:hover { background: var(--side-hover); }
-.nav.on { background: var(--side-hover); color: #fff; box-shadow: inset 3px 0 0 var(--accent); }
+.nav.on { background: var(--side-hover); color: #fff; box-shadow: inset 3px 0 0 var(--brand); }
 .how { display: grid; gap: 12px; max-width: 820px; }
 .step { display: flex; gap: 14px; }
 .step .num { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-tint); color: var(--accent); font-weight: 700; }
@@ -51,7 +51,7 @@ main { padding: 22px 28px 40px; min-width: 0; }
 .top .sub b { color: var(--ink); font-variant-numeric: tabular-nums; }
 .controls { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; }
 button { font: inherit; font-size: 13px; }
-.btn { background: var(--accent); color: #fff; border: 0; border-radius: 8px; padding: 8px 14px; cursor: pointer; font-weight: 500; }
+.btn { background: var(--accent); color: var(--on-accent); border: 0; border-radius: 8px; padding: 8px 14px; cursor: pointer; font-weight: 500; }
 .btn.ghost { background: var(--surface); color: var(--ink-2); border: 1px solid var(--border); }
 .btn:disabled { opacity: .6; cursor: default; }
 .pill { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: var(--wait-tint); color: var(--wait); font-weight: 500; }
