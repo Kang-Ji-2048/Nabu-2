@@ -8,6 +8,7 @@ alongside `python -m nabu replay` and show the run live.
 import argparse
 import json
 import sqlite3
+import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
@@ -106,6 +107,24 @@ def make_handler(db):
                 return self._send(200, json.dumps(body).encode(), "application/json")
             self._send(404, b"not found", "text/plain")
 
+        def do_OPTIONS(self):
+            self.send_response(204)
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.send_header("Access-Control-Allow-Headers", "Content-Type")
+            self.send_header("Access-Control-Allow-Methods", "GET, POST")
+            self.end_headers()
+
+        def do_POST(self):
+            # A new epic typed into the page: review it in the background; the page follows run "live".
+            if urlparse(self.path).path != "/api/plan":
+                return self._send(404, b"not found", "text/plain")
+            plan = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))) or b"{}")
+            if not plan.get("title") or not plan.get("tickets"):
+                return self._send(400, b'{"error": "title and tickets are required"}', "application/json")
+            from .live import RUN, submit
+            threading.Thread(target=submit, args=(db, plan), daemon=True).start()
+            self._send(202, json.dumps({"run": RUN}).encode(), "application/json")
+
         def log_message(self, *args):
             pass
 
@@ -118,6 +137,8 @@ def main():
     parser.add_argument("--port", type=int, default=8000)
     parser.add_argument("--export", metavar="RUN", help="write RUN to frontend/runs/ for static hosting, then exit")
     args = parser.parse_args()
+    from .__main__ import load_env
+    load_env()  # ANTHROPIC_API_KEY from .env, for reviewing new epics typed into the page
     if args.export:
         print(json.dumps(export(args.db, args.export, WEB)))
         return
