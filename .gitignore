@@ -3,3 +3,6 @@ __pycache__/
 *.pyc
 *.egg-info/
 .env
+
+# Private Sites publishing checkout; frontend/ is the application source.
+sites/
