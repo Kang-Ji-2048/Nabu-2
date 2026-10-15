@@ -23,6 +23,13 @@
     --c-est: #b5d06a; --c-dep: #e8a93c; --c-gap: #5fbfa9;
   }
 }
+:root[data-theme="dark"] {
+    --bg: #141513; --surface: #1d1f1b; --border: #32352f; --ink: #ecede8; --ink-2: #b3b5ab; --ink-3: #868a7f;
+    --side: #10140b; --side-hover: #222b17; --side-line: #2e3a1f;
+    --accent: #c5dc7a; --accent-tint: #2a3320; --on-accent: #1d1f1b;
+    --good: #5cc98a; --good-tint: #17301f; --bad: #ef7d68; --bad-tint: #3a1f19; --wait: #e2bf5c; --wait-tint: #352c14;
+    --c-est: #b5d06a; --c-dep: #e8a93c; --c-gap: #5fbfa9;
+}
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
 .app { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 100vh; }
@@ -53,11 +60,12 @@ main { padding: 22px 28px 40px; min-width: 0; }
 button { font: inherit; font-size: 13px; }
 .btn { background: var(--accent); color: var(--on-accent); border: 0; border-radius: 8px; padding: 8px 14px; cursor: pointer; font-weight: 500; }
 .btn.ghost { background: var(--surface); color: var(--ink-2); border: 1px solid var(--border); }
+.btn.icon { padding: 7px 12px; }
 .btn:disabled { opacity: .6; cursor: default; }
 .pill { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: var(--wait-tint); color: var(--wait); font-weight: 500; }
 .pill.live { background: var(--good-tint); color: var(--good); }
 .kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin-bottom: 16px; }
-.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; gap: 12px; align-items: center; border-top: 3px solid var(--c, var(--accent)); }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; gap: 12px; align-items: center; }
 .kpi .ic { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; font-size: 17px; font-weight: 700; background: var(--t, var(--accent-tint)); color: var(--c, var(--accent)); flex: none; }
 .kpi b { display: block; font-size: 24px; font-weight: 650; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; line-height: 1.15; }
 .kpi span { color: var(--ink-2); font-size: 12px; }
@@ -186,6 +194,8 @@ td code { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
       </div>
       <div class="controls">
         <span id="status" class="pill">loading</span>
+        <button class="btn ghost icon" id="refresh" title="Refresh data" aria-label="Refresh data">&#8635; Refresh</button>
+        <button class="btn ghost icon" id="theme" title="Switch light or dark mode" aria-label="Switch light or dark mode">&#9790; Dark</button>
         <button class="btn ghost" id="new-toggle" hidden>Review a new epic</button>
       </div>
     </div>
@@ -245,6 +255,21 @@ const params = new URLSearchParams(location.search);
 // Where the live API is: ?api=https://... in the URL, else config.js, else the server that served this page.
 const API = (params.get("api") || window.NABU_API || "").replace(/\/$/, "");
 let run = params.get("run"), after = 0, data = null, tab = "open", seen = new Set(), firstRender = true;
+
+// Light/dark toggle; the choice is remembered in this browser if storage is available.
+const store = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
+                set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) { /* private mode */ } } };
+function isDark() {
+  const t = document.documentElement.dataset.theme;
+  return t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+}
+function setTheme(t) {
+  if (t) document.documentElement.dataset.theme = t;
+  $("theme").innerHTML = isDark() ? "&#9788; Light" : "&#9790; Dark";
+}
+setTheme(store.get("nabu-theme"));
+$("theme").onclick = () => { const t = isDark() ? "light" : "dark"; store.set("nabu-theme", t); setTheme(t); };
+$("refresh").onclick = () => location.reload();
 
 // Two views in one page: the dashboard, and #how for "How it works".
 function route() {
