@@ -61,6 +61,7 @@ button { font: inherit; font-size: 13px; }
 .kpi .ic { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; font-size: 17px; font-weight: 700; background: var(--t, var(--accent-tint)); color: var(--c, var(--accent)); flex: none; }
 .kpi b { display: block; font-size: 24px; font-weight: 650; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; line-height: 1.15; }
 .kpi span { color: var(--ink-2); font-size: 12px; }
+.kpi em { display: block; font-style: normal; color: var(--ink-3); font-size: 11.5px; }
 .kpi.open { --c: var(--wait); --t: var(--wait-tint); } .kpi.hit { --c: var(--good); --t: var(--good-tint); }
 .kpi.miss { --c: var(--bad); --t: var(--bad-tint); } .kpi.acc { --c: var(--accent); --t: var(--accent-tint); }
 .kpi.epics { --c: var(--c-gap); --t: color-mix(in srgb, var(--c-gap) 14%, transparent); }
@@ -78,6 +79,8 @@ button { font: inherit; font-size: 13px; }
 .bars { display: grid; gap: 12px; }
 .bar-row .lbl { display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 4px; }
 .bar-row .lbl span { color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.bar-row .lbl span.name { color: var(--ink); }
+.learn { font-size: 10.5px; padding: 1px 6px; border-radius: 999px; background: var(--wait-tint); color: var(--wait); margin-left: 4px; }
 .bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: var(--bg); }
 .bar > div { height: 100%; transition: width .4s; }
 .key { display: flex; gap: 12px; font-size: 12px; color: var(--ink-2); margin-top: 12px; flex-wrap: wrap; }
@@ -203,7 +206,7 @@ Kafka source and sink stream modules | 5 | Stream Module</textarea></label>
       <div class="kpi open"><div class="ic">!</div><div><b id="t-open">0</b><span>Open risks</span></div></div>
       <div class="kpi hit"><div class="ic">&#10003;</div><div><b id="t-hit">0</b><span>Came true</span></div></div>
       <div class="kpi miss"><div class="ic">&#10007;</div><div><b id="t-miss">0</b><span>Didn't happen</span></div></div>
-      <div class="kpi acc"><div class="ic">%</div><div><b id="t-acc">-</b><span>Hit rate so far</span></div></div>
+      <div class="kpi acc"><div class="ic">%</div><div><b id="t-acc">-</b><span>Overrun hit rate <em id="t-acc-all"></em></span></div></div>
       <div class="kpi epics"><div class="ic">#</div><div><b id="t-epics">0</b><span>Epics reviewed</span></div></div>
     </div>
 
@@ -338,7 +341,11 @@ function render(s) {
   $("t-open").textContent = all.length - graded.length;
   $("t-hit").textContent = hits;
   $("t-miss").textContent = graded.length - hits;
-  $("t-acc").textContent = graded.length ? `${Math.round(100 * hits / graded.length)}%` : "-";
+  // Headline the overrun risks, which have enough outcomes to judge; the other types are still building a record.
+  const est = graded.filter(r => r.agent === "estimator"), estHits = est.filter(r => r.score.hit).length;
+  $("t-acc").textContent = est.length ? `${Math.round(100 * estHits / est.length)}%` : "-";
+  $("t-acc").title = `${estHits} of ${est.length} checked overrun risks`;
+  $("t-acc-all").textContent = graded.length ? `${estHits} of ${est.length} · all types ${Math.round(100 * hits / graded.length)}%` : "";
   $("n-open").textContent = all.length - graded.length;
   $("n-graded").textContent = graded.length;
   $("t-epics").textContent = s.reviews.length;
@@ -372,7 +379,8 @@ function renderCharts(all) {
     const rs = all.filter(r => r.agent === k); if (!rs.length) return "";
     const hit = rs.filter(r => r.score && r.score.hit).length, miss = rs.filter(r => r.score && !r.score.hit).length, open = rs.length - hit - miss;
     const pct = n => `${100 * n / rs.length}%`, g = hit + miss;
-    return `<div class="bar-row"><div class="lbl">${RISK[k]}<span>${g ? Math.round(100 * hit / g) + "% hit · " : ""}${rs.length}</span></div>` +
+    const learning = k !== "estimator" ? ` <small class="learn">still learning</small>` : "";
+    return `<div class="bar-row"><div class="lbl"><span class="name">${RISK[k]}${learning}</span><span>${g ? `${hit} of ${g} came true · ` : ""}${rs.length} found</span></div>` +
       `<div class="bar"><div style="width:${pct(hit)};background:var(--good)"></div><div style="width:${pct(miss)};background:var(--bad)"></div>` +
       `<div style="width:${pct(open)};background:var(--wait);opacity:.55"></div></div></div>`;
   }).join("")}</div>`;
