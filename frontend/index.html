@@ -197,6 +197,8 @@ td code { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
     <nav><p class="side-h">Menu</p>
       <a class="nav" href="#" data-view="dash">Dashboard</a>
       <a class="nav" href="#how" data-view="how">How it works</a>
+      <a class="nav" href="/pitch/">Pitch slides</a>
+      <a class="nav" href="/submission/">Submission files</a>
     </nav>
     <p class="side-foot">Each new epic is reviewed against the project's own history. Open risks are still waiting for their outcome; checked ones show how earlier warnings turned out.</p>
   </aside>
@@ -209,7 +211,7 @@ td code { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
 <div class="workflow-tools" role="group" aria-label="Diagram controls"><span>Select an agent to inspect its role</span><button type="button" id="workflow-zoom-out" aria-label="Zoom out">−</button><output id="workflow-zoom" aria-label="Diagram zoom">100%</output><button type="button" id="workflow-zoom-in" aria-label="Zoom in">+</button><button type="button" id="workflow-fit">Fit view</button><button type="button" id="workflow-reset">Reset selection</button></div>
 <div class="workflow-viewport" id="workflow-viewport" tabindex="0" aria-label="Agent diagram. Scroll to explore when zoomed."><svg xmlns="http://www.w3.org/2000/svg" id="agent-workflow-svg" class="workflow-svg" viewBox="0 0 1210 510" role="group" aria-labelledby="workflow-vector-title workflow-vector-description">
 <title id="workflow-vector-title">Nabu agent review workflow</title>
-<desc id="workflow-vector-description">The replay clock feeds the Historian, then the Planner routes a plan to the Estimator, Dependency hunter and Gap finder. Data quality and Critic assess findings before the Writer saves the review. Scorekeeper checks later outcomes and feeds pattern weights back to Historian. Critic can request one revision. Select an agent for details.</desc>
+<desc id="workflow-vector-description">The review clock feeds the Historian, then the Planner routes a plan to the Estimator, Dependency hunter and Gap finder. Data quality and Critic assess findings before the Writer saves the review. Scorekeeper checks later outcomes and feeds pattern weights back to Historian. Critic can request one revision. Select an agent for details.</desc>
 <style>
 .wf-background{fill:#1d231c}.wf-stage{fill:#abb5a3;font:11px Arial,sans-serif;letter-spacing:2px}.wf-edge{fill:none;stroke:#788770;stroke-width:1.7;marker-end:url(#wf-arrow)}.wf-edge.feedback{stroke:#718361;stroke-dasharray:5 6}.wf-edge.revision{stroke:#ae9a6c;stroke-dasharray:4 5}.wf-edge.active{stroke:#d9ed89;stroke-width:2.5}.wf-node{cursor:pointer;outline:none}.wf-node .wf-box{fill:#282f25;stroke:#4b5743;stroke-width:1.2}.wf-node:hover .wf-box,.wf-node:focus .wf-box{stroke:#c7dc8b;stroke-width:2}.wf-node[aria-pressed="true"] .wf-box{fill:#34412c;stroke:#d9ed89;stroke-width:2}.wf-node .wf-divider{stroke:#424c3b;stroke-width:1}.wf-label{fill:#f0f4e8;font:500 14px Arial,sans-serif}.wf-description{fill:#b5c0aa;font:12px Arial,sans-serif}.wf-node-dot{fill:#c2d997}.wf-note{fill:#b4bfa7;font:12px Arial,sans-serif}.wf-revision-note{fill:#bead85;font:11px Arial,sans-serif}
 </style>
@@ -229,9 +231,9 @@ td code { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
 <path class="wf-edge" data-from="writer" data-to="scorekeeper" d="M1100 294V342"/>
 <path class="wf-edge feedback" data-from="scorekeeper" data-to="historian" d="M1100 434V456Q1100 468 1088 468H317Q305 468 305 456V294"/>
 
-<g class="wf-node" data-agent="replay" transform="translate(30 202)" role="button" tabindex="0" aria-pressed="false" aria-label="Replay clock: Advance review time. Save each checkpoint">
+<g class="wf-node" data-agent="replay" transform="translate(30 202)" role="button" tabindex="0" aria-pressed="false" aria-label="Review clock: Set the historical cutoff for each review">
 <rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
-<text class="wf-label" x="24" y="27">Replay clock</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-label" x="24" y="27">Review clock</text><path class="wf-divider" d="M0 40H160"/>
 <text class="wf-description" x="13" y="62">Advance review time</text>
 <text class="wf-description" x="13" y="78">Save each checkpoint</text>
 </g>
@@ -365,14 +367,14 @@ Kafka source and sink stream modules | 5 | Stream Module</textarea></label>
       </section>
       <div class="grid" style="margin:0">
         <section class="card epic-panel"><h2>Riskiest epics</h2><div id="epics"></div></section>
-        <section class="card activity-card"><h2>Agent activity<span class="hint">live log</span></h2><div id="log" role="log"></div></section>
+        <section class="card activity-card"><h2>Agent activity<span class="hint">review log</span></h2><div id="log" role="log"></div></section>
       </div>
     </div>
   </main>
 </div>
 <script src="config.js"></script>
 <script>
-const AGENT = { replay: "Replay clock", historian: "Historian", planner: "Planner", estimator: "Estimator",
+const AGENT = { replay: "Review clock", historian: "Historian", planner: "Planner", estimator: "Estimator",
   dependency_hunter: "Dependency hunter", gap_finder: "Gap finder", data_quality: "Data quality", critic: "Critic",
   writer: "Writer", scorekeeper: "Scorekeeper" };
 const RISK = { estimator: "Overrun risk", dependency_hunter: "Blocker risk", gap_finder: "Missing work" };
@@ -403,7 +405,7 @@ $("refresh").onclick = () => location.reload();
 function route() {
   const how = location.hash === "#how";
   $("view-how").hidden = !how; $("view-dash").hidden = how;
-  for (const a of document.querySelectorAll(".nav")) a.classList.toggle("on", (a.dataset.view === "how") === how);
+  for (const a of document.querySelectorAll(".nav[data-view]")) a.classList.toggle("on", (a.dataset.view === "how") === how);
 }
 window.addEventListener("hashchange", route); route();
 for (const t of document.querySelectorAll(".tab")) t.onclick = () => {
@@ -412,14 +414,14 @@ for (const t of document.querySelectorAll(".tab")) t.onclick = () => {
   renderRisks();
 };
 
-// Static mode: with no server (e.g. on Vercel) the page replays a run exported to runs/<id>.json.
-let recorded = null, shown = 0, pauseAt = null;
+// Without an API, show the saved project snapshot immediately.
+let staticMode = false;
 async function listRuns() {
   try {
     const res = await fetch(`${API}/api/runs`);
     if (res.ok && (res.headers.get("content-type") || "").includes("json")) return await res.json();
   } catch (e) { /* no server */ }
-  recorded = true;
+  staticMode = true;
   const res = await fetch("runs/index.json");
   return res.ok ? await res.json() : [];
 }
@@ -431,13 +433,11 @@ async function init() {
   const projectNames = { "xd-demo": "Spring XD", "stl-demo": "Hyperledger Sawtooth", "mesos-demo": "Apache Mesos", "demo": "Synthetic demo" };
   $("run").innerHTML = runs.map(r => `<option value="${esc(r.id)}" ${r.id === run ? "selected" : ""}>${esc(r.name || projectNames[r.id] || r.id)}</option>`).join("");
   $("run").onchange = () => { params.set("run", $("run").value); location.search = params.toString(); };
-  if (recorded) {
-    // A recorded run is treated as "today" at pause_at; nothing after it is shown.
-    pauseAt = (runs.find(r => r.id === run) || {}).pause_at || null;
+  if (staticMode) {
+    // Keep the historical cutoff without animating the history up to it.
+    const cutoff = (runs.find(r => r.id === run) || {}).pause_at || null;
     const full = await (await fetch(`runs/${encodeURIComponent(run)}.json`)).json();
-    if (pauseAt) full.log = full.log.filter(e => (e.sim_at || "") <= pauseAt);
-    recorded = full;
-    tick();
+    renderSnapshot(full, cutoff);
   } else {
     $("new-toggle").hidden = false;
     poll();
@@ -445,23 +445,17 @@ async function init() {
 }
 
 
-// Show one replay step (the log rows sharing a sim time) at a time, as if the run were live.
-function tick() {
-  const full = recorded, log = full.log;
-  let end = shown;
-  if (pauseAt) end = log.length;
-  else if (end < log.length) { const at = log[end].sim_at; while (end < log.length && log[end].sim_at === at) end++; }
-  const clock = end ? log[end - 1].sim_at : null, done = end >= log.length;
+function renderSnapshot(full, cutoff) {
+  const log = full.log || [];
+  const clock = cutoff || full.run.clock || log.map(e => e.sim_at).filter(Boolean).at(-1) || null;
   const upTo = t => clock && t && t <= clock;
   render({
-    run: { ...full.run, clock, status: pauseAt ? "up to date" : done ? "finished" : "replaying" },
-    log: log.slice(shown, end),
+    run: { ...full.run, clock, status: "snapshot" },
+    log: log.filter(e => !e.sim_at || upTo(e.sim_at)),
     reviews: full.reviews.filter(v => upTo(v.as_of)),
     scores: Object.fromEntries(Object.entries(full.scores).filter(([, v]) => upTo(v.at))),
     items: full.items,
   });
-  shown = end;
-  if (!done) setTimeout(tick, 600);
 }
 
 async function poll() {
@@ -482,7 +476,7 @@ function risksOf(s) {
 function render(s) {
   data = s;
   $("status").textContent = s.run.status;
-  $("status").classList.add("live");
+  $("status").classList.toggle("live", !staticMode);
   $("clock").textContent = day(s.run.clock) || "-";
   const log = $("log");
   for (const e of s.log) {

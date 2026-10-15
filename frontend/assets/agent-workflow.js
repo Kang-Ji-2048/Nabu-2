@@ -12,7 +12,7 @@
   const nodes = [...root.querySelectorAll('[data-agent]')];
   const edges = [...root.querySelectorAll('.wf-edge')];
   const roles = {
-    replay: ['Replay clock', 'Advances the simulated date. The stored timeline and committed cursor let a run pause and resume without repeating completed steps.'],
+    replay: ['Review clock', 'Sets the historical cutoff for a review. Specialists use the ticket history available at that point, while the dashboard displays the saved snapshot immediately.'],
     historian: ['Historian', 'Reads completed tickets available at the review cutoff. Mines estimate, dependency and missing-work patterns with evidence; learned pattern weights persist.'],
     planner: ['Planner', 'Reads the new epic and the tickets known at review time. Deterministic routing assigns estimate, dependency and missing-work checks to specialists.'],
     estimator: ['Estimator', 'Compares planned estimates with historical time per point and component patterns. Python supplies cited candidate warnings and checkable overrun predictions.'],
