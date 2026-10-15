@@ -97,6 +97,8 @@ button { font: inherit; font-size: 13px; }
 .badge.hit { background: var(--good-tint); color: var(--good); }
 .badge.miss { background: var(--bad-tint); color: var(--bad); }
 .risk .claim { margin: 2px 0 0; font-size: 13.5px; }
+.risk .why { font-size: 13px; margin-top: 8px; color: var(--ink-2); }
+.risk .why b { color: var(--ink); }
 .risk .fix { font-size: 13px; margin-top: 8px; padding: 7px 10px; border-radius: 6px; background: var(--accent-tint); }
 .risk .fix b { color: var(--accent); }
 .risk .detail { color: var(--ink-2); font-size: 12px; margin-top: 6px; }
@@ -361,6 +363,29 @@ function renderCharts(all) {
       `<i style="background:${r.score ? (r.score.hit ? "var(--good)" : "var(--bad)") : "var(--wait)"}" title="${r.score ? (r.score.hit ? "came true" : "didn't happen") : "open"}"></i>`).join("")}</div></td></tr>`).join("")}</table>`;
 }
 
+// A plain-language reason per risk, from the same numbers the agent cited.
+function whyFor(r) {
+  const c = r.claim || "", n = (r.evidence || []).length, past = n ? `${n} similar past ticket${n > 1 ? "s" : ""}` : "past work";
+  if (r.agent === "estimator") {
+    const m = c.match(/'([^']+)' work took ([\d.]+)x/);
+    return m ? `On this project, '${m[1]}' work has taken ${m[2]}x the usual time per story point (${past}), so the estimate is probably too low. ` +
+      "If that repeats, these tickets will run late and push the epic's end date out."
+      : `Similar work here has taken longer than estimated (${past}), so this plan is likely to run late.`;
+  }
+  if (r.agent === "dependency_hunter") {
+    const m = c.match(/by '([^']+)' work/);
+    return `Epics like this one were held up waiting on ${m ? `'${m[1]}'` : "other"} work (${past}), and nothing in this plan covers it. ` +
+      "The team could get blocked partway through.";
+  }
+  if (r.agent === "gap_finder") {
+    const m = c.match(/no (.+?) tickets, and (\d+)%/);
+    return m ? `${m[2]}% of past epics that started without ${m[1]} tickets had to add them later. ` +
+      "Work found mid-epic is unplanned, so it usually means a slip or a cut." 
+      : "Past epics with the same gap had to add this work later, which usually means a slip.";
+  }
+  return "Past work on this project suggests this plan may not go as expected.";
+}
+
 // One concrete next step per risk, built from the numbers the agent already cited.
 function fixFor(r) {
   const c = r.claim || "", t = r.suggested_ticket;
@@ -403,6 +428,7 @@ function renderRisks() {
       `<span class="conf">${esc(r.confidence || "")} confidence · found ${esc(day(r.as_of))}</span>${badge}</div>` +
       `<div class="epic"><code>${esc(r.epic)}</code>${esc(r.title)}</div>` +
       `<p class="claim">${esc(r.claim)}</p>` +
+      `<div class="why"><b>Why it's a risk:</b> ${esc(whyFor(r))}</div>` +
       `<div class="fix"><b>Suggested fix:</b> ${esc(fixFor(r))}</div>` +
       (r.score && r.score.detail ? `<div class="detail">Outcome: ${esc(r.score.detail)}</div>` : "") +
       (cites ? `<details><summary>Evidence: ${r.evidence.length} past tickets</summary><ul>${cites}</ul></details>` : "") +
