@@ -12,7 +12,7 @@ python -m nabu show --run demo1 --epic demo:PAY-111
 python -m unittest discover -s tests
 ```
 
-- Drop `--offline` and set `ANTHROPIC_API_KEY` to have Claude phrase, judge and summarise. `NABU_MODEL` (default `claude-opus-5-5`) and `NABU_EFFORT` (default `low`) control the model.
+- Drop `--offline` and put `ANTHROPIC_API_KEY=...` in a `.env` file in the repo root (copy `.env.example`; git ignores `.env`) to have Claude phrase, judge and summarise. Install the SDK with `pip install anthropic`. `NABU_MODEL` (default `claude-opus-5-5`) and `NABU_EFFORT` (default `low`) control the model.
 - `--stop-after 5` pauses the run at a checkpoint; `python -m nabu resume --run demo1` carries on from there.
 - `--viewer-scopes payments` makes the reader payments-only while the agents read both scopes, so warnings citing platform tickets are suppressed by the ring-fence.
 
