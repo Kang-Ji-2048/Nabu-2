@@ -1,0 +1,853 @@
+NABU — RECORDED AGENT RUN
+Project: Spring XD / TAWOS public project history
+Run: xd-demo
+Recorded cutoff: 2014-04-23T11:06:50Z
+Source: frontend/runs/xd-demo.json (SHA-256 6175f2597de83891afa4e3189ba2d73ce65efac74715b6562f9d614bdeefb6b3)
+Evidence: 476 log records; 50 reviews; 30 scored warnings.
+
+PROVENANCE
+Exported from the recording shipped with the hosted product. Timestamps are simulated historical project time.
+This is not a fresh live/API session. The source does not record model-call telemetry.
+Success and failure events are preserved. Confirmation is not overall predictive accuracy.
+
+FULL AGENT LOG
+sequence | simulated time | agent | event | message
+0001 | (run setup) | replay | start | 170 steps for tenant tawos, scopes ['XD']
+0002 | 2013-05-21T10:43:19Z | historian | patterns | 3 patterns from history up to 2013-05-21
+       data: {"kinds": ["estimate"]}
+0003 | 2013-05-21T10:43:19Z | planner | plan | XD-75 '"Add redis bundle to distribution zip file"': 0 tickets known on day one
+       data: {"routes": {"dependency_hunter": 0, "estimator": 0, "gap_finder": 0}}
+0004 | 2013-05-21T10:43:19Z | data_quality | profile | 47 finished tickets, 87% estimated, 85% with a start date
+       data: {"estimated": 0.87, "finished_items": 47, "started_recorded": 0.85}
+0005 | 2013-05-21T10:43:19Z | estimator | clear | no warnings
+0006 | 2013-05-21T10:43:19Z | dependency_hunter | clear | no warnings
+0007 | 2013-05-21T10:43:19Z | gap_finder | clear | no warnings
+0008 | 2013-05-21T10:43:19Z | writer | review | 0 warnings for XD-75.
+       data: {"epic": "tawos:XD-75"}
+0009 | 2013-05-21T11:14:56Z | historian | patterns | 3 patterns from history up to 2013-05-21
+       data: {"kinds": ["estimate"]}
+0010 | 2013-05-21T11:14:56Z | planner | plan | XD-92 '"Modularize spring integration flows at a high level of granularity to promote re-use and composability"': 0 tickets known on day one
+       data: {"routes": {"dependency_hunter": 0, "estimator": 0, "gap_finder": 0}}
+0011 | 2013-05-21T11:14:56Z | data_quality | profile | 47 finished tickets, 87% estimated, 85% with a start date
+       data: {"estimated": 0.87, "finished_items": 47, "started_recorded": 0.85}
+0012 | 2013-05-21T11:14:56Z | estimator | clear | no warnings
+0013 | 2013-05-21T11:14:56Z | dependency_hunter | clear | no warnings
+0014 | 2013-05-21T11:14:56Z | gap_finder | clear | no warnings
+0015 | 2013-05-21T11:14:56Z | writer | review | 0 warnings for XD-92.
+       data: {"epic": "tawos:XD-92"}
+0016 | 2013-06-04T13:50:47Z | historian | patterns | 3 patterns from history up to 2013-06-04
+       data: {"kinds": ["estimate"]}
+0017 | 2013-06-04T13:50:47Z | planner | plan | XD-177 '"Easily switch between a single process that performs all admin and processing tasks to one that has a dedicated admin processes and distributed processing containers."': 9 tickets known on day one
+       data: {"routes": {"dependency_hunter": 9, "estimator": 9, "gap_finder": 9}}
+0018 | 2013-06-04T13:50:47Z | data_quality | profile | 107 finished tickets, 94% estimated, 84% with a start date
+       data: {"estimated": 0.94, "finished_items": 107, "started_recorded": 0.84}
+0019 | 2013-06-04T13:50:47Z | estimator | warning | 4 planned 'Packaging' tickets (8 points) match a pattern of overruns: past 'Packaging' work took 1.76x the usual time per point.
+       data: {"evidence": ["tawos:XD-37", "tawos:XD-61", "tawos:XD-67"]}
+0020 | 2013-06-04T13:50:47Z | dependency_hunter | clear | no warnings
+0021 | 2013-06-04T13:50:47Z | gap_finder | clear | no warnings
+0022 | 2013-06-04T13:50:47Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-177:XD:estimate:Packaging"}
+0023 | 2013-06-04T13:50:47Z | writer | review | 1 warnings for XD-177.
+       data: {"epic": "tawos:XD-177"}
+0024 | 2013-06-12T07:39:14Z | scorekeeper | hit | estimator: 4/4 finished tickets overran
+       data: {"warning": "tawos:XD-177:XD:estimate:Packaging"}
+0025 | 2013-06-12T07:39:14Z | replay | accuracy | 1/1 warnings confirmed so far (100%)
+0026 | 2013-06-18T09:41:16Z | historian | patterns | 3 patterns from history up to 2013-06-18
+       data: {"kinds": ["dependency", "estimate"]}
+0027 | 2013-06-18T09:41:16Z | planner | plan | XD-232 '"A HATEOAS designed REST API using Spring HATEOAS library."': 4 tickets known on day one
+       data: {"routes": {"dependency_hunter": 4, "estimator": 4, "gap_finder": 4}}
+0028 | 2013-06-18T09:41:16Z | data_quality | profile | 165 finished tickets, 96% estimated, 84% with a start date
+       data: {"estimated": 0.96, "finished_items": 165, "started_recorded": 0.84}
+0029 | 2013-06-18T09:41:16Z | estimator | warning | 4 planned 'story' tickets (21 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0030 | 2013-06-18T09:41:16Z | dependency_hunter | clear | no warnings
+0031 | 2013-06-18T09:41:16Z | gap_finder | clear | no warnings
+0032 | 2013-06-18T09:41:16Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-232:XD:estimate:story"}
+0033 | 2013-06-18T09:41:16Z | writer | review | 1 warnings for XD-232.
+       data: {"epic": "tawos:XD-232"}
+0034 | 2013-06-18T09:43:53Z | historian | patterns | 3 patterns from history up to 2013-06-18
+       data: {"kinds": ["dependency", "estimate"]}
+0035 | 2013-06-18T09:43:53Z | planner | plan | XD-233 '"Create an shell to control all aspect of stream/job management"': 1 tickets known on day one
+       data: {"routes": {"dependency_hunter": 1, "estimator": 0, "gap_finder": 1}}
+0036 | 2013-06-18T09:43:53Z | data_quality | profile | 165 finished tickets, 96% estimated, 84% with a start date
+       data: {"estimated": 0.96, "finished_items": 165, "started_recorded": 0.84}
+0037 | 2013-06-18T09:43:53Z | estimator | clear | no warnings
+0038 | 2013-06-18T09:43:53Z | dependency_hunter | clear | no warnings
+0039 | 2013-06-18T09:43:53Z | gap_finder | clear | no warnings
+0040 | 2013-06-18T09:43:53Z | writer | review | 0 warnings for XD-233.
+       data: {"epic": "tawos:XD-233"}
+0041 | 2013-06-18T09:44:54Z | historian | patterns | 3 patterns from history up to 2013-06-18
+       data: {"kinds": ["dependency", "estimate"]}
+0042 | 2013-06-18T09:44:54Z | planner | plan | XD-234 '"Support various output format, e.g. Avro, SequenceFile, more advanced rollover options."': 0 tickets known on day one
+       data: {"routes": {"dependency_hunter": 0, "estimator": 0, "gap_finder": 0}}
+0043 | 2013-06-18T09:44:54Z | data_quality | profile | 165 finished tickets, 96% estimated, 84% with a start date
+       data: {"estimated": 0.96, "finished_items": 165, "started_recorded": 0.84}
+0044 | 2013-06-18T09:44:54Z | estimator | clear | no warnings
+0045 | 2013-06-18T09:44:54Z | dependency_hunter | clear | no warnings
+0046 | 2013-06-18T09:44:54Z | gap_finder | clear | no warnings
+0047 | 2013-06-18T09:44:54Z | writer | review | 0 warnings for XD-234.
+       data: {"epic": "tawos:XD-234"}
+0048 | 2013-06-18T09:45:35Z | historian | patterns | 3 patterns from history up to 2013-06-18
+       data: {"kinds": ["dependency", "estimate"]}
+0049 | 2013-06-18T09:45:35Z | planner | plan | XD-235 '"Modules (sinks, processors, sources) should be able to be easily tested inside the IDE using JUnit "': 0 tickets known on day one
+       data: {"routes": {"dependency_hunter": 0, "estimator": 0, "gap_finder": 0}}
+0050 | 2013-06-18T09:45:35Z | data_quality | profile | 165 finished tickets, 96% estimated, 84% with a start date
+       data: {"estimated": 0.96, "finished_items": 165, "started_recorded": 0.84}
+0051 | 2013-06-18T09:45:35Z | estimator | clear | no warnings
+0052 | 2013-06-18T09:45:35Z | dependency_hunter | clear | no warnings
+0053 | 2013-06-18T09:45:35Z | gap_finder | clear | no warnings
+0054 | 2013-06-18T09:45:35Z | writer | review | 0 warnings for XD-235.
+       data: {"epic": "tawos:XD-235"}
+0055 | 2013-06-18T09:56:31Z | historian | patterns | 3 patterns from history up to 2013-06-18
+       data: {"kinds": ["dependency", "estimate"]}
+0056 | 2013-06-18T09:56:31Z | planner | plan | XD-237 '"Spring Batch jobs should be able to be deployed to the DIRT runtime and managed."': 3 tickets known on day one
+       data: {"routes": {"dependency_hunter": 3, "estimator": 3, "gap_finder": 3}}
+0057 | 2013-06-18T09:56:31Z | data_quality | profile | 165 finished tickets, 96% estimated, 84% with a start date
+       data: {"estimated": 0.96, "finished_items": 165, "started_recorded": 0.84}
+0058 | 2013-06-18T09:56:31Z | estimator | warning | 1 planned 'Ingest' tickets (4 points) match a pattern of overruns: past 'Ingest' work took 2.17x the usual time per point.
+       data: {"evidence": ["tawos:XD-24", "tawos:XD-27", "tawos:XD-65", "tawos:XD-124"]}
+0059 | 2013-06-18T09:56:31Z | estimator | warning | 1 planned 'Packaging' tickets (4 points) match a pattern of overruns: past 'Packaging' work took 1.76x the usual time per point.
+       data: {"evidence": ["tawos:XD-37", "tawos:XD-61", "tawos:XD-67"]}
+0060 | 2013-06-18T09:56:31Z | dependency_hunter | clear | no warnings
+0061 | 2013-06-18T09:56:31Z | gap_finder | clear | no warnings
+0062 | 2013-06-18T09:56:31Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-237:XD:estimate:Ingest"}
+0063 | 2013-06-18T09:56:31Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-237:XD:estimate:Packaging"}
+0064 | 2013-06-18T09:56:31Z | writer | review | 2 warnings for XD-237.
+       data: {"epic": "tawos:XD-237"}
+0065 | 2013-06-18T10:03:00Z | historian | patterns | 3 patterns from history up to 2013-06-18
+       data: {"kinds": ["dependency", "estimate"]}
+0066 | 2013-06-18T10:03:00Z | planner | plan | XD-238 '"Deploying Custom Code"': 0 tickets known on day one
+       data: {"routes": {"dependency_hunter": 0, "estimator": 0, "gap_finder": 0}}
+0067 | 2013-06-18T10:03:00Z | data_quality | profile | 165 finished tickets, 96% estimated, 84% with a start date
+       data: {"estimated": 0.96, "finished_items": 165, "started_recorded": 0.84}
+0068 | 2013-06-18T10:03:00Z | estimator | clear | no warnings
+0069 | 2013-06-18T10:03:00Z | dependency_hunter | clear | no warnings
+0070 | 2013-06-18T10:03:00Z | gap_finder | clear | no warnings
+0071 | 2013-06-18T10:03:00Z | writer | review | 0 warnings for XD-238.
+       data: {"epic": "tawos:XD-238"}
+0072 | 2013-06-18T10:10:41Z | historian | patterns | 3 patterns from history up to 2013-06-18
+       data: {"kinds": ["dependency", "estimate"]}
+0073 | 2013-06-18T10:10:41Z | planner | plan | XD-239 '"Epic For Distributed Monitoring Stories"': 1 tickets known on day one
+       data: {"routes": {"dependency_hunter": 1, "estimator": 1, "gap_finder": 1}}
+0074 | 2013-06-18T10:10:41Z | data_quality | profile | 165 finished tickets, 96% estimated, 84% with a start date
+       data: {"estimated": 0.96, "finished_items": 165, "started_recorded": 0.84}
+0075 | 2013-06-18T10:10:41Z | estimator | warning | 1 planned 'story' tickets (4 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0076 | 2013-06-18T10:10:41Z | dependency_hunter | clear | no warnings
+0077 | 2013-06-18T10:10:41Z | gap_finder | clear | no warnings
+0078 | 2013-06-18T10:10:41Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-239:XD:estimate:story"}
+0079 | 2013-06-18T10:10:41Z | writer | review | 1 warnings for XD-239.
+       data: {"epic": "tawos:XD-239"}
+0080 | 2013-06-18T10:56:09Z | historian | patterns | 3 patterns from history up to 2013-06-18
+       data: {"kinds": ["dependency", "estimate"]}
+0081 | 2013-06-18T10:56:09Z | planner | plan | XD-240 '"Throughput optimized TCP based adapters based on Reactor TCP project"': 0 tickets known on day one
+       data: {"routes": {"dependency_hunter": 0, "estimator": 0, "gap_finder": 0}}
+0082 | 2013-06-18T10:56:09Z | data_quality | profile | 165 finished tickets, 96% estimated, 84% with a start date
+       data: {"estimated": 0.96, "finished_items": 165, "started_recorded": 0.84}
+0083 | 2013-06-18T10:56:09Z | estimator | clear | no warnings
+0084 | 2013-06-18T10:56:09Z | dependency_hunter | clear | no warnings
+0085 | 2013-06-18T10:56:09Z | gap_finder | clear | no warnings
+0086 | 2013-06-18T10:56:09Z | writer | review | 0 warnings for XD-240.
+       data: {"epic": "tawos:XD-240"}
+0087 | 2013-06-18T11:11:11Z | historian | patterns | 3 patterns from history up to 2013-06-18
+       data: {"kinds": ["dependency", "estimate"]}
+0088 | 2013-06-18T11:11:11Z | planner | plan | XD-241 '"Type conversion and co-location of modules"': 0 tickets known on day one
+       data: {"routes": {"dependency_hunter": 0, "estimator": 0, "gap_finder": 0}}
+0089 | 2013-06-18T11:11:11Z | data_quality | profile | 165 finished tickets, 96% estimated, 84% with a start date
+       data: {"estimated": 0.96, "finished_items": 165, "started_recorded": 0.84}
+0090 | 2013-06-18T11:11:11Z | estimator | clear | no warnings
+0091 | 2013-06-18T11:11:11Z | dependency_hunter | clear | no warnings
+0092 | 2013-06-18T11:11:11Z | gap_finder | clear | no warnings
+0093 | 2013-06-18T11:11:11Z | writer | review | 0 warnings for XD-241.
+       data: {"epic": "tawos:XD-241"}
+0094 | 2013-06-22T10:46:50Z | historian | patterns | 3 patterns from history up to 2013-06-22
+       data: {"kinds": ["dependency", "estimate"]}
+0095 | 2013-06-22T10:46:50Z | planner | plan | XD-300 '"Improve user experience when XD fails to start"': 0 tickets known on day one
+       data: {"routes": {"dependency_hunter": 0, "estimator": 0, "gap_finder": 0}}
+0096 | 2013-06-22T10:46:50Z | data_quality | profile | 176 finished tickets, 96% estimated, 84% with a start date
+       data: {"estimated": 0.96, "finished_items": 176, "started_recorded": 0.84}
+0097 | 2013-06-22T10:46:50Z | estimator | clear | no warnings
+0098 | 2013-06-22T10:46:50Z | dependency_hunter | clear | no warnings
+0099 | 2013-06-22T10:46:50Z | gap_finder | clear | no warnings
+0100 | 2013-06-22T10:46:50Z | writer | review | 0 warnings for XD-300.
+       data: {"epic": "tawos:XD-300"}
+0101 | 2013-07-06T08:25:53Z | historian | patterns | 6 patterns from history up to 2013-07-06
+       data: {"kinds": ["dependency", "estimate"]}
+0102 | 2013-07-06T08:25:53Z | planner | plan | XD-387 '"Technical Debt"': 1 tickets known on day one
+       data: {"routes": {"dependency_hunter": 1, "estimator": 0, "gap_finder": 1}}
+0103 | 2013-07-06T08:25:53Z | data_quality | profile | 226 finished tickets, 96% estimated, 83% with a start date
+       data: {"estimated": 0.96, "finished_items": 226, "started_recorded": 0.83}
+0104 | 2013-07-06T08:25:53Z | estimator | clear | no warnings
+0105 | 2013-07-06T08:25:53Z | dependency_hunter | clear | no warnings
+0106 | 2013-07-06T08:25:53Z | gap_finder | clear | no warnings
+0107 | 2013-07-06T08:25:53Z | writer | review | 0 warnings for XD-387.
+       data: {"epic": "tawos:XD-387"}
+0108 | 2013-07-09T09:47:02Z | historian | patterns | 6 patterns from history up to 2013-07-09
+       data: {"kinds": ["dependency", "estimate"]}
+0109 | 2013-07-09T09:47:02Z | planner | plan | XD-395 '"The shell introduced a fundamental new way to interact with the system, all use of CURL in examples needs to change to use the shell."': 26 tickets known on day one
+       data: {"routes": {"dependency_hunter": 26, "estimator": 26, "gap_finder": 26}}
+0110 | 2013-07-09T09:47:02Z | data_quality | profile | 234 finished tickets, 96% estimated, 82% with a start date
+       data: {"estimated": 0.96, "finished_items": 234, "started_recorded": 0.82}
+0111 | 2013-07-09T09:47:02Z | estimator | warning | 8 planned 'story' tickets (8 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0112 | 2013-07-09T09:47:02Z | dependency_hunter | warning | Similar past work was blocked by 'Packaging' work, and this plan has no 'Packaging' ticket.
+       data: {"evidence": ["tawos:XD-192", "tawos:XD-75", "tawos:XD-141", "tawos:XD-179"]}
+0113 | 2013-07-09T09:47:02Z | gap_finder | clear | no warnings
+0114 | 2013-07-09T09:47:02Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-395:XD:estimate:story"}
+0115 | 2013-07-09T09:47:02Z | critic | accept | dependency_hunter: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-395:XD:dependency:Packaging"}
+0116 | 2013-07-09T09:47:02Z | writer | review | 2 warnings for XD-395. Consider adding: Add a 'Packaging' ticket and link it as a blocker.
+       data: {"epic": "tawos:XD-395"}
+0117 | 2013-07-13T07:33:10Z | historian | patterns | 5 patterns from history up to 2013-07-13
+       data: {"kinds": ["dependency", "estimate"]}
+0118 | 2013-07-13T07:33:10Z | planner | plan | XD-464 '"Deploy Spring XD on Hadoop YARN"': 0 tickets known on day one
+       data: {"routes": {"dependency_hunter": 0, "estimator": 0, "gap_finder": 0}}
+0119 | 2013-07-13T07:33:10Z | data_quality | profile | 260 finished tickets, 96% estimated, 82% with a start date
+       data: {"estimated": 0.96, "finished_items": 260, "started_recorded": 0.82}
+0120 | 2013-07-13T07:33:10Z | estimator | clear | no warnings
+0121 | 2013-07-13T07:33:10Z | dependency_hunter | clear | no warnings
+0122 | 2013-07-13T07:33:10Z | gap_finder | clear | no warnings
+0123 | 2013-07-13T07:33:10Z | writer | review | 0 warnings for XD-464.
+       data: {"epic": "tawos:XD-464"}
+0124 | 2013-07-13T11:25:58Z | historian | patterns | 5 patterns from history up to 2013-07-13
+       data: {"kinds": ["dependency", "estimate"]}
+0125 | 2013-07-13T11:25:58Z | planner | plan | XD-468 '"Providing support for using different Hadoop distributions, including Pivotal HD"': 7 tickets known on day one
+       data: {"routes": {"dependency_hunter": 7, "estimator": 7, "gap_finder": 7}}
+0126 | 2013-07-13T11:25:58Z | data_quality | profile | 260 finished tickets, 96% estimated, 82% with a start date
+       data: {"estimated": 0.96, "finished_items": 260, "started_recorded": 0.82}
+0127 | 2013-07-13T11:25:58Z | estimator | warning | 1 planned 'Analytics' tickets (3 points) match a pattern of overruns: past 'Analytics' work took 1.43x the usual time per point.
+       data: {"evidence": ["tawos:XD-7", "tawos:XD-28", "tawos:XD-29", "tawos:XD-30", "tawos:XD-31", "tawos:XD-43"]}
+0128 | 2013-07-13T11:25:58Z | estimator | warning | 2 planned 'Packaging' tickets (9 points) match a pattern of overruns: past 'Packaging' work took 1.76x the usual time per point.
+       data: {"evidence": ["tawos:XD-37", "tawos:XD-61", "tawos:XD-67"]}
+0129 | 2013-07-13T11:25:58Z | estimator | warning | 1 planned 'story' tickets (3 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0130 | 2013-07-13T11:25:58Z | dependency_hunter | clear | no warnings
+0131 | 2013-07-13T11:25:58Z | gap_finder | clear | no warnings
+0132 | 2013-07-13T11:25:58Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-468:XD:estimate:Analytics"}
+0133 | 2013-07-13T11:25:58Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-468:XD:estimate:Packaging"}
+0134 | 2013-07-13T11:25:58Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-468:XD:estimate:story"}
+0135 | 2013-07-13T11:25:58Z | writer | review | 3 warnings for XD-468.
+       data: {"epic": "tawos:XD-468"}
+0136 | 2013-07-16T09:30:36Z | historian | patterns | 6 patterns from history up to 2013-07-16
+       data: {"kinds": ["dependency", "estimate"]}
+0137 | 2013-07-16T09:30:36Z | planner | plan | XD-484 '"Create required infrastructure to easily perform integration testing of shell commands"': 1 tickets known on day one
+       data: {"routes": {"dependency_hunter": 1, "estimator": 1, "gap_finder": 1}}
+0138 | 2013-07-16T09:30:36Z | data_quality | profile | 266 finished tickets, 96% estimated, 82% with a start date
+       data: {"estimated": 0.96, "finished_items": 266, "started_recorded": 0.82}
+0139 | 2013-07-16T09:30:36Z | estimator | warning | 1 planned 'CLI' tickets (5 points) match a pattern of overruns: past 'CLI' work took 3.56x the usual time per point.
+       data: {"evidence": ["tawos:XD-250", "tawos:XD-256", "tawos:XD-258", "tawos:XD-259", "tawos:XD-260", "tawos:XD-261"]}
+0140 | 2013-07-16T09:30:36Z | dependency_hunter | clear | no warnings
+0141 | 2013-07-16T09:30:36Z | gap_finder | clear | no warnings
+0142 | 2013-07-16T09:30:36Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-484:XD:estimate:CLI"}
+0143 | 2013-07-16T09:30:36Z | writer | review | 1 warnings for XD-484.
+       data: {"epic": "tawos:XD-484"}
+0144 | 2013-07-23T09:57:18Z | historian | patterns | 7 patterns from history up to 2013-07-23
+       data: {"kinds": ["dependency", "estimate"]}
+0145 | 2013-07-23T09:57:18Z | planner | plan | XD-527 '"Create new implementations of existing infrastructure (syslog adapters and TaskExecutors)"': 4 tickets known on day one
+       data: {"routes": {"dependency_hunter": 4, "estimator": 4, "gap_finder": 4}}
+0146 | 2013-07-23T09:57:18Z | data_quality | profile | 324 finished tickets, 97% estimated, 75% with a start date
+       data: {"estimated": 0.97, "finished_items": 324, "started_recorded": 0.75}
+0147 | 2013-07-23T09:57:18Z | estimator | warning | 4 planned 'story' tickets (11 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0148 | 2013-07-23T09:57:18Z | dependency_hunter | clear | no warnings
+0149 | 2013-07-23T09:57:18Z | gap_finder | clear | no warnings
+0150 | 2013-07-23T09:57:18Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-527:XD:estimate:story"}
+0151 | 2013-07-23T09:57:18Z | writer | review | 1 warnings for XD-527.
+       data: {"epic": "tawos:XD-527"}
+0152 | 2013-08-15T11:34:49Z | historian | patterns | 6 patterns from history up to 2013-08-15
+       data: {"kinds": ["dependency", "estimate"]}
+0153 | 2013-08-15T11:34:49Z | planner | plan | XD-696 '"Update Gemfire, Transport, and Job Launch docs"': 0 tickets known on day one
+       data: {"routes": {"dependency_hunter": 0, "estimator": 0, "gap_finder": 0}}
+0154 | 2013-08-15T11:34:49Z | data_quality | profile | 455 finished tickets, 97% estimated, 76% with a start date
+       data: {"estimated": 0.97, "finished_items": 455, "started_recorded": 0.76}
+0155 | 2013-08-15T11:34:49Z | estimator | clear | no warnings
+0156 | 2013-08-15T11:34:49Z | dependency_hunter | clear | no warnings
+0157 | 2013-08-15T11:34:49Z | gap_finder | clear | no warnings
+0158 | 2013-08-15T11:34:49Z | writer | review | 0 warnings for XD-696.
+       data: {"epic": "tawos:XD-696"}
+0159 | 2013-08-15T11:50:47Z | historian | patterns | 6 patterns from history up to 2013-08-15
+       data: {"kinds": ["dependency", "estimate"]}
+0160 | 2013-08-15T11:50:47Z | planner | plan | XD-697 '"Support the ability to test individual sources, sinks, and processors"': 1 tickets known on day one
+       data: {"routes": {"dependency_hunter": 1, "estimator": 1, "gap_finder": 1}}
+0161 | 2013-08-15T11:50:47Z | data_quality | profile | 455 finished tickets, 97% estimated, 76% with a start date
+       data: {"estimated": 0.97, "finished_items": 455, "started_recorded": 0.76}
+0162 | 2013-08-15T11:50:47Z | estimator | warning | 1 planned 'story' tickets (5 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0163 | 2013-08-15T11:50:47Z | dependency_hunter | clear | no warnings
+0164 | 2013-08-15T11:50:47Z | gap_finder | clear | no warnings
+0165 | 2013-08-15T11:50:47Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-697:XD:estimate:story"}
+0166 | 2013-08-15T11:50:47Z | writer | review | 1 warnings for XD-697.
+       data: {"epic": "tawos:XD-697"}
+0167 | 2013-08-20T12:21:24Z | historian | patterns | 7 patterns from history up to 2013-08-20
+       data: {"kinds": ["dependency", "estimate"]}
+0168 | 2013-08-20T12:21:24Z | planner | plan | XD-706 '"Stories related to initialization and configuration of Admin and Container processes"': 5 tickets known on day one
+       data: {"routes": {"dependency_hunter": 5, "estimator": 1, "gap_finder": 5}}
+0169 | 2013-08-20T12:21:24Z | data_quality | profile | 471 finished tickets, 97% estimated, 77% with a start date
+       data: {"estimated": 0.97, "finished_items": 471, "started_recorded": 0.77}
+0170 | 2013-08-20T12:21:24Z | estimator | warning | 1 planned 'story' tickets (5 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0171 | 2013-08-20T12:21:24Z | dependency_hunter | clear | no warnings
+0172 | 2013-08-20T12:21:24Z | gap_finder | clear | no warnings
+0173 | 2013-08-20T12:21:24Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-706:XD:estimate:story"}
+0174 | 2013-08-20T12:21:24Z | writer | review | 1 warnings for XD-706.
+       data: {"epic": "tawos:XD-706"}
+0175 | 2013-08-23T14:18:55Z | historian | patterns | 7 patterns from history up to 2013-08-23
+       data: {"kinds": ["dependency", "estimate"]}
+0176 | 2013-08-23T14:18:55Z | planner | plan | XD-742 '"REST API for Job Management"': 3 tickets known on day one
+       data: {"routes": {"dependency_hunter": 3, "estimator": 3, "gap_finder": 3}}
+0177 | 2013-08-23T14:18:55Z | data_quality | profile | 481 finished tickets, 97% estimated, 77% with a start date
+       data: {"estimated": 0.97, "finished_items": 481, "started_recorded": 0.77}
+0178 | 2013-08-23T14:18:55Z | estimator | warning | 3 planned 'story' tickets (8 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0179 | 2013-08-23T14:18:55Z | dependency_hunter | clear | no warnings
+0180 | 2013-08-23T14:18:55Z | gap_finder | clear | no warnings
+0181 | 2013-08-23T14:18:55Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-742:XD:estimate:story"}
+0182 | 2013-08-23T14:18:55Z | writer | review | 1 warnings for XD-742.
+       data: {"epic": "tawos:XD-742"}
+0183 | 2013-09-11T09:54:43Z | historian | patterns | 7 patterns from history up to 2013-09-11
+       data: {"kinds": ["dependency", "estimate"]}
+0184 | 2013-09-11T09:54:43Z | planner | plan | XD-836 '"Harden the requirements for the  DSL and refactor accordingly."': 0 tickets known on day one
+       data: {"routes": {"dependency_hunter": 0, "estimator": 0, "gap_finder": 0}}
+0185 | 2013-09-11T09:54:43Z | data_quality | profile | 547 finished tickets, 97% estimated, 77% with a start date
+       data: {"estimated": 0.97, "finished_items": 547, "started_recorded": 0.77}
+0186 | 2013-09-11T09:54:43Z | estimator | clear | no warnings
+0187 | 2013-09-11T09:54:43Z | dependency_hunter | clear | no warnings
+0188 | 2013-09-11T09:54:43Z | gap_finder | clear | no warnings
+0189 | 2013-09-11T09:54:43Z | writer | review | 0 warnings for XD-836.
+       data: {"epic": "tawos:XD-836"}
+0190 | 2013-09-25T07:42:10Z | historian | patterns | 6 patterns from history up to 2013-09-25
+       data: {"kinds": ["dependency", "estimate"]}
+0191 | 2013-09-25T07:42:10Z | planner | plan | XD-895 '"Stories pertaining to Message Conversion"': 3 tickets known on day one
+       data: {"routes": {"dependency_hunter": 3, "estimator": 3, "gap_finder": 3}}
+0192 | 2013-09-25T07:42:10Z | data_quality | profile | 579 finished tickets, 97% estimated, 75% with a start date
+       data: {"estimated": 0.97, "finished_items": 579, "started_recorded": 0.75}
+0193 | 2013-09-25T07:42:10Z | estimator | warning | 3 planned 'story' tickets (19 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0194 | 2013-09-25T07:42:10Z | dependency_hunter | clear | no warnings
+0195 | 2013-09-25T07:42:10Z | gap_finder | clear | no warnings
+0196 | 2013-09-25T07:42:10Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-895:XD:estimate:story"}
+0197 | 2013-09-25T07:42:10Z | writer | review | 1 warnings for XD-895.
+       data: {"epic": "tawos:XD-895"}
+0198 | 2013-10-21T07:49:46Z | replay | accuracy | 1/1 warnings confirmed so far (100%)
+0199 | 2013-10-21T08:19:12Z | scorekeeper | hit | estimator: 3/4 finished tickets overran
+       data: {"warning": "tawos:XD-232:XD:estimate:story"}
+0200 | 2013-10-21T08:19:12Z | replay | accuracy | 2/2 warnings confirmed so far (100%)
+0201 | 2013-10-21T09:19:17Z | replay | accuracy | 2/2 warnings confirmed so far (100%)
+0202 | 2013-10-21T16:32:17Z | scorekeeper | hit | estimator: 1/1 finished tickets overran
+       data: {"warning": "tawos:XD-468:XD:estimate:Analytics"}
+0203 | 2013-10-21T16:32:17Z | scorekeeper | hit | estimator: 1/2 finished tickets overran
+       data: {"warning": "tawos:XD-468:XD:estimate:Packaging"}
+0204 | 2013-10-21T16:32:17Z | scorekeeper | hit | estimator: 1/1 finished tickets overran
+       data: {"warning": "tawos:XD-468:XD:estimate:story"}
+0205 | 2013-10-21T16:32:17Z | replay | accuracy | 5/5 warnings confirmed so far (100%)
+0206 | 2013-10-22T08:05:33Z | historian | patterns | 8 patterns from history up to 2013-10-22
+       data: {"kinds": ["dependency", "estimate", "gap"]}
+0207 | 2013-10-22T08:05:33Z | planner | plan | XD-963 '"Features and bug fixes for named channels"': 1 tickets known on day one
+       data: {"routes": {"dependency_hunter": 1, "estimator": 1, "gap_finder": 1}}
+0208 | 2013-10-22T08:05:33Z | data_quality | profile | 667 finished tickets, 97% estimated, 70% with a start date
+       data: {"estimated": 0.97, "finished_items": 667, "started_recorded": 0.7}
+0209 | 2013-10-22T08:05:33Z | estimator | clear | no warnings
+0210 | 2013-10-22T08:05:33Z | dependency_hunter | clear | no warnings
+0211 | 2013-10-22T08:05:33Z | gap_finder | warning | This plan has no deployment tickets, and 75% of past epics planned without them had to add them later.
+       data: {"evidence": ["tawos:XD-321", "tawos:XD-376", "tawos:XD-377", "tawos:XD-378", "tawos:XD-379", "tawos:XD-380"]}
+0212 | 2013-10-22T08:05:33Z | critic | accept | gap_finder: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-963:XD:gap:deployment"}
+0213 | 2013-10-22T08:05:33Z | writer | review | 1 warnings for XD-963; expect 101.2 days (P50) to 126.0 days (P90). Consider adding: Deployment for "Features and bug fixes for named channels".
+       data: {"epic": "tawos:XD-963"}
+0214 | 2013-10-22T09:55:37Z | historian | patterns | 8 patterns from history up to 2013-10-22
+       data: {"kinds": ["dependency", "estimate", "gap"]}
+0215 | 2013-10-22T09:55:37Z | planner | plan | XD-964 '"Support for common use cases using quartz"': 0 tickets known on day one
+       data: {"routes": {"dependency_hunter": 0, "estimator": 0, "gap_finder": 0}}
+0216 | 2013-10-22T09:55:37Z | data_quality | profile | 670 finished tickets, 97% estimated, 70% with a start date
+       data: {"estimated": 0.97, "finished_items": 670, "started_recorded": 0.7}
+0217 | 2013-10-22T09:55:37Z | estimator | clear | no warnings
+0218 | 2013-10-22T09:55:37Z | dependency_hunter | clear | no warnings
+0219 | 2013-10-22T09:55:37Z | gap_finder | warning | This plan has no deployment tickets, and 75% of past epics planned without them had to add them later.
+       data: {"evidence": ["tawos:XD-321", "tawos:XD-376", "tawos:XD-377", "tawos:XD-378", "tawos:XD-379", "tawos:XD-380"]}
+0220 | 2013-10-22T09:55:37Z | critic | accept | gap_finder: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-964:XD:gap:deployment"}
+0221 | 2013-10-22T09:55:37Z | writer | review | 1 warnings for XD-964; expect 101.2 days (P50) to 126.0 days (P90). Consider adding: Deployment for "Support for common use cases using quartz".
+       data: {"epic": "tawos:XD-964"}
+0222 | 2013-10-22T09:58:15Z | historian | patterns | 8 patterns from history up to 2013-10-22
+       data: {"kinds": ["dependency", "estimate", "gap"]}
+0223 | 2013-10-22T09:58:15Z | planner | plan | XD-965 '"Low story point/time improvements or bug fixes that can easily be picked up in a sprint in an ad-hoc manner"': 2 tickets known on day one
+       data: {"routes": {"dependency_hunter": 2, "estimator": 2, "gap_finder": 2}}
+0224 | 2013-10-22T09:58:15Z | data_quality | profile | 672 finished tickets, 97% estimated, 71% with a start date
+       data: {"estimated": 0.97, "finished_items": 672, "started_recorded": 0.71}
+0225 | 2013-10-22T09:58:15Z | estimator | warning | 1 planned 'Packaging' tickets (1 points) match a pattern of overruns: past 'Packaging' work took 1.76x the usual time per point.
+       data: {"evidence": ["tawos:XD-37", "tawos:XD-61", "tawos:XD-67"]}
+0226 | 2013-10-22T09:58:15Z | estimator | warning | 1 planned 'bug' tickets (3 points) match a pattern of overruns: past 'bug' work took 1.93x the usual time per point.
+       data: {"evidence": ["tawos:XD-292", "tawos:XD-476", "tawos:XD-481", "tawos:XD-482"]}
+0227 | 2013-10-22T09:58:15Z | dependency_hunter | clear | no warnings
+0228 | 2013-10-22T09:58:15Z | gap_finder | warning | This plan has no deployment tickets, and 75% of past epics planned without them had to add them later.
+       data: {"evidence": ["tawos:XD-321", "tawos:XD-376", "tawos:XD-377", "tawos:XD-378", "tawos:XD-379", "tawos:XD-380"]}
+0229 | 2013-10-22T09:58:15Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-965:XD:estimate:Packaging"}
+0230 | 2013-10-22T09:58:15Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-965:XD:estimate:bug"}
+0231 | 2013-10-22T09:58:15Z | critic | accept | gap_finder: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-965:XD:gap:deployment"}
+0232 | 2013-10-22T09:58:15Z | writer | review | 3 warnings for XD-965; expect 101.2 days (P50) to 126.0 days (P90). Consider adding: Deployment for "Low story point/time improvements or bug fixes that can easily be picked up in a sprint in an ad-hoc manner".
+       data: {"epic": "tawos:XD-965"}
+0233 | 2013-10-22T14:25:24Z | historian | patterns | 8 patterns from history up to 2013-10-22
+       data: {"kinds": ["dependency", "estimate", "gap"]}
+0234 | 2013-10-22T14:25:24Z | planner | plan | XD-975 '"Users need the ability to provision an XD cluster on EC2 via command line tool."': 9 tickets known on day one
+       data: {"routes": {"dependency_hunter": 9, "estimator": 9, "gap_finder": 9}}
+0235 | 2013-10-22T14:25:24Z | data_quality | profile | 672 finished tickets, 97% estimated, 71% with a start date
+       data: {"estimated": 0.97, "finished_items": 672, "started_recorded": 0.71}
+0236 | 2013-10-22T14:25:24Z | estimator | warning | 9 planned 'story' tickets (63 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0237 | 2013-10-22T14:25:24Z | dependency_hunter | clear | no warnings
+0238 | 2013-10-22T14:25:24Z | gap_finder | clear | no warnings
+0239 | 2013-10-22T14:25:24Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-975:XD:estimate:story"}
+0240 | 2013-10-22T14:25:24Z | writer | review | 1 warnings for XD-975; expect 101.2 days (P50) to 126.0 days (P90).
+       data: {"epic": "tawos:XD-975"}
+0241 | 2013-10-23T08:45:26Z | historian | patterns | 8 patterns from history up to 2013-10-23
+       data: {"kinds": ["dependency", "estimate", "gap"]}
+0242 | 2013-10-23T08:45:26Z | planner | plan | XD-982 '"OOTB batch jobs for common cases"': 4 tickets known on day one
+       data: {"routes": {"dependency_hunter": 4, "estimator": 4, "gap_finder": 4}}
+0243 | 2013-10-23T08:45:26Z | data_quality | profile | 672 finished tickets, 97% estimated, 71% with a start date
+       data: {"estimated": 0.97, "finished_items": 672, "started_recorded": 0.71}
+0244 | 2013-10-23T08:45:26Z | estimator | warning | 4 planned 'story' tickets (28 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0245 | 2013-10-23T08:45:26Z | dependency_hunter | clear | no warnings
+0246 | 2013-10-23T08:45:26Z | gap_finder | warning | This plan has no deployment tickets, and 75% of past epics planned without them had to add them later.
+       data: {"evidence": ["tawos:XD-321", "tawos:XD-376", "tawos:XD-377", "tawos:XD-378", "tawos:XD-379", "tawos:XD-380"]}
+0247 | 2013-10-23T08:45:26Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-982:XD:estimate:story"}
+0248 | 2013-10-23T08:45:26Z | critic | accept | gap_finder: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-982:XD:gap:deployment"}
+0249 | 2013-10-23T08:45:26Z | writer | review | 2 warnings for XD-982; expect 101.2 days (P50) to 126.0 days (P90). Consider adding: Deployment for "OOTB batch jobs for common cases".
+       data: {"epic": "tawos:XD-982"}
+0250 | 2013-10-23T09:17:54Z | historian | patterns | 8 patterns from history up to 2013-10-23
+       data: {"kinds": ["dependency", "estimate", "gap"]}
+0251 | 2013-10-23T09:17:54Z | planner | plan | XD-983 '"Writing to HDFS - 1.x"': 0 tickets known on day one
+       data: {"routes": {"dependency_hunter": 0, "estimator": 0, "gap_finder": 0}}
+0252 | 2013-10-23T09:17:54Z | data_quality | profile | 672 finished tickets, 97% estimated, 71% with a start date
+       data: {"estimated": 0.97, "finished_items": 672, "started_recorded": 0.71}
+0253 | 2013-10-23T09:17:54Z | estimator | clear | no warnings
+0254 | 2013-10-23T09:17:54Z | dependency_hunter | clear | no warnings
+0255 | 2013-10-23T09:17:54Z | gap_finder | warning | This plan has no deployment tickets, and 75% of past epics planned without them had to add them later.
+       data: {"evidence": ["tawos:XD-321", "tawos:XD-376", "tawos:XD-377", "tawos:XD-378", "tawos:XD-379", "tawos:XD-380"]}
+0256 | 2013-10-23T09:17:54Z | critic | accept | gap_finder: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-983:XD:gap:deployment"}
+0257 | 2013-10-23T09:17:54Z | writer | review | 1 warnings for XD-983; expect 101.2 days (P50) to 126.0 days (P90). Consider adding: Deployment for "Writing to HDFS - 1.x".
+       data: {"epic": "tawos:XD-983"}
+0258 | 2013-10-24T07:07:27Z | historian | patterns | 8 patterns from history up to 2013-10-24
+       data: {"kinds": ["dependency", "estimate", "gap"]}
+0259 | 2013-10-24T07:07:27Z | planner | plan | XD-996 '"Support for executing batch functionality on and off Hadoop"': 5 tickets known on day one
+       data: {"routes": {"dependency_hunter": 5, "estimator": 5, "gap_finder": 5}}
+0260 | 2013-10-24T07:07:27Z | data_quality | profile | 672 finished tickets, 97% estimated, 71% with a start date
+       data: {"estimated": 0.97, "finished_items": 672, "started_recorded": 0.71}
+0261 | 2013-10-24T07:07:27Z | estimator | warning | 5 planned 'story' tickets (16 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0262 | 2013-10-24T07:07:27Z | dependency_hunter | clear | no warnings
+0263 | 2013-10-24T07:07:27Z | gap_finder | warning | This plan has no deployment tickets, and 75% of past epics planned without them had to add them later.
+       data: {"evidence": ["tawos:XD-321", "tawos:XD-376", "tawos:XD-377", "tawos:XD-378", "tawos:XD-379", "tawos:XD-380"]}
+0264 | 2013-10-24T07:07:27Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-996:XD:estimate:story"}
+0265 | 2013-10-24T07:07:27Z | critic | accept | gap_finder: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-996:XD:gap:deployment"}
+0266 | 2013-10-24T07:07:27Z | writer | review | 2 warnings for XD-996; expect 101.2 days (P50) to 126.0 days (P90). Consider adding: Deployment for "Support for executing batch functionality on and off Hadoop".
+       data: {"epic": "tawos:XD-996"}
+0267 | 2013-12-05T19:48:18Z | historian | patterns | 8 patterns from history up to 2013-12-05
+       data: {"kinds": ["dependency", "estimate", "gap"]}
+0268 | 2013-12-05T19:48:18Z | planner | plan | XD-1141 '"Models the cluster, matches processors/jobs to nodes, and transforms stream defitions to a physical model"': 3 tickets known on day one
+       data: {"routes": {"dependency_hunter": 3, "estimator": 3, "gap_finder": 3}}
+0269 | 2013-12-05T19:48:18Z | data_quality | profile | 789 finished tickets, 97% estimated, 72% with a start date
+       data: {"estimated": 0.97, "finished_items": 789, "started_recorded": 0.72}
+0270 | 2013-12-05T19:48:18Z | estimator | warning | 3 planned 'story' tickets (28 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0271 | 2013-12-05T19:48:18Z | dependency_hunter | clear | no warnings
+0272 | 2013-12-05T19:48:18Z | gap_finder | clear | no warnings
+0273 | 2013-12-05T19:48:18Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1141:XD:estimate:story"}
+0274 | 2013-12-05T19:48:18Z | writer | review | 1 warnings for XD-1141; expect 101.2 days (P50) to 126.0 days (P90).
+       data: {"epic": "tawos:XD-1141"}
+0275 | 2014-01-16T23:10:51Z | replay | accuracy | 5/5 warnings confirmed so far (100%)
+0276 | 2014-01-16T23:12:45Z | scorekeeper | hit | estimator: 1/1 finished tickets overran
+       data: {"warning": "tawos:XD-237:XD:estimate:Ingest"}
+0277 | 2014-01-16T23:12:45Z | scorekeeper | hit | estimator: 1/1 finished tickets overran
+       data: {"warning": "tawos:XD-237:XD:estimate:Packaging"}
+0278 | 2014-01-16T23:12:45Z | replay | accuracy | 7/7 warnings confirmed so far (100%)
+0279 | 2014-01-16T23:13:15Z | replay | accuracy | 7/7 warnings confirmed so far (100%)
+0280 | 2014-01-16T23:36:02Z | scorekeeper | miss | dependency_hunter: 0 planned tickets were later blocked
+       data: {"warning": "tawos:XD-395:XD:dependency:Packaging"}
+0281 | 2014-01-16T23:36:02Z | scorekeeper | hit | estimator: 8/8 finished tickets overran
+       data: {"warning": "tawos:XD-395:XD:estimate:story"}
+0282 | 2014-01-16T23:36:02Z | replay | accuracy | 8/9 warnings confirmed so far (89%)
+0283 | 2014-01-17T00:02:24Z | scorekeeper | hit | estimator: 3/4 finished tickets overran
+       data: {"warning": "tawos:XD-527:XD:estimate:story"}
+0284 | 2014-01-17T00:02:24Z | replay | accuracy | 9/10 warnings confirmed so far (90%)
+0285 | 2014-01-22T23:20:02Z | historian | patterns | 9 patterns from history up to 2014-01-22
+       data: {"kinds": ["dependency", "estimate", "gap"]}
+0286 | 2014-01-22T23:20:02Z | planner | plan | XD-1257 '"Deploy XD nightly builds to EC2 and perform basic stream testing across singlenode, and distributed mode 1 server on redis, rabbitmq"': 10 tickets known on day one
+       data: {"routes": {"dependency_hunter": 10, "estimator": 10, "gap_finder": 10}}
+0287 | 2014-01-22T23:20:02Z | data_quality | profile | 902 finished tickets, 96% estimated, 71% with a start date
+       data: {"estimated": 0.96, "finished_items": 902, "started_recorded": 0.71}
+0288 | 2014-01-22T23:20:02Z | estimator | warning | 7 planned 'story' tickets (38 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0289 | 2014-01-22T23:20:02Z | dependency_hunter | clear | no warnings
+0290 | 2014-01-22T23:20:02Z | gap_finder | clear | no warnings
+0291 | 2014-01-22T23:20:02Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1257:XD:estimate:story"}
+0292 | 2014-01-22T23:20:02Z | writer | review | 1 warnings for XD-1257; expect 152.3 days (P50) to 213.6 days (P90).
+       data: {"epic": "tawos:XD-1257"}
+0293 | 2014-01-22T23:26:45Z | historian | patterns | 9 patterns from history up to 2014-01-22
+       data: {"kinds": ["dependency", "estimate", "gap"]}
+0294 | 2014-01-22T23:26:45Z | planner | plan | XD-1258 '"Get basic project infrastructure based on new JS stack in place"': 3 tickets known on day one
+       data: {"routes": {"dependency_hunter": 3, "estimator": 3, "gap_finder": 3}}
+0295 | 2014-01-22T23:26:45Z | data_quality | profile | 902 finished tickets, 96% estimated, 71% with a start date
+       data: {"estimated": 0.96, "finished_items": 902, "started_recorded": 0.71}
+0296 | 2014-01-22T23:26:45Z | estimator | warning | 3 planned 'story' tickets (19 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0297 | 2014-01-22T23:26:45Z | dependency_hunter | clear | no warnings
+0298 | 2014-01-22T23:26:45Z | gap_finder | warning | This plan has no deployment tickets, and 50% of past epics planned without them had to add them later.
+       data: {"evidence": ["tawos:XD-321", "tawos:XD-376", "tawos:XD-377", "tawos:XD-378", "tawos:XD-379", "tawos:XD-380"]}
+0299 | 2014-01-22T23:26:45Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1258:XD:estimate:story"}
+0300 | 2014-01-22T23:26:45Z | critic | accept | gap_finder: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1258:XD:gap:deployment"}
+0301 | 2014-01-22T23:26:45Z | writer | review | 2 warnings for XD-1258; expect 152.3 days (P50) to 213.6 days (P90). Consider adding: Deployment for "Get basic project infrastructure based on new JS stack in place".
+       data: {"epic": "tawos:XD-1258"}
+0302 | 2014-01-22T23:29:49Z | historian | patterns | 9 patterns from history up to 2014-01-22
+       data: {"kinds": ["dependency", "estimate", "gap"]}
+0303 | 2014-01-22T23:29:49Z | planner | plan | XD-1259 '"Have supported distributions of Hadoop 'always on' in EC2."': 5 tickets known on day one
+       data: {"routes": {"dependency_hunter": 5, "estimator": 5, "gap_finder": 5}}
+0304 | 2014-01-22T23:29:49Z | data_quality | profile | 902 finished tickets, 96% estimated, 71% with a start date
+       data: {"estimated": 0.96, "finished_items": 902, "started_recorded": 0.71}
+0305 | 2014-01-22T23:29:49Z | estimator | warning | 5 planned 'story' tickets (25 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0306 | 2014-01-22T23:29:49Z | dependency_hunter | clear | no warnings
+0307 | 2014-01-22T23:29:49Z | gap_finder | warning | This plan has no deployment tickets, and 50% of past epics planned without them had to add them later.
+       data: {"evidence": ["tawos:XD-321", "tawos:XD-376", "tawos:XD-377", "tawos:XD-378", "tawos:XD-379", "tawos:XD-380"]}
+0308 | 2014-01-22T23:29:49Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1259:XD:estimate:story"}
+0309 | 2014-01-22T23:29:49Z | critic | accept | gap_finder: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1259:XD:gap:deployment"}
+0310 | 2014-01-22T23:29:49Z | writer | review | 2 warnings for XD-1259; expect 152.3 days (P50) to 213.6 days (P90). Consider adding: Deployment for "Have supported distributions of Hadoop 'always on' in EC2.".
+       data: {"epic": "tawos:XD-1259"}
+0311 | 2014-01-22T23:35:08Z | historian | patterns | 9 patterns from history up to 2014-01-22
+       data: {"kinds": ["dependency", "estimate", "gap"]}
+0312 | 2014-01-22T23:35:08Z | planner | plan | XD-1260 '"Batch Job that uses partitioning and can poll FTP directory and transfer to HDFS directly via output streams"': 5 tickets known on day one
+       data: {"routes": {"dependency_hunter": 5, "estimator": 5, "gap_finder": 5}}
+0313 | 2014-01-22T23:35:08Z | data_quality | profile | 902 finished tickets, 96% estimated, 71% with a start date
+       data: {"estimated": 0.96, "finished_items": 902, "started_recorded": 0.71}
+0314 | 2014-01-22T23:35:08Z | estimator | warning | 5 planned 'story' tickets (71 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0315 | 2014-01-22T23:35:08Z | dependency_hunter | clear | no warnings
+0316 | 2014-01-22T23:35:08Z | gap_finder | warning | This plan has no deployment tickets, and 50% of past epics planned without them had to add them later.
+       data: {"evidence": ["tawos:XD-321", "tawos:XD-376", "tawos:XD-377", "tawos:XD-378", "tawos:XD-379", "tawos:XD-380"]}
+0317 | 2014-01-22T23:35:08Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1260:XD:estimate:story"}
+0318 | 2014-01-22T23:35:08Z | critic | accept | gap_finder: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1260:XD:gap:deployment"}
+0319 | 2014-01-22T23:35:08Z | writer | review | 2 warnings for XD-1260; expect 152.3 days (P50) to 213.6 days (P90). Consider adding: Deployment for "Batch Job that uses partitioning and can poll FTP directory and transfer to HDFS directly via output streams".
+       data: {"epic": "tawos:XD-1260"}
+0320 | 2014-01-24T11:43:47Z | replay | accuracy | 9/10 warnings confirmed so far (90%)
+0321 | 2014-01-24T11:52:36Z | replay | accuracy | 9/10 warnings confirmed so far (90%)
+0322 | 2014-01-25T15:33:07Z | historian | patterns | 10 patterns from history up to 2014-01-25
+       data: {"kinds": ["dependency", "estimate", "gap"]}
+0323 | 2014-01-25T15:33:07Z | planner | plan | XD-1267 '"Improve configuration option handling"': 0 tickets known on day one
+       data: {"routes": {"dependency_hunter": 0, "estimator": 0, "gap_finder": 0}}
+0324 | 2014-01-25T15:33:07Z | data_quality | profile | 915 finished tickets, 96% estimated, 70% with a start date
+       data: {"estimated": 0.96, "finished_items": 915, "started_recorded": 0.7}
+0325 | 2014-01-25T15:33:07Z | estimator | clear | no warnings
+0326 | 2014-01-25T15:33:07Z | dependency_hunter | clear | no warnings
+0327 | 2014-01-25T15:33:07Z | gap_finder | warning | This plan has no deployment tickets, and 50% of past epics planned without them had to add them later.
+       data: {"evidence": ["tawos:XD-321", "tawos:XD-376", "tawos:XD-377", "tawos:XD-378", "tawos:XD-379", "tawos:XD-380"]}
+0328 | 2014-01-25T15:33:07Z | critic | accept | gap_finder: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1267:XD:gap:deployment"}
+0329 | 2014-01-25T15:33:07Z | writer | review | 1 warnings for XD-1267; expect 185.6 days (P50) to 216.7 days (P90). Consider adding: Deployment for "Improve configuration option handling".
+       data: {"epic": "tawos:XD-1267"}
+0330 | 2014-01-27T14:32:12Z | replay | accuracy | 9/10 warnings confirmed so far (90%)
+0331 | 2014-01-27T15:00:35Z | scorekeeper | hit | estimator: 1/1 finished tickets overran
+       data: {"warning": "tawos:XD-484:XD:estimate:CLI"}
+0332 | 2014-01-27T15:00:35Z | replay | accuracy | 10/11 warnings confirmed so far (91%)
+0333 | 2014-01-27T20:56:41Z | scorekeeper | hit | estimator: 1/1 finished tickets overran
+       data: {"warning": "tawos:XD-706:XD:estimate:story"}
+0334 | 2014-01-27T20:56:41Z | replay | accuracy | 11/12 warnings confirmed so far (92%)
+0335 | 2014-01-27T21:04:40Z | scorekeeper | hit | estimator: 3/3 finished tickets overran
+       data: {"warning": "tawos:XD-742:XD:estimate:story"}
+0336 | 2014-01-27T21:04:40Z | replay | accuracy | 12/13 warnings confirmed so far (92%)
+0337 | 2014-01-28T21:37:22Z | scorekeeper | hit | estimator: 3/3 finished tickets overran
+       data: {"warning": "tawos:XD-895:XD:estimate:story"}
+0338 | 2014-01-28T21:37:22Z | replay | accuracy | 13/14 warnings confirmed so far (93%)
+0339 | 2014-01-28T22:38:53Z | scorekeeper | hit | estimator: 1/1 finished tickets overran
+       data: {"warning": "tawos:XD-965:XD:estimate:Packaging"}
+0340 | 2014-01-28T22:38:53Z | scorekeeper | hit | estimator: 1/1 finished tickets overran
+       data: {"warning": "tawos:XD-965:XD:estimate:bug"}
+0341 | 2014-01-28T22:38:53Z | scorekeeper | miss | gap_finder: 0 deployment tickets added after the review
+       data: {"warning": "tawos:XD-965:XD:gap:deployment"}
+0342 | 2014-01-28T22:38:53Z | scorekeeper | forecast | took 99.5 days; forecast P50 101.2, P90 126.0
+0343 | 2014-01-28T22:38:53Z | replay | accuracy | 15/17 warnings confirmed so far (88%)
+0344 | 2014-01-28T22:39:29Z | scorekeeper | miss | estimator: 2/9 finished tickets overran
+       data: {"warning": "tawos:XD-975:XD:estimate:story"}
+0345 | 2014-01-28T22:39:29Z | scorekeeper | forecast | took 99.3 days; forecast P50 101.2, P90 126.0
+0346 | 2014-01-28T22:39:29Z | replay | accuracy | 15/18 warnings confirmed so far (83%)
+0347 | 2014-01-28T22:42:48Z | scorekeeper | miss | gap_finder: 0 deployment tickets added after the review
+       data: {"warning": "tawos:XD-963:XD:gap:deployment"}
+0348 | 2014-01-28T22:42:48Z | scorekeeper | forecast | took 99.6 days; forecast P50 101.2, P90 126.0
+0349 | 2014-01-28T22:42:48Z | replay | accuracy | 15/19 warnings confirmed so far (79%)
+0350 | 2014-01-28T22:43:08Z | scorekeeper | miss | estimator: 1/4 finished tickets overran
+       data: {"warning": "tawos:XD-982:XD:estimate:story"}
+0351 | 2014-01-28T22:43:08Z | scorekeeper | miss | gap_finder: 0 deployment tickets added after the review
+       data: {"warning": "tawos:XD-982:XD:gap:deployment"}
+0352 | 2014-01-28T22:43:08Z | scorekeeper | forecast | took 98.6 days; forecast P50 101.2, P90 126.0
+0353 | 2014-01-28T22:43:08Z | replay | accuracy | 15/21 warnings confirmed so far (71%)
+0354 | 2014-01-29T17:37:13Z | historian | patterns | 9 patterns from history up to 2014-01-29
+       data: {"kinds": ["dependency", "estimate"]}
+0355 | 2014-01-29T17:37:13Z | planner | plan | XD-1275 '"Use Spring Boot to create an uberjar that contributes modules."': 2 tickets known on day one
+       data: {"routes": {"dependency_hunter": 2, "estimator": 2, "gap_finder": 2}}
+0356 | 2014-01-29T17:37:13Z | data_quality | profile | 972 finished tickets, 96% estimated, 67% with a start date
+       data: {"estimated": 0.96, "finished_items": 972, "started_recorded": 0.67}
+0357 | 2014-01-29T17:37:13Z | estimator | warning | 2 planned 'story' tickets (10 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0358 | 2014-01-29T17:37:13Z | dependency_hunter | clear | no warnings
+0359 | 2014-01-29T17:37:13Z | gap_finder | clear | no warnings
+0360 | 2014-01-29T17:37:13Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1275:XD:estimate:story"}
+0361 | 2014-01-29T17:37:13Z | writer | review | 1 warnings for XD-1275; expect 158.3 days (P50) to 213.6 days (P90).
+       data: {"epic": "tawos:XD-1275"}
+0362 | 2014-02-13T14:38:11Z | historian | patterns | 9 patterns from history up to 2014-02-13
+       data: {"kinds": ["dependency", "estimate"]}
+0363 | 2014-02-13T14:38:11Z | planner | plan | XD-1317 '"Support for deploying and running XD on YARN"': 3 tickets known on day one
+       data: {"routes": {"dependency_hunter": 3, "estimator": 3, "gap_finder": 3}}
+0364 | 2014-02-13T14:38:11Z | data_quality | profile | 1013 finished tickets, 96% estimated, 67% with a start date
+       data: {"estimated": 0.96, "finished_items": 1013, "started_recorded": 0.67}
+0365 | 2014-02-13T14:38:11Z | estimator | warning | 1 planned 'Hadoop' tickets (3 points) match a pattern of overruns: past 'Hadoop' work took 4.53x the usual time per point.
+       data: {"evidence": ["tawos:XD-36", "tawos:XD-270", "tawos:XD-271", "tawos:XD-469", "tawos:XD-892", "tawos:XD-990"]}
+0366 | 2014-02-13T14:38:11Z | dependency_hunter | clear | no warnings
+0367 | 2014-02-13T14:38:11Z | gap_finder | clear | no warnings
+0368 | 2014-02-13T14:38:11Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1317:XD:estimate:Hadoop"}
+0369 | 2014-02-13T14:38:11Z | writer | review | 1 warnings for XD-1317; expect 158.3 days (P50) to 213.6 days (P90).
+       data: {"epic": "tawos:XD-1317"}
+0370 | 2014-03-12T20:28:25Z | historian | patterns | 12 patterns from history up to 2014-03-12
+       data: {"kinds": ["dependency", "estimate"]}
+0371 | 2014-03-12T20:28:25Z | planner | plan | XD-1391 '"Rewrite of the existing UI to use AngluarJS"': 2 tickets known on day one
+       data: {"routes": {"dependency_hunter": 2, "estimator": 2, "gap_finder": 2}}
+0372 | 2014-03-12T20:28:25Z | data_quality | profile | 1079 finished tickets, 96% estimated, 67% with a start date
+       data: {"estimated": 0.96, "finished_items": 1079, "started_recorded": 0.67}
+0373 | 2014-03-12T20:28:25Z | estimator | warning | 1 planned 'story' tickets (8 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0374 | 2014-03-12T20:28:25Z | dependency_hunter | clear | no warnings
+0375 | 2014-03-12T20:28:25Z | gap_finder | clear | no warnings
+0376 | 2014-03-12T20:28:25Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1391:XD:estimate:story"}
+0377 | 2014-03-12T20:28:25Z | writer | review | 1 warnings for XD-1391; expect 158.3 days (P50) to 213.6 days (P90).
+       data: {"epic": "tawos:XD-1391"}
+0378 | 2014-03-12T20:41:29Z | historian | patterns | 12 patterns from history up to 2014-03-12
+       data: {"kinds": ["dependency", "estimate"]}
+0379 | 2014-03-12T20:41:29Z | planner | plan | XD-1392 '"Clean up mismatches and bugs in how mdoule options and server configuration is handled."': 6 tickets known on day one
+       data: {"routes": {"dependency_hunter": 6, "estimator": 6, "gap_finder": 6}}
+0380 | 2014-03-12T20:41:29Z | data_quality | profile | 1079 finished tickets, 96% estimated, 67% with a start date
+       data: {"estimated": 0.96, "finished_items": 1079, "started_recorded": 0.67}
+0381 | 2014-03-12T20:41:29Z | estimator | warning | 5 planned 'Configuration' tickets (19 points) match a pattern of overruns: past 'Configuration' work took 6.33x the usual time per point.
+       data: {"evidence": ["tawos:XD-1037", "tawos:XD-1108", "tawos:XD-1122", "tawos:XD-1300", "tawos:XD-1309"]}
+0382 | 2014-03-12T20:41:29Z | estimator | warning | 1 planned 'story' tickets (3 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0383 | 2014-03-12T20:41:29Z | dependency_hunter | warning | Similar past work was blocked by 'Batch' work, and this plan has no 'Batch' ticket.
+       data: {"evidence": ["tawos:XD-1090", "tawos:XD-348", "tawos:XD-349", "tawos:XD-1320", "tawos:XD-244"]}
+0384 | 2014-03-12T20:41:29Z | gap_finder | clear | no warnings
+0385 | 2014-03-12T20:41:29Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1392:XD:estimate:Configuration"}
+0386 | 2014-03-12T20:41:29Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1392:XD:estimate:story"}
+0387 | 2014-03-12T20:41:29Z | critic | accept | dependency_hunter: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1392:XD:dependency:Batch"}
+0388 | 2014-03-12T20:41:29Z | writer | review | 3 warnings for XD-1392; expect 158.3 days (P50) to 213.6 days (P90). Consider adding: Add a 'Batch' ticket and link it as a blocker.
+       data: {"epic": "tawos:XD-1392"}
+0389 | 2014-03-18T08:30:20Z | historian | patterns | 12 patterns from history up to 2014-03-18
+       data: {"kinds": ["dependency", "estimate"]}
+0390 | 2014-03-18T08:30:20Z | planner | plan | XD-1405 '"Version XD dependencies with Spring IO platform versioning"': 1 tickets known on day one
+       data: {"routes": {"dependency_hunter": 1, "estimator": 1, "gap_finder": 1}}
+0391 | 2014-03-18T08:30:20Z | data_quality | profile | 1097 finished tickets, 96% estimated, 67% with a start date
+       data: {"estimated": 0.96, "finished_items": 1097, "started_recorded": 0.67}
+0392 | 2014-03-18T08:30:20Z | estimator | warning | 1 planned 'story' tickets (1 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0393 | 2014-03-18T08:30:20Z | dependency_hunter | clear | no warnings
+0394 | 2014-03-18T08:30:20Z | gap_finder | clear | no warnings
+0395 | 2014-03-18T08:30:20Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1405:XD:estimate:story"}
+0396 | 2014-03-18T08:30:20Z | writer | review | 1 warnings for XD-1405; expect 158.3 days (P50) to 213.6 days (P90).
+       data: {"epic": "tawos:XD-1405"}
+0397 | 2014-03-25T03:36:08Z | scorekeeper | hit | estimator: 3/3 finished tickets overran
+       data: {"warning": "tawos:XD-1258:XD:estimate:story"}
+0398 | 2014-03-25T03:36:08Z | scorekeeper | miss | gap_finder: 0 deployment tickets added after the review
+       data: {"warning": "tawos:XD-1258:XD:gap:deployment"}
+0399 | 2014-03-25T03:36:08Z | scorekeeper | forecast | took 62.2 days; forecast P50 152.3, P90 213.6
+0400 | 2014-03-25T03:36:08Z | replay | accuracy | 16/23 warnings confirmed so far (70%)
+0401 | 2014-03-25T03:38:40Z | scorekeeper | miss | estimator: 3/7 finished tickets overran
+       data: {"warning": "tawos:XD-1257:XD:estimate:story"}
+0402 | 2014-03-25T03:38:40Z | scorekeeper | forecast | took 62.2 days; forecast P50 152.3, P90 213.6
+0403 | 2014-03-25T03:38:40Z | replay | accuracy | 16/24 warnings confirmed so far (67%)
+0404 | 2014-03-25T03:39:32Z | scorekeeper | miss | estimator: 2/5 finished tickets overran
+       data: {"warning": "tawos:XD-996:XD:estimate:story"}
+0405 | 2014-03-25T03:39:32Z | scorekeeper | hit | gap_finder: 2 deployment tickets added after the review
+       data: {"warning": "tawos:XD-996:XD:gap:deployment"}
+0406 | 2014-03-25T03:39:32Z | scorekeeper | forecast | took 152.9 days; forecast P50 101.2, P90 126.0
+0407 | 2014-03-25T03:39:32Z | replay | accuracy | 17/26 warnings confirmed so far (65%)
+0408 | 2014-03-31T11:39:12Z | scorekeeper | hit | estimator: 3/5 finished tickets overran
+       data: {"warning": "tawos:XD-1260:XD:estimate:story"}
+0409 | 2014-03-31T11:39:12Z | scorekeeper | miss | gap_finder: 0 deployment tickets added after the review
+       data: {"warning": "tawos:XD-1260:XD:gap:deployment"}
+0410 | 2014-03-31T11:39:12Z | scorekeeper | forecast | took 68.5 days; forecast P50 152.3, P90 213.6
+0411 | 2014-03-31T11:39:12Z | replay | accuracy | 18/28 warnings confirmed so far (64%)
+0412 | 2014-03-31T12:13:47Z | replay | accuracy | 18/28 warnings confirmed so far (64%)
+0413 | 2014-03-31T12:14:15Z | scorekeeper | miss | estimator: 0/1 finished tickets overran
+       data: {"warning": "tawos:XD-1317:XD:estimate:Hadoop"}
+0414 | 2014-03-31T12:14:15Z | scorekeeper | forecast | took 46.9 days; forecast P50 158.3, P90 213.6
+0415 | 2014-03-31T12:14:15Z | replay | accuracy | 18/29 warnings confirmed so far (62%)
+0416 | 2014-04-03T06:09:18Z | historian | patterns | 15 patterns from history up to 2014-04-03
+       data: {"kinds": ["dependency", "estimate"]}
+0417 | 2014-04-03T06:09:18Z | planner | plan | XD-1473 '"ZooKeeper runtime cleanup and refactoring"': 5 tickets known on day one
+       data: {"routes": {"dependency_hunter": 5, "estimator": 5, "gap_finder": 5}}
+0418 | 2014-04-03T06:09:18Z | data_quality | profile | 1152 finished tickets, 96% estimated, 67% with a start date
+       data: {"estimated": 0.96, "finished_items": 1152, "started_recorded": 0.67}
+0419 | 2014-04-03T06:09:18Z | estimator | warning | 1 planned 'improvement' tickets (8 points) match a pattern of overruns: past 'improvement' work took 1.97x the usual time per point.
+       data: {"evidence": ["tawos:XD-165", "tawos:XD-393", "tawos:XD-516", "tawos:XD-517", "tawos:XD-552", "tawos:XD-639"]}
+0420 | 2014-04-03T06:09:18Z | estimator | warning | 1 planned 'story' tickets (4 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0421 | 2014-04-03T06:09:18Z | dependency_hunter | clear | no warnings
+0422 | 2014-04-03T06:09:18Z | gap_finder | clear | no warnings
+0423 | 2014-04-03T06:09:18Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1473:XD:estimate:improvement"}
+0424 | 2014-04-03T06:09:18Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1473:XD:estimate:story"}
+0425 | 2014-04-03T06:09:18Z | writer | review | 2 warnings for XD-1473; expect 126.6 days (P50) to 215.0 days (P90).
+       data: {"epic": "tawos:XD-1473"}
+0426 | 2014-04-10T11:10:54Z | scorekeeper | miss | gap_finder: 0 deployment tickets added after the review
+       data: {"warning": "tawos:XD-1267:XD:gap:deployment"}
+0427 | 2014-04-10T11:10:54Z | scorekeeper | forecast | took 75.8 days; forecast P50 185.6, P90 216.7
+0428 | 2014-04-10T11:10:54Z | replay | accuracy | 18/30 warnings confirmed so far (60%)
+0429 | 2014-04-23T09:58:12Z | historian | patterns | 16 patterns from history up to 2014-04-23
+       data: {"kinds": ["dependency", "estimate"]}
+0430 | 2014-04-23T09:58:12Z | planner | plan | XD-1605 '"complete test matrix for EC2"': 2 tickets known on day one
+       data: {"routes": {"dependency_hunter": 2, "estimator": 2, "gap_finder": 2}}
+0431 | 2014-04-23T09:58:12Z | data_quality | profile | 1267 finished tickets, 96% estimated, 67% with a start date
+       data: {"estimated": 0.96, "finished_items": 1267, "started_recorded": 0.67}
+0432 | 2014-04-23T09:58:12Z | estimator | warning | 2 planned 'Acceptance Testing' tickets (10 points) match a pattern of overruns: past 'Acceptance Testing' work took 5.68x the usual time per point.
+       data: {"evidence": ["tawos:XD-1105", "tawos:XD-1240", "tawos:XD-1241", "tawos:XD-1245", "tawos:XD-1385"]}
+0433 | 2014-04-23T09:58:12Z | dependency_hunter | clear | no warnings
+0434 | 2014-04-23T09:58:12Z | gap_finder | clear | no warnings
+0435 | 2014-04-23T09:58:12Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1605:XD:estimate:Acceptance Testing"}
+0436 | 2014-04-23T09:58:12Z | writer | review | 1 warnings for XD-1605; expect 126.3 days (P50) to 214.6 days (P90).
+       data: {"epic": "tawos:XD-1605"}
+0437 | 2014-04-23T10:42:19Z | historian | patterns | 16 patterns from history up to 2014-04-23
+       data: {"kinds": ["dependency", "estimate"]}
+0438 | 2014-04-23T10:42:19Z | planner | plan | XD-1606 '"Improvements to various parser options/grammar"': 1 tickets known on day one
+       data: {"routes": {"dependency_hunter": 1, "estimator": 1, "gap_finder": 1}}
+0439 | 2014-04-23T10:42:19Z | data_quality | profile | 1268 finished tickets, 96% estimated, 67% with a start date
+       data: {"estimated": 0.96, "finished_items": 1268, "started_recorded": 0.67}
+0440 | 2014-04-23T10:42:19Z | estimator | clear | no warnings
+0441 | 2014-04-23T10:42:19Z | dependency_hunter | clear | no warnings
+0442 | 2014-04-23T10:42:19Z | gap_finder | clear | no warnings
+0443 | 2014-04-23T10:42:19Z | writer | review | 0 warnings for XD-1606; expect 126.3 days (P50) to 214.6 days (P90).
+       data: {"epic": "tawos:XD-1606"}
+0444 | 2014-04-23T10:46:28Z | historian | patterns | 16 patterns from history up to 2014-04-23
+       data: {"kinds": ["dependency", "estimate"]}
+0445 | 2014-04-23T10:46:28Z | planner | plan | XD-1607 '"XD Runtime Features"': 1 tickets known on day one
+       data: {"routes": {"dependency_hunter": 1, "estimator": 1, "gap_finder": 1}}
+0446 | 2014-04-23T10:46:28Z | data_quality | profile | 1268 finished tickets, 96% estimated, 67% with a start date
+       data: {"estimated": 0.96, "finished_items": 1268, "started_recorded": 0.67}
+0447 | 2014-04-23T10:46:28Z | estimator | clear | no warnings
+0448 | 2014-04-23T10:46:28Z | dependency_hunter | clear | no warnings
+0449 | 2014-04-23T10:46:28Z | gap_finder | clear | no warnings
+0450 | 2014-04-23T10:46:28Z | writer | review | 0 warnings for XD-1607; expect 126.3 days (P50) to 214.6 days (P90).
+       data: {"epic": "tawos:XD-1607"}
+0451 | 2014-04-23T10:51:31Z | historian | patterns | 16 patterns from history up to 2014-04-23
+       data: {"kinds": ["dependency", "estimate"]}
+0452 | 2014-04-23T10:51:31Z | planner | plan | XD-1608 '"UI functionality for batch job managment"': 5 tickets known on day one
+       data: {"routes": {"dependency_hunter": 5, "estimator": 5, "gap_finder": 5}}
+0453 | 2014-04-23T10:51:31Z | data_quality | profile | 1268 finished tickets, 96% estimated, 67% with a start date
+       data: {"estimated": 0.96, "finished_items": 1268, "started_recorded": 0.67}
+0454 | 2014-04-23T10:51:31Z | estimator | warning | 2 planned 'Batch' tickets (7 points) match a pattern of overruns: past 'Batch' work took 2.1x the usual time per point.
+       data: {"evidence": ["tawos:XD-316", "tawos:XD-392", "tawos:XD-1312"]}
+0455 | 2014-04-23T10:51:31Z | estimator | warning | 1 planned 'story' tickets (3 points) match a pattern of overruns: past 'story' work took 1.65x the usual time per point.
+       data: {"evidence": ["tawos:XD-9", "tawos:XD-13", "tawos:XD-35", "tawos:XD-78", "tawos:XD-79", "tawos:XD-81"]}
+0456 | 2014-04-23T10:51:31Z | dependency_hunter | clear | no warnings
+0457 | 2014-04-23T10:51:31Z | gap_finder | clear | no warnings
+0458 | 2014-04-23T10:51:31Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1608:XD:estimate:Batch"}
+0459 | 2014-04-23T10:51:31Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1608:XD:estimate:story"}
+0460 | 2014-04-23T10:51:31Z | writer | review | 2 warnings for XD-1608; expect 125.7 days (P50) to 162.1 days (P90).
+       data: {"epic": "tawos:XD-1608"}
+0461 | 2014-04-23T10:57:52Z | historian | patterns | 16 patterns from history up to 2014-04-23
+       data: {"kinds": ["dependency", "estimate"]}
+0462 | 2014-04-23T10:57:52Z | planner | plan | XD-1609 '"allows users to override defaults used in the XD runtime"': 3 tickets known on day one
+       data: {"routes": {"dependency_hunter": 3, "estimator": 3, "gap_finder": 3}}
+0463 | 2014-04-23T10:57:52Z | data_quality | profile | 1268 finished tickets, 96% estimated, 67% with a start date
+       data: {"estimated": 0.96, "finished_items": 1268, "started_recorded": 0.67}
+0464 | 2014-04-23T10:57:52Z | estimator | warning | 1 planned 'improvement' tickets (1 points) match a pattern of overruns: past 'improvement' work took 1.79x the usual time per point.
+       data: {"evidence": ["tawos:XD-165", "tawos:XD-393", "tawos:XD-516", "tawos:XD-517", "tawos:XD-552", "tawos:XD-639"]}
+0465 | 2014-04-23T10:57:52Z | dependency_hunter | clear | no warnings
+0466 | 2014-04-23T10:57:52Z | gap_finder | clear | no warnings
+0467 | 2014-04-23T10:57:52Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1609:XD:estimate:improvement"}
+0468 | 2014-04-23T10:57:52Z | writer | review | 1 warnings for XD-1609; expect 126.3 days (P50) to 214.6 days (P90).
+       data: {"epic": "tawos:XD-1609"}
+0469 | 2014-04-23T11:06:50Z | historian | patterns | 16 patterns from history up to 2014-04-23
+       data: {"kinds": ["dependency", "estimate"]}
+0470 | 2014-04-23T11:06:50Z | planner | plan | XD-1610 '"Management Features"': 2 tickets known on day one
+       data: {"routes": {"dependency_hunter": 2, "estimator": 2, "gap_finder": 2}}
+0471 | 2014-04-23T11:06:50Z | data_quality | profile | 1268 finished tickets, 96% estimated, 67% with a start date
+       data: {"estimated": 0.96, "finished_items": 1268, "started_recorded": 0.67}
+0472 | 2014-04-23T11:06:50Z | estimator | warning | 1 planned 'Batch' tickets (1 points) match a pattern of overruns: past 'Batch' work took 2.1x the usual time per point.
+       data: {"evidence": ["tawos:XD-316", "tawos:XD-392", "tawos:XD-1312"]}
+0473 | 2014-04-23T11:06:50Z | dependency_hunter | clear | no warnings
+0474 | 2014-04-23T11:06:50Z | gap_finder | clear | no warnings
+0475 | 2014-04-23T11:06:50Z | critic | accept | estimator: evidence and data quality are sufficient
+       data: {"warning": "tawos:XD-1610:XD:estimate:Batch"}
+0476 | 2014-04-23T11:06:50Z | writer | review | 1 warnings for XD-1610; expect 126.3 days (P50) to 214.6 days (P90).
+       data: {"epic": "tawos:XD-1610"}
+
+SCORED OUTCOMES
+warning ID | hit | outcome detail
+tawos:XD-1257:XD:estimate:story | 0 | 3/7 finished tickets overran
+tawos:XD-1258:XD:estimate:story | 1 | 3/3 finished tickets overran
+tawos:XD-1258:XD:gap:deployment | 0 | 0 deployment tickets added after the review
+tawos:XD-1260:XD:estimate:story | 1 | 3/5 finished tickets overran
+tawos:XD-1260:XD:gap:deployment | 0 | 0 deployment tickets added after the review
+tawos:XD-1267:XD:gap:deployment | 0 | 0 deployment tickets added after the review
+tawos:XD-1317:XD:estimate:Hadoop | 0 | 0/1 finished tickets overran
+tawos:XD-177:XD:estimate:Packaging | 1 | 4/4 finished tickets overran
+tawos:XD-232:XD:estimate:story | 1 | 3/4 finished tickets overran
+tawos:XD-237:XD:estimate:Ingest | 1 | 1/1 finished tickets overran
+tawos:XD-237:XD:estimate:Packaging | 1 | 1/1 finished tickets overran
+tawos:XD-395:XD:dependency:Packaging | 0 | 0 planned tickets were later blocked
+tawos:XD-395:XD:estimate:story | 1 | 8/8 finished tickets overran
+tawos:XD-468:XD:estimate:Analytics | 1 | 1/1 finished tickets overran
+tawos:XD-468:XD:estimate:Packaging | 1 | 1/2 finished tickets overran
+tawos:XD-468:XD:estimate:story | 1 | 1/1 finished tickets overran
+tawos:XD-484:XD:estimate:CLI | 1 | 1/1 finished tickets overran
+tawos:XD-527:XD:estimate:story | 1 | 3/4 finished tickets overran
+tawos:XD-706:XD:estimate:story | 1 | 1/1 finished tickets overran
+tawos:XD-742:XD:estimate:story | 1 | 3/3 finished tickets overran
+tawos:XD-895:XD:estimate:story | 1 | 3/3 finished tickets overran
+tawos:XD-963:XD:gap:deployment | 0 | 0 deployment tickets added after the review
+tawos:XD-965:XD:estimate:Packaging | 1 | 1/1 finished tickets overran
+tawos:XD-965:XD:estimate:bug | 1 | 1/1 finished tickets overran
+tawos:XD-965:XD:gap:deployment | 0 | 0 deployment tickets added after the review
+tawos:XD-975:XD:estimate:story | 0 | 2/9 finished tickets overran
+tawos:XD-982:XD:estimate:story | 0 | 1/4 finished tickets overran
+tawos:XD-982:XD:gap:deployment | 0 | 0 deployment tickets added after the review
+tawos:XD-996:XD:estimate:story | 0 | 2/5 finished tickets overran
+tawos:XD-996:XD:gap:deployment | 1 | 2 deployment tickets added after the review
