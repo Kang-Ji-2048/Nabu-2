@@ -14,6 +14,8 @@ Teams repeat the same delivery mistakes because the lessons are buried in old ti
 
 Two halves share one store. Adapters normalise every tracker into the canonical schema and the historian learns patterns from it offline. Each new plan then goes through the agent team, which reads only the canonical store, never a platform directly.
 
+![Architecture](architecture.png)
+
 ```
 Jira / Linear / GitHub Issues / Azure DevOps
         -> Adapters (one mapping per source)

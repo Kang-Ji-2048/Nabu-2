@@ -11,4 +11,6 @@ Nabu reads a team's ticket history from any tracker and warns them, before work 
 
 Built for the Accel AI Innovate London hackathon (15 Oct 2026), challenge "Long Running Agents: From Task to Workflow".
 
+![Architecture](docs/architecture.png)
+
 See [docs/plan.md](docs/plan.md) for the full build plan.
