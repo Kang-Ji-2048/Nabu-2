@@ -2,7 +2,7 @@
 
     python -m nabu.ui --db data/nabu.sqlite --port 8000
 
-Serves web/index.html and a read-only JSON API the page polls, so it can run
+Serves frontend/index.html and a read-only JSON API the page polls, so it can run
 alongside `python -m nabu replay` and show the run live.
 """
 import argparse
@@ -12,7 +12,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-WEB = Path(__file__).resolve().parent.parent / "web"
+WEB = Path(__file__).resolve().parent.parent / "frontend"
 
 
 def _connect(db):
@@ -54,6 +54,28 @@ def state(conn, run_id, after):
     }
 
 
+def export(db, run_id, out_dir):
+    """Write a finished run to <out_dir>/runs/<run>.json (and update runs/index.json), so the page can
+    replay it with no server: a static host such as Vercel just serves the frontend/ folder."""
+    conn = _connect(db)
+    body = state(conn, run_id, 0)
+    if body is None:
+        raise SystemExit(f"unknown run {run_id!r}")
+    while True:  # state() pages the log
+        more = state(conn, run_id, body["log"][-1]["seq"] if body["log"] else 0)["log"]
+        if not more or (body["log"] and more[0]["seq"] <= body["log"][-1]["seq"]):
+            break
+        body["log"] += more
+    folder = Path(out_dir) / "runs"
+    folder.mkdir(parents=True, exist_ok=True)
+    (folder / f"{run_id}.json").write_text(json.dumps(body), encoding="utf-8")
+    index_path = folder / "index.json"
+    index = json.loads(index_path.read_text(encoding="utf-8")) if index_path.exists() else []
+    index = [r for r in index if r["id"] != run_id] + [{"id": run_id, "status": "recorded", "clock": body["run"]["clock"]}]
+    index_path.write_text(json.dumps(index, indent=1), encoding="utf-8")
+    return {"run": run_id, "log_rows": len(body["log"]), "reviews": len(body["reviews"]), "out": str(folder / f"{run_id}.json")}
+
+
 def make_handler(db):
     conn = _connect(db)
 
@@ -62,6 +84,7 @@ def make_handler(db):
             self.send_response(code)
             self.send_header("Content-Type", ctype)
             self.send_header("Cache-Control", "no-store")
+            self.send_header("Access-Control-Allow-Origin", "*")  # lets the hosted frontend read this API
             self.end_headers()
             self.wfile.write(body)
 
@@ -70,6 +93,8 @@ def make_handler(db):
             q = parse_qs(url.query)
             if url.path in ("/", "/index.html"):
                 return self._send(200, (WEB / "index.html").read_bytes(), "text/html; charset=utf-8")
+            if url.path == "/config.js":
+                return self._send(200, (WEB / "config.js").read_bytes(), "text/javascript")
             if url.path == "/api/runs":
                 return self._send(200, json.dumps(runs(conn)).encode(), "application/json")
             if url.path == "/api/state":
@@ -91,7 +116,11 @@ def main():
     parser = argparse.ArgumentParser(description="Nabu replay interface")
     parser.add_argument("--db", default="data/nabu.sqlite")
     parser.add_argument("--port", type=int, default=8000)
+    parser.add_argument("--export", metavar="RUN", help="write RUN to frontend/runs/ for static hosting, then exit")
     args = parser.parse_args()
+    if args.export:
+        print(json.dumps(export(args.db, args.export, WEB)))
+        return
     server = ThreadingHTTPServer(("127.0.0.1", args.port), make_handler(args.db))
     print(f"Nabu interface on http://127.0.0.1:{args.port}")
     server.serve_forever()

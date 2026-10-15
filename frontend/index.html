@@ -150,6 +150,7 @@ main { display: grid; align-items: start; grid-template-columns: minmax(0, 5fr) 
     </section>
   </div>
 </main>
+<script src="config.js"></script>
 <script>
 const AGENT = { replay: "Replay clock", planner: "Planner", data_quality: "Data quality", estimator: "Estimator",
   dependency_hunter: "Dependency hunter", gap_finder: "Gap finder", critic: "Critic", writer: "Writer",
@@ -158,22 +159,58 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const day = iso => iso ? iso.slice(0, 10) : "";
 const params = new URLSearchParams(location.search);
+// Where the live API is: ?api=https://... in the URL, else config.js, else the server that served this page.
+const API = (params.get("api") || window.NABU_API || "").replace(/\/$/, "");
 let run = params.get("run"), after = 0, data = null, selected = null, timer = null;
 const seenAgents = new Set();
 
+// Static mode: with no server (e.g. on Vercel) the page replays a run exported to runs/<id>.json.
+let recorded = null, shown = 0;
+async function listRuns() {
+  try {
+    const res = await fetch(`${API}/api/runs`);
+    if (res.ok && (res.headers.get("content-type") || "").includes("json")) return await res.json();
+  } catch (e) { /* no server */ }
+  recorded = true;
+  const res = await fetch("runs/index.json");
+  return res.ok ? await res.json() : [];
+}
+
 async function init() {
-  const runs = await (await fetch("/api/runs")).json();
+  const runs = await listRuns();
   if (!runs.length) { $("status").textContent = "no runs yet"; return; }
   run = run || runs[0].id;
   $("run").innerHTML = runs.map(r => `<option ${r.id === run ? "selected" : ""}>${esc(r.id)}</option>`).join("");
-  $("run").onchange = () => { location.search = "?run=" + encodeURIComponent($("run").value); };
+  $("run").onchange = () => { params.set("run", $("run").value); location.search = params.toString(); };
   $("agent-filter").onchange = applyFilter;
-  poll();
+  if (recorded) {
+    recorded = await (await fetch(`runs/${encodeURIComponent(run)}.json`)).json();
+    tick();
+  } else poll();
+}
+
+// Reveal one replay step (the log rows sharing a sim time) at a time, as if the run were live.
+function tick() {
+  const full = recorded, log = full.log;
+  let end = shown;
+  if (end < log.length) { const at = log[end].sim_at; while (end < log.length && log[end].sim_at === at) end++; }
+  const clock = end ? log[end - 1].sim_at : null, done = end >= log.length;
+  const upTo = t => clock && t && t <= clock;
+  render({
+    run: { ...full.run, clock, status: done ? "finished" : "replaying recording",
+           stats: { ...full.run.stats, accuracy: (full.run.stats.accuracy || []).filter(p => upTo(p[0])) } },
+    log: log.slice(shown, end),
+    reviews: full.reviews.filter(v => upTo(v.as_of)),
+    scores: Object.fromEntries(Object.entries(full.scores).filter(([, v]) => upTo(v.at))),
+    items: full.items,
+  });
+  shown = end;
+  if (!done) timer = setTimeout(tick, 1500);
 }
 
 async function poll() {
   try {
-    const res = await fetch(`/api/state?run=${encodeURIComponent(run)}&after=${after}`);
+    const res = await fetch(`${API}/api/state?run=${encodeURIComponent(run)}&after=${after}`);
     if (res.ok) render(await res.json());
   } catch (e) { /* server restarting; try again */ }
   const done = data && data.run.status === "finished";
