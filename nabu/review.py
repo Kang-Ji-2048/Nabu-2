@@ -47,6 +47,7 @@ class ReviewTeam:
                          (w["id"], run_id, epic["id"], store.as_of, w["agent"], w["pattern_id"], w["claim"],
                           json.dumps(w["evidence"]), w.get("suggested_ticket"), json.dumps(w["prediction"]),
                           w["confidence"], status, reason))
-        report = self.writer.run(epic, accepted, suppressed, store)
+        # Forecasts and their basis are published too, so use the reader's view.
+        report = self.writer.run(epic, accepted, suppressed, viewer)
         conn.execute("INSERT OR REPLACE INTO review VALUES (?,?,?,?)", (run_id, epic["id"], store.as_of, json.dumps(report)))
         return report

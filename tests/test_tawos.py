@@ -1,6 +1,7 @@
 import json
 import tempfile
 import unittest
+from contextlib import closing
 from pathlib import Path
 
 from nabu.adapters.tawos import convert
@@ -38,22 +39,22 @@ class TawosAdapterTest(unittest.TestCase):
             report = convert(export, canonical, tenant="t")
             self.assertEqual((report["work_items"], report["links"], report["with_epic"]), (3, 1, 2))
             self.assertEqual(report["epics_closed_from_children"], 1)
-            conn = connect(Path(tmp) / "nabu.sqlite")
-            load_jsonl(conn, canonical)
-            full = ScopedStore(conn, "t", ["XD"], "2099-01-01T00:00:00Z")
-            story, task = full.get("t:XD-2"), full.get("t:XD-3")
-            self.assertEqual((story["parent_id"], story["components"], story["started_at"]),
-                             ("t:XD-1", ["Database"], "2021-01-03T10:00:00Z"))
-            self.assertEqual((task["parent_id"], task["parent_at"], task["status_category"]),
-                             ("t:XD-1", "2021-01-08T10:00:00Z", "cancelled"))
-            epic = full.get("t:XD-1")  # never closed in Jira; finished when its last ticket resolved
-            self.assertEqual((epic["status_category"], epic["resolved_at"]), ("done", "2021-01-12T09:00:00Z"))
-            link = full.links("t:XD-3")[0]
-            self.assertEqual((link["from_id"], link["to_id"], link["created_at"]), ("t:XD-2", "t:XD-3", "2021-01-06T10:00:00Z"))
-            # On day one the epic held only the story; the task joined later.
-            day_one = full.at("2021-01-06T00:00:00Z")
-            self.assertEqual([c["id"] for c in day_one.children("t:XD-1")], ["t:XD-2"])
-            self.assertEqual(day_one.links("t:XD-2"), [])
+            with closing(connect(Path(tmp) / "nabu.sqlite")) as conn:
+                load_jsonl(conn, canonical)
+                full = ScopedStore(conn, "t", ["XD"], "2099-01-01T00:00:00Z")
+                story, task = full.get("t:XD-2"), full.get("t:XD-3")
+                self.assertEqual((story["parent_id"], story["components"], story["started_at"]),
+                                 ("t:XD-1", ["Database"], "2021-01-03T10:00:00Z"))
+                self.assertEqual((task["parent_id"], task["parent_at"], task["status_category"]),
+                                 ("t:XD-1", "2021-01-08T10:00:00Z", "cancelled"))
+                epic = full.get("t:XD-1")  # never closed in Jira; finished when its last ticket resolved
+                self.assertEqual((epic["status_category"], epic["resolved_at"]), ("done", "2021-01-12T09:00:00Z"))
+                link = full.links("t:XD-3")[0]
+                self.assertEqual((link["from_id"], link["to_id"], link["created_at"]), ("t:XD-2", "t:XD-3", "2021-01-06T10:00:00Z"))
+                # On day one the epic held only the story; the task joined later.
+                day_one = full.at("2021-01-06T00:00:00Z")
+                self.assertEqual([c["id"] for c in day_one.children("t:XD-1")], ["t:XD-2"])
+                self.assertEqual(day_one.links("t:XD-2"), [])
 
     def test_component_scopes(self):
         with tempfile.TemporaryDirectory() as tmp:

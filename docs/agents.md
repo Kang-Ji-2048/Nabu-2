@@ -63,3 +63,44 @@ TAWOS's authors state research-only use alongside the Apache 2.0 licence.
 - Similarity is token overlap, not embeddings.
 - The store is SQLite. plan.md says Supabase/Postgres, and the schema ports directly.
 - Only TAWOS has an adapter. The GitHub Issues adapter in plan.md is still to do.
+
+## Reliability and evaluation
+
+Runs now save their review/score timeline when started. Import data before starting
+the run and keep source records unchanged until it finishes: the timeline is frozen,
+but source rows are not versioned snapshots. Older runs acquire a timeline on their
+first resume. Epics completed within the one-day observation window are excluded
+from prospective backtests.
+
+`--max-calls 1000` caps model requests, including retries, across committed steps.
+When exhausted, agents use their deterministic fallback and record the reason.
+Each request has a 60-second SDK timeout; SDK retries are disabled so Nabu owns
+the two-attempt limit. `--stop-after` bounds workflow steps. Paid requests in a
+crashed, uncommitted step are not durably counted; this is not a hard dollar budget.
+Provider-side spending limits are needed for that guarantee.
+
+Model output is validated recursively against Nabu's schema subset. Unknown IDs
+cannot bypass critic rules, duplicate verdicts fail closed, and duplicate specialist
+warnings are deduplicated. Revisions keep the mined evidence rather than adding
+loosely similar tickets to boost confidence. Forecasts use the viewer's scope and
+exclude the epic being reviewed. The local dashboard remains an operator interface:
+its full logs include agent-visible information and have no viewer authentication.
+Do not expose it or export its logs as a tenant-facing access boundary.
+
+Choose an evaluation window **before** tuning, then score persisted reviews:
+
+```bash
+python -m nabu evaluate --run demo1 --after 2023-06-01T00:00:00Z
+```
+
+This reports warning confirmation rate, forecast sample count, P50 absolute error
+against an all-history median baseline, P90 coverage, and forecast width. All
+forecast comparisons use the viewer's history available at the original review
+cutoff. Only outcomes reached by the run's committed clock are evaluated. Warning
+confirmation is a precision proxy based on heuristic labels, not classification
+accuracy: recall and false negatives require independently labelled plans.
+
+The regression suite injects malformed model output, forged critic decisions,
+budget exhaustion and Ctrl-C after agent writes. It also exercises scoped
+forecasts, tenant-isolated estimate history, empty viewers and timeline stability.
+These checks demonstrate workflow invariants, not predictive quality on real teams.

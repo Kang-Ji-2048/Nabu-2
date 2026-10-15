@@ -32,7 +32,8 @@ PHRASE_SCHEMA = {
 
 
 def brief(item) -> dict:
-    return {k: item.get(k) for k in ("id", "source_key", "type", "title", "estimate", "components", "status_category")}
+    return {k: item.get(k) for k in ("id", "source_key", "type", "title", "estimate", "estimate_unit",
+                                    "components", "status_category", "created_at", "started_at", "resolved_at")}
 
 
 class Planner:
@@ -65,7 +66,9 @@ class Specialist:
         patterns = [p for p in ctx["patterns"] if p["kind"] == self.kind and p["weight"] >= MIN_WEIGHT]
         candidates = self.candidates(ctx, plan, patterns)
         if feedback:
-            candidates = [self._strengthen(ctx, c) for c in candidates if c["id"] in feedback] or candidates
+            # Revisions must answer the critic using the original statistical
+            # basis. Token similarity alone cannot justify new evidence.
+            candidates = [c for c in candidates if c["id"] in feedback]
         if not candidates:
             self.log.emit(self.name, "clear", "no warnings")
             return []
@@ -77,19 +80,14 @@ class Specialist:
                                 lambda: {"warnings": [{k: c[k] for k in ("id", "claim", "suggested_ticket")} for c in candidates]})
         by_id = {c["id"]: c for c in candidates}
         warnings = []
+        seen = set()
         for item in phrased["warnings"]:
-            if item["id"] in by_id:  # the model may rephrase or drop, never invent
+            if item["id"] in by_id and item["id"] not in seen:  # rephrase or drop, never invent
+                seen.add(item["id"])
                 warnings.append({**by_id[item["id"]], "claim": item["claim"], "suggested_ticket": item["suggested_ticket"]})
         for w in warnings:
             self.log.emit(self.name, "warning", w["claim"], evidence=w["evidence"])
         return warnings
-
-    def _strengthen(self, ctx, candidate):
-        """Critic sent this back: add the closest finished tickets as extra evidence."""
-        store = ctx["store"]
-        text = " ".join(store.get(e)["title"] for e in candidate["evidence"] if store.get(e))
-        extra = [i["id"] for i in store.similar(text, store.completed(), k=4) if i["id"] not in candidate["evidence"]]
-        return {**candidate, "evidence": candidate["evidence"] + extra[:2]}
 
     def warning(self, ctx, pattern, claim, evidence, prediction, suggested_ticket=None) -> dict:
         return {"id": f"{ctx['epic']['id']}:{pattern['id']}", "agent": self.name, "pattern_id": pattern["id"],

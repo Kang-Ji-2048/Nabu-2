@@ -1,6 +1,7 @@
 import json
 import tempfile
 import unittest
+from contextlib import closing
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -19,8 +20,7 @@ def loaded_db(tmp):
 
 class ScopedStoreTest(unittest.TestCase):
     def test_hides_other_scopes_and_the_future(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            conn = loaded_db(tmp)
+        with tempfile.TemporaryDirectory() as tmp, closing(loaded_db(tmp)) as conn:
             epic = ScopedStore(conn, "demo", ["payments"], replay.END_OF_TIME).items(type="epic")[0]
             day_one = ScopedStore(conn, "demo", ["payments"], replay.plus_days(epic["created_at"], 1))
             self.assertTrue(all(i["scope"] == "payments" for i in day_one.items()))
@@ -34,8 +34,7 @@ class ScopedStoreTest(unittest.TestCase):
 
 class ReplayTest(unittest.TestCase):
     def test_resume_matches_an_uninterrupted_run(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            conn = loaded_db(tmp)
+        with tempfile.TemporaryDirectory() as tmp, closing(loaded_db(tmp)) as conn:
             for run_id, stop in (("full", None), ("split", 5)):
                 replay.start(conn, run_id, "demo", ["payments", "platform"], ["payments"])
                 replay.run(conn, run_id, offline=True, stop_after=stop, quiet=True)
@@ -46,8 +45,7 @@ class ReplayTest(unittest.TestCase):
             self.assertEqual(conn.execute("SELECT status FROM run WHERE id='split'").fetchone()[0], "finished")
 
     def test_ring_fence_suppresses_out_of_scope_evidence(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            conn = loaded_db(tmp)
+        with tempfile.TemporaryDirectory() as tmp, closing(loaded_db(tmp)) as conn:
             replay.start(conn, "r", "demo", ["payments", "platform"], ["payments"])
             replay.run(conn, "r", offline=True, quiet=True)
             viewer = ScopedStore(conn, "demo", ["payments"], replay.END_OF_TIME)

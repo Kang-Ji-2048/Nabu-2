@@ -71,15 +71,28 @@ class Critic:
             else:
                 open_.append(w)
         if open_:
+            allowed = {w["id"] for w in open_}
             fallback = lambda: {"decisions": [
                 {"id": w["id"], "action": "accept" if w["confidence"] != "low" else "drop" if final_round else "revise",
                  "reason": "evidence and data quality are sufficient" if w["confidence"] != "low"
                  else "confidence is low; needs more comparable evidence"} for w in open_]}
             verdict = self.llm.json(self.name, CRITIC_SYSTEM, {"warnings": [
                 {"id": w["id"], "claim": w["claim"], "confidence": w["confidence"],
-                 "evidence": [{k: store.get(e)[k] for k in ("id", "title", "type")} for e in w["evidence"]]}
+                 "prediction": w.get("prediction"),
+                 "evidence": [{k: store.get(e)[k] for k in
+                               ("id", "title", "type", "estimate", "estimate_unit", "components",
+                                "created_at", "started_at", "resolved_at")} for e in w["evidence"]]}
                 for w in open_], "revisions_left": 0 if final_round else 1}, CRITIC_SCHEMA, fallback)
+            seen = set()
             for d in verdict["decisions"]:
+                # Never let model output replace a hard-rule rejection, even
+                # when it guesses a suppressed warning's identifier.
+                if d["id"] not in allowed:
+                    continue
+                if d["id"] in seen:
+                    decisions[d["id"]] = ("drop", "critic gave duplicate decisions")
+                    continue
+                seen.add(d["id"])
                 action = "drop" if final_round and d["action"] == "revise" else d["action"]
                 decisions[d["id"]] = (action, d["reason"])
         for w in warnings:
