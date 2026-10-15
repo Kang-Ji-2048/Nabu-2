@@ -55,6 +55,17 @@ class TawosAdapterTest(unittest.TestCase):
             self.assertEqual([c["id"] for c in day_one.children("t:XD-1")], ["t:XD-2"])
             self.assertEqual(day_one.links("t:XD-2"), [])
 
+    def test_component_scopes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            export, canonical = Path(tmp) / "xd.jsonl", Path(tmp) / "canonical.jsonl"
+            export.write_text("".join(json.dumps({"table": t, "row": r}) + "\n" for t, r in ROWS))
+            report = convert(export, canonical, tenant="t", scope_by="component")
+            rows = [json.loads(line)["row"] for line in canonical.read_text().splitlines()]
+            scopes = {r["id"]: r["scope"] for r in rows if "id" in r}
+            # The epic and the task have no component, so both take the story's.
+            self.assertEqual(set(scopes.values()), {"XD/Database"})
+            self.assertEqual((report["scopes"], report["cross_scope_links"]), ({"XD/Database": 3}, 0))
+
 
 if __name__ == "__main__":
     unittest.main()

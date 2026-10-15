@@ -33,6 +33,7 @@ python -m nabu replay --run xd1 --tenant tawos --scopes XD --offline
 - **Open epics:** many epics were never closed in Jira. An open epic whose tickets are all resolved counts as done on the date of its last ticket, so the Scorekeeper can grade it (`epics_closed_from_children` in the report). Epics with any open ticket stay open and are reviewed but never scored.
 - **Status:** a "done" ticket whose resolution is "Won't Fix", a duplicate or similar is counted as `cancelled`.
 - **Links:** a link's time comes from the `Link` change event when there is one. Otherwise the link counts as known once both tickets exist.
+- **Ring-fence demo on one project:** `tawos --scope-by component` makes one scope per component (`XD/Runtime`, `XD/Shell`, ...). A ticket uses its first component, else its epic's; an epic without one takes its tickets' most common component. The report lists the scopes with ticket counts, and `cross_scope_links` says how many links cross scopes, since only those can trigger a suppression. Then replay with `--scopes all --viewer-scopes XD/<component>`. Patterns are mined per scope, so smaller scopes give fewer warnings.
 
 TAWOS's authors state research-only use alongside the Apache 2.0 licence.
 

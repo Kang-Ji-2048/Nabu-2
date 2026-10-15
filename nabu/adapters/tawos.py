@@ -41,7 +41,10 @@ def event_kind(field):
     }.get(field.casefold(), "field_changed")
 
 
-def convert(export: Path, output: Path, tenant: str = "tawos", mapping_file: Path | None = None) -> dict:
+def convert(export: Path, output: Path, tenant: str = "tawos", mapping_file: Path | None = None,
+            scope_by: str = "project") -> dict:
+    """scope_by="component" splits each project into one scope per component (e.g. "XD/Runtime"), so one
+    project can demo ring-fencing. See component_scopes()."""
     mappings = json.loads((mapping_file or Path(__file__).with_name("mappings.json")).read_text(encoding="utf-8"))
     tables = defaultdict(list)
     with open(export, encoding="utf-8-sig") as stream:
@@ -56,7 +59,7 @@ def convert(export: Path, output: Path, tenant: str = "tawos", mapping_file: Pat
     report["skipped_issues"] = len(tables["Issue"]) - len(issues)
     key_to_id = {i["Issue_Key"]: i["ID"] for i in issues.values()}
     nid = lambda issue: f"{tenant}:{issue['Issue_Key']}"
-    scope = lambda issue: projects.get(issue["Project_ID"], "unknown")
+    project_of = lambda issue: projects.get(issue["Project_ID"], "unknown")
 
     components = {c["ID"]: c["Name"] for c in tables["Component"]}
     issue_components = defaultdict(list)
@@ -106,6 +109,12 @@ def convert(export: Path, output: Path, tenant: str = "tawos", mapping_file: Pat
     for epic, children in epic_children.items():
         if not issues[epic].get("Resolution_Date") and all(c.get("Resolution_Date") for c in children):
             closed_from_children[epic] = max(timestamp(c["Resolution_Date"]) for c in children)
+
+    if scope_by == "component":
+        scopes = component_scopes(issues, issue_components, parent, epic_children, project_of)
+        scope = lambda issue: scopes[issue["ID"]]
+    else:
+        scope = project_of
 
     output.parent.mkdir(parents=True, exist_ok=True)
     with open(output, "w", encoding="utf-8") as out:
@@ -163,4 +172,22 @@ def convert(export: Path, output: Path, tenant: str = "tawos", mapping_file: Pat
             write("link", {"from_id": edge[0], "to_id": edge[1], "kind": edge[2], "tenant_id": tenant,
                            "scope": scope(dest), "created_at": linked_at.get(frozenset((source["ID"], target["ID"])))})
             report["links"] += 1
-    return dict(report)
+            report["cross_scope_links"] += int(scope(origin) != scope(dest))
+    return {**report, "scopes": dict(Counter(scope(issue) for issue in issues.values()).most_common())}
+
+
+def component_scopes(issues, issue_components, parent, epic_children, project_of) -> dict:
+    """Scope per issue ID: "<project>/<component>". A ticket uses its first component, else its epic's.
+    Epics rarely have components, so an epic without one takes its tickets' most common component.
+    Anything left over stays in "<project>"."""
+    first = lambda issue_id: (issue_components.get(issue_id) or [None])[0]
+    epic_component = {}
+    for epic, children in epic_children.items():
+        names = Counter(first(c["ID"]) for c in children if first(c["ID"]))
+        epic_component[epic] = first(epic) or (names.most_common(1)[0][0] if names else None)
+    scopes = {}
+    for issue_id, issue in issues.items():
+        epic = parent.get(issue_id, (None,))[0]
+        component = first(issue_id) or epic_component.get(issue_id) or epic_component.get(epic)
+        scopes[issue_id] = f"{project_of(issue)}/{component}" if component else project_of(issue)
+    return scopes

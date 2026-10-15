@@ -43,6 +43,8 @@ def main(argv=None):
     tawos.add_argument("--input", required=True)
     tawos.add_argument("--output", required=True)
     tawos.add_argument("--tenant", default="tawos")
+    tawos.add_argument("--scope-by", choices=["project", "component"], default="project",
+                       help="component: one scope per component, to demo ring-fencing inside one project")
 
     load = commands.add_parser("load", help="load canonical JSONL into the store")
     load.add_argument("input")
@@ -50,7 +52,7 @@ def main(argv=None):
     start = commands.add_parser("replay", help="start a replay run")
     start.add_argument("--run", required=True)
     start.add_argument("--tenant", required=True)
-    start.add_argument("--scopes", required=True, help="comma-separated scopes the agents may read")
+    start.add_argument("--scopes", required=True, help="comma-separated scopes the agents may read, or all")
     start.add_argument("--viewer-scopes", help="comma-separated scopes the reader may see (default: --scopes)")
 
     resume = commands.add_parser("resume", help="continue a run from its last checkpoint")
@@ -79,14 +81,17 @@ def main(argv=None):
         return 0
     if args.command == "tawos":
         from .adapters.tawos import convert
-        print(json.dumps(convert(Path(args.input), Path(args.output), tenant=args.tenant)))
+        print(json.dumps(convert(Path(args.input), Path(args.output), tenant=args.tenant, scope_by=args.scope_by)))
         return 0
     conn = connect(args.db)
     if args.command == "load":
         print(json.dumps(load_jsonl(conn, args.input)))
     elif args.command in ("replay", "resume"):
         if args.command == "replay":
-            replay.start(conn, args.run, args.tenant, args.scopes.split(","),
+            scopes = args.scopes.split(",")
+            if scopes == ["all"]:
+                scopes = [r[0] for r in conn.execute("SELECT DISTINCT scope FROM work_item WHERE tenant_id=?", (args.tenant,))]
+            replay.start(conn, args.run, args.tenant, scopes,
                          args.viewer_scopes.split(",") if args.viewer_scopes else None)
         stats = replay.run(conn, args.run, offline=True if args.offline else None,
                            stop_after=args.stop_after, quiet=args.quiet)
