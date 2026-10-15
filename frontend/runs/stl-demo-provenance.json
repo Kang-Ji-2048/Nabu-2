@@ -1,0 +1,35 @@
+{
+  "project": "STL",
+  "name": "Hyperledger Sawtooth",
+  "dataset": "TAWOS v1.1",
+  "source": "https://github.com/SOLAR-group/TAWOS",
+  "mode": "offline deterministic replay",
+  "source_counts": {
+    "Project": 1,
+    "Issue": 1663,
+    "Change_Log": 15800,
+    "Component": 29,
+    "Issue_Component": 712,
+    "Issue_Link": 454
+  },
+  "canonical_counts": {
+    "skipped_issues": 0,
+    "work_items": 1663,
+    "with_epic": 880,
+    "events": 15800,
+    "unmapped_status:Complete": 1157,
+    "unmapped_status:Planning": 1,
+    "unmapped_status:In Review": 11,
+    "unmapped_type:New Feature": 308,
+    "epics_closed_from_children": 4,
+    "links": 279,
+    "cross_scope_links": 0,
+    "skipped_links": 78,
+    "scopes": {
+      "STL": 1663
+    }
+  },
+  "reviews": 84,
+  "cutoff": "2018-04-28T21:03:48Z",
+  "model_calls": 0
+}

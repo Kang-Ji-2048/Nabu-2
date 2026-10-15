@@ -1,0 +1,35 @@
+{
+  "project": "MESOS",
+  "name": "Apache Mesos",
+  "dataset": "TAWOS v1.1",
+  "source": "https://github.com/SOLAR-group/TAWOS",
+  "mode": "offline deterministic replay",
+  "source_counts": {
+    "Project": 1,
+    "Issue": 10157,
+    "Change_Log": 108349,
+    "Component": 42,
+    "Issue_Component": 7043,
+    "Issue_Link": 6342
+  },
+  "canonical_counts": {
+    "skipped_issues": 0,
+    "work_items": 10157,
+    "with_epic": 3158,
+    "unmapped_type:Documentation": 311,
+    "events": 108349,
+    "unmapped_status:Accepted": 825,
+    "unmapped_status:Reviewable": 177,
+    "unmapped_type:Wish": 84,
+    "epics_closed_from_children": 14,
+    "links": 4214,
+    "cross_scope_links": 0,
+    "skipped_links": 932,
+    "scopes": {
+      "MESOS": 10157
+    }
+  },
+  "reviews": 278,
+  "cutoff": "2018-01-03T23:12:39Z",
+  "model_calls": 0
+}

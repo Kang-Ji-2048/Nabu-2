@@ -19,6 +19,29 @@ Span = epic created to its last child ticket resolved. Many XD epics were never 
 
 ## Backup projects
 
+### Additional dashboard projects
+
+The dashboard also includes recorded, offline replays for **Hyperledger Sawtooth
+(`STL`)** and **Apache Mesos (`MESOS`)**. Choose their names in the Project menu.
+Each replay is isolated to that project's scope and pauses at its own recorded
+cutoff. The synthetic demo remains separately labelled.
+
+These exports are generated from the local TAWOS SQL dump, including issue change
+history, components and dependency links. Their `*-provenance.json` files alongside
+the run JSON record source counts, conversion counts, review count and cutoff.
+They use deterministic mode with zero model requests; do not describe them as
+live Claude runs or independently validated predictions.
+
+To reproduce from a fresh work directory, run from the repository root:
+
+```bash
+python scripts/build_project_replays.py --source /path/to/TAWOS.sql --projects STL MESOS --work-dir ../work/additional-projects
+```
+
+Raw extracts and SQLite files stay in the work directory. Only the compact
+dashboard recordings and provenance belong in `frontend/runs/`. Dataset source
+and usage terms: [SOLAR-group/TAWOS](https://github.com/SOLAR-group/TAWOS).
+
 | Key | Project | Tickets | Epics | Estimated | Note |
 | --- | --- | --- | --- | --- | --- |
 | STL | Hyperledger Sawtooth | 1,663 | 84 | 58% | Small; good second replay if XD misbehaves |
