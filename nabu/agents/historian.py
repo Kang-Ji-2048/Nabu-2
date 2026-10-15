@@ -80,6 +80,8 @@ class Historian:
         if len(done) < 4:
             return []
         norm = statistics.median(duration(i) / i["estimate"] for i in done)
+        if norm <= 0:
+            return []
         groups = defaultdict(list)
         for item in done:
             groups[item_key(item)].append(item)
@@ -117,15 +119,16 @@ class Historian:
         that is merely common, but usually planned up front, does not become a pattern."""
         later, missing = defaultdict(list), defaultdict(int)
         for epic in store.completed("epic"):
-            review_at = (datetime.fromisoformat(epic["created_at"].replace("Z", "+00:00")) + timedelta(days=1)
-                         ).isoformat().replace("+00:00", "Z")
+            review_at = datetime.fromisoformat(epic["created_at"].replace("Z", "+00:00")) + timedelta(days=1)
             children = store.children(epic["id"])
-            planned = {c for child in children if joined(child) <= review_at for c in categories_of(child)}
+            def planned_at(child):
+                return datetime.fromisoformat(joined(child).replace("Z", "+00:00"))
+            planned = {c for child in children if planned_at(child) <= review_at for c in categories_of(child)}
             for category in CATEGORIES:
                 if category in planned:
                     continue
                 missing[category] += 1
-                added = [child["id"] for child in children if joined(child) > review_at and category in categories_of(child)]
+                added = [child["id"] for child in children if planned_at(child) > review_at and category in categories_of(child)]
                 if added:
                     later[category].append(added)
         patterns = []

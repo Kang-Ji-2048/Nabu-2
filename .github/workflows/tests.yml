@@ -12,4 +12,27 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python }}
+      - run: python -m pip install --no-deps .
       - run: python -m unittest discover -s tests
+      - run: python examples/library_quickstart.py
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install build twine
+      - run: python -m build
+      - run: python -m twine check dist/*
+      - run: python -m pip install --no-deps dist/*.whl
+      - name: Import installed wheel outside the checkout
+        working-directory: ${{ runner.temp }}
+        run: python -I -c "from nabu import Reviewer, Viewer; from importlib.resources import files; assert files('nabu').joinpath('py.typed').is_file(); assert files('nabu.adapters').joinpath('mappings.json').is_file(); r=Reviewer(); r.close()"
+      - name: Check installed command
+        working-directory: ${{ runner.temp }}
+        run: nabu --help
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nabu-delivery-distributions
+          path: dist/*

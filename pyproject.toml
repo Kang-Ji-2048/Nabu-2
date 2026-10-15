@@ -1,15 +1,36 @@
 [project]
-name = "nabu"
-version = "0.1.0"
+name = "nabu-delivery"
+dynamic = ["version"]
 description = "Delivery risk reviewer: agents that check new plans against a team's tracker history"
+readme = "docs/library.md"
 requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
+authors = [{name = "Nabu contributors"}]
+keywords = ["agents", "delivery", "risk", "backtesting"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
 dependencies = []
 
 [project.optional-dependencies]
 live = ["anthropic>=1.14"]
+dev = ["build>=1.2", "twine>=6"]
+
+[project.scripts]
+nabu = "nabu.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/Kang-Ji-2048/Nabu-2"
+Documentation = "https://github.com/Kang-Ji-2048/Nabu-2/blob/main/docs/library.md"
+Issues = "https://github.com/Kang-Ji-2048/Nabu-2/issues"
 
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77.0.3"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
@@ -17,3 +38,7 @@ include = ["nabu*"]
 
 [tool.setuptools.package-data]
 "nabu.adapters" = ["mappings.json"]
+"nabu" = ["py.typed"]
+
+[tool.setuptools.dynamic]
+version = {attr = "nabu.__version__"}
