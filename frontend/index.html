@@ -60,6 +60,7 @@ select { color: var(--ink); background: var(--surface); border: 1px solid var(--
 .badge.hit { background: var(--good-tint); color: var(--good); }
 .badge.miss { background: var(--bad-tint); color: var(--bad); }
 .risk .claim { margin: 2px 0 0; }
+.risk .fix { font-size: 13px; margin-top: 6px; padding: 6px 10px; border-left: 3px solid var(--accent); background: var(--accent-tint); border-radius: 4px; }
 .risk .detail { color: var(--ink-2); font-size: 12px; margin-top: 4px; }
 details { margin-top: 6px; font-size: 12px; color: var(--ink-2); }
 details summary { cursor: pointer; color: var(--accent); }
@@ -238,6 +239,28 @@ function render(s) {
   firstRender = false;
 }
 
+// One concrete next step per risk, built from the numbers the agent already cited.
+function fixFor(r) {
+  const c = r.claim || "", t = r.suggested_ticket;
+  if (r.agent === "estimator") {
+    const m = c.match(/'([^']+)' work took ([\d.]+)x/), pts = c.match(/\((\d+) points?\)/);
+    if (m && pts) return `Plan the '${m[1]}' work at about ${Math.round(pts[1] * m[2])} points instead of ${pts[1]}, ` +
+      `or split it and re-estimate with someone who did the past tickets below.`;
+    return "Re-estimate this work against the similar past tickets below, and add buffer before committing to a date.";
+  }
+  if (r.agent === "dependency_hunter") {
+    const m = c.match(/by '([^']+)' work/);
+    return `${t ? t + "." : `Add a '${m ? m[1] : "blocking"}' ticket and link it as a blocker.`} ` +
+      "Start it first, so it doesn't hold up the rest of the epic.";
+  }
+  if (r.agent === "gap_finder") {
+    const m = c.match(/no (.+?) tickets/);
+    return `Add ${m ? `a ${m[1]} ticket` : t ? `"${t}"` : "the missing ticket"} to the plan now, sized and owned, ` +
+      "instead of finding it halfway through the epic.";
+  }
+  return t || "Review this with the team before the plan is committed.";
+}
+
 function renderRisks() {
   if (!data) return;
   const all = risksOf(data), list = all.filter(r => tab === "open" ? !r.score : r.score);
@@ -257,7 +280,7 @@ function renderRisks() {
     return `<article class="risk${fresh ? " flash" : ""}"><div class="top"><span class="epic"><code>${esc(r.epic)}</code>${esc(r.title)}</span>` +
       `<span class="meta">${esc(RISK[r.agent] || r.agent)} · ${esc(r.confidence || "")} confidence · found ${esc(day(r.as_of))}</span>${badge}</div>` +
       `<p class="claim">${esc(r.claim)}</p>` +
-      (r.suggested_ticket ? `<div class="detail">Suggested ticket: ${esc(r.suggested_ticket)}</div>` : "") +
+      `<div class="fix"><b>Suggested fix:</b> ${esc(fixFor(r))}</div>` +
       (r.score && r.score.detail ? `<div class="detail">Outcome: ${esc(r.score.detail)}</div>` : "") +
       (cites ? `<details><summary>Evidence: ${r.evidence.length} past tickets</summary><ul>${cites}</ul></details>` : "") +
       `</article>`;
