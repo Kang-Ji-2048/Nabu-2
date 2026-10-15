@@ -17,4 +17,3 @@ Reference: the supplied event slide says Build it. Let it run. Prove it worked. 
 ## 04 · Business viability · 20 seconds
 
 Start with delivery organisations willing to pilot on authorised exports. £750 per month is a pricing hypothesis; the costs, margins and hours saved are assumptions. Measure useful planning changes, investigation time and repeat use before expanding.
-
