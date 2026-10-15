@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" id="agent-workflow-svg" class="workflow-svg" viewBox="0 0 1210 510" role="group" aria-labelledby="workflow-vector-title workflow-vector-description">
+<title id="workflow-vector-title">Nabu agent review workflow</title>
+<desc id="workflow-vector-description">The replay clock feeds the Historian, then the Planner routes a plan to the Estimator, Dependency hunter and Gap finder. Data quality and Critic assess findings before the Writer saves the review. Scorekeeper checks later outcomes and feeds pattern weights back to Historian. Critic can request one revision. Select an agent for details.</desc>
+<style>
+.wf-background{fill:#1d231c}.wf-stage{fill:#abb5a3;font:11px Arial,sans-serif;letter-spacing:2px}.wf-edge{fill:none;stroke:#788770;stroke-width:1.7;marker-end:url(#wf-arrow)}.wf-edge.feedback{stroke:#718361;stroke-dasharray:5 6}.wf-edge.revision{stroke:#ae9a6c;stroke-dasharray:4 5}.wf-edge.active{stroke:#d9ed89;stroke-width:2.5}.wf-node{cursor:pointer;outline:none}.wf-node .wf-box{fill:#282f25;stroke:#4b5743;stroke-width:1.2}.wf-node:hover .wf-box,.wf-node:focus .wf-box{stroke:#c7dc8b;stroke-width:2}.wf-node[aria-pressed="true"] .wf-box{fill:#34412c;stroke:#d9ed89;stroke-width:2}.wf-node .wf-divider{stroke:#424c3b;stroke-width:1}.wf-label{fill:#f0f4e8;font:500 14px Arial,sans-serif}.wf-description{fill:#b5c0aa;font:12px Arial,sans-serif}.wf-node-dot{fill:#c2d997}.wf-note{fill:#b4bfa7;font:12px Arial,sans-serif}.wf-revision-note{fill:#bead85;font:11px Arial,sans-serif}
+</style>
+<defs><marker id="wf-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#a2b189"/></marker></defs>
+<rect class="wf-background" width="1210" height="510" rx="8"/>
+<text class="wf-stage" x="30" y="31">01 / CONTEXT</text><text class="wf-stage" x="620" y="31">02 / ANALYSIS</text><text class="wf-stage" x="1020" y="31">03 / OUTPUT</text>
+<path class="wf-edge" data-from="replay" data-to="historian" d="M190 248H225"/>
+<path class="wf-edge" data-from="historian" data-to="planner" d="M385 248H420"/>
+<path class="wf-edge" data-from="planner" data-to="estimator" d="M580 248H595Q605 248 605 238V118Q605 108 615 108H620"/>
+<path class="wf-edge" data-from="planner" data-to="dependency" d="M580 248H620"/>
+<path class="wf-edge" data-from="planner" data-to="gaps" d="M580 248H595Q605 248 605 258V378Q605 388 615 388H620"/>
+<path class="wf-edge" data-from="estimator" data-to="quality" d="M780 108H825"/>
+<path class="wf-edge" data-from="quality" data-to="critic" d="M905 154V202"/>
+<path class="wf-edge" data-from="dependency" data-to="critic" d="M780 248H825"/>
+<path class="wf-edge" data-from="gaps" data-to="critic" d="M780 388H792Q802 388 802 378V278Q802 268 812 268H825"/>
+<path class="wf-edge" data-from="critic" data-to="writer" d="M985 248H1020"/>
+<path class="wf-edge" data-from="writer" data-to="scorekeeper" d="M1100 294V342"/>
+<path class="wf-edge feedback" data-from="scorekeeper" data-to="historian" d="M1100 434V456Q1100 468 1088 468H317Q305 468 305 456V294"/>
+
+<g class="wf-node" data-agent="replay" transform="translate(30 202)" role="button" tabindex="0" aria-pressed="false" aria-label="Replay clock: Advance review time. Save each checkpoint">
+<rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
+<text class="wf-label" x="24" y="27">Replay clock</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-description" x="13" y="62">Advance review time</text>
+<text class="wf-description" x="13" y="78">Save each checkpoint</text>
+</g>
+<g class="wf-node" data-agent="historian" transform="translate(225 202)" role="button" tabindex="0" aria-pressed="false" aria-label="Historian: Find recurring patterns. from completed work">
+<rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
+<text class="wf-label" x="24" y="27">Historian</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-description" x="13" y="62">Find recurring patterns</text>
+<text class="wf-description" x="13" y="78">from completed work</text>
+</g>
+<g class="wf-node" data-agent="planner" transform="translate(420 202)" role="button" tabindex="0" aria-pressed="false" aria-label="Planner: Read the new epic. Route planned tickets">
+<rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
+<text class="wf-label" x="24" y="27">Planner</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-description" x="13" y="62">Read the new epic</text>
+<text class="wf-description" x="13" y="78">Route planned tickets</text>
+</g>
+<g class="wf-node" data-agent="estimator" transform="translate(620 62)" role="button" tabindex="0" aria-pressed="false" aria-label="Estimator: Check estimate risk. against past delivery">
+<rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
+<text class="wf-label" x="24" y="27">Estimator</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-description" x="13" y="62">Check estimate risk</text>
+<text class="wf-description" x="13" y="78">against past delivery</text>
+</g>
+<g class="wf-node" data-agent="dependency" transform="translate(620 202)" role="button" tabindex="0" aria-pressed="false" aria-label="Dependency hunter: Find likely blockers. and missing dependencies">
+<rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
+<text class="wf-label" x="24" y="27">Dependency hunter</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-description" x="13" y="62">Find likely blockers</text>
+<text class="wf-description" x="13" y="78">and missing dependencies</text>
+</g>
+<g class="wf-node" data-agent="gaps" transform="translate(620 342)" role="button" tabindex="0" aria-pressed="false" aria-label="Gap finder: Find work the plan. may have left out">
+<rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
+<text class="wf-label" x="24" y="27">Gap finder</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-description" x="13" y="62">Find work the plan</text>
+<text class="wf-description" x="13" y="78">may have left out</text>
+</g>
+<g class="wf-node" data-agent="quality" transform="translate(825 62)" role="button" tabindex="0" aria-pressed="false" aria-label="Data quality: Assess history coverage. and warning confidence">
+<rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
+<text class="wf-label" x="24" y="27">Data quality</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-description" x="13" y="62">Assess history coverage</text>
+<text class="wf-description" x="13" y="78">and warning confidence</text>
+</g>
+<g class="wf-node" data-agent="critic" transform="translate(825 202)" role="button" tabindex="0" aria-pressed="false" aria-label="Critic: Check claims, citations. and viewer scope">
+<rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
+<text class="wf-label" x="24" y="27">Critic</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-description" x="13" y="62">Check claims, citations</text>
+<text class="wf-description" x="13" y="78">and viewer scope</text>
+</g>
+<g class="wf-node" data-agent="writer" transform="translate(1020 202)" role="button" tabindex="0" aria-pressed="false" aria-label="Writer: Save the cited review. and suggested tickets">
+<rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
+<text class="wf-label" x="24" y="27">Writer</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-description" x="13" y="62">Save the cited review</text>
+<text class="wf-description" x="13" y="78">and suggested tickets</text>
+</g>
+<g class="wf-node" data-agent="scorekeeper" transform="translate(1020 342)" role="button" tabindex="0" aria-pressed="false" aria-label="Scorekeeper: Check later outcomes. Update pattern weights">
+<rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
+<text class="wf-label" x="24" y="27">Scorekeeper</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-description" x="13" y="62">Check later outcomes</text>
+<text class="wf-description" x="13" y="78">Update pattern weights</text>
+</g>
+<text class="wf-note" x="600" y="494">Outcomes inform the next historical review</text></svg>
