@@ -43,6 +43,8 @@ nav { display: grid; gap: 2px; }
 .nav { display: block; font-size: 13.5px; padding: 8px 10px; border-radius: 6px; color: var(--side-ink); text-decoration: none; }
 .nav:hover { background: var(--side-hover); }
 .nav.on { background: var(--side-hover); color: #fff; }
+.arch { max-width: 1000px; background: #fff; }
+.arch img { display: block; width: 100%; height: auto; }
 .how { display: grid; gap: 12px; max-width: 820px; }
 .step { display: flex; gap: 14px; }
 .step .num { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-tint); color: var(--accent); font-weight: 700; }
@@ -50,6 +52,19 @@ nav { display: grid; gap: 2px; }
 .how ul { margin: 4px 0 10px; padding: 0; list-style: none; display: grid; gap: 8px; color: var(--ink-2); }
 .how .tag { margin-right: 6px; }
 .card.note { border-left: 4px solid var(--accent); }
+.account { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.account .av { width: 26px; height: 26px; border-radius: 50%; background: var(--brand); color: var(--side); display: grid; place-items: center; font-weight: 700; font-size: 12px; }
+.account b { color: var(--side-ink); font-weight: 600; } .account small { display: block; color: var(--side-ink-2); font-size: 11px; }
+.account button { margin-left: auto; background: none; border: 1px solid var(--side-line); color: var(--side-ink-2); border-radius: 6px; padding: 3px 8px; font: inherit; font-size: 11.5px; cursor: pointer; }
+.account button:hover { color: var(--side-ink); }
+#login { position: fixed; inset: 0; z-index: 50; background: var(--side); display: grid; place-items: center; padding: 16px; }
+#login[hidden] { display: none; }
+#login form { width: 100%; max-width: 340px; background: var(--surface); border-radius: 12px; padding: 26px 24px; display: grid; gap: 12px; }
+#login .brand { color: var(--accent); margin-bottom: 4px; } #login .brand small { color: var(--ink-3); }
+#login label { display: grid; gap: 4px; font-size: 12.5px; color: var(--ink-2); }
+#login input { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; }
+#login .err { color: var(--bad); font-size: 12.5px; margin: 0; min-height: 1em; }
+#login .hint { color: var(--ink-3); font-size: 12px; margin: 0; }
 .side-foot { margin-top: auto; font-size: 11.5px; color: var(--side-ink-2); line-height: 1.5; }
 main { padding: 22px 28px 40px; min-width: 0; }
 .top { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-bottom: 18px; }
@@ -151,6 +166,16 @@ td code { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
 </style>
 </head>
 <body>
+<div id="login" hidden>
+  <form id="login-form">
+    <div class="brand"><img src="assets/nabu-bird.svg" alt=""><div>Nabu<small>delivery risk review</small></div></div>
+    <label>Account<input id="login-user" autocomplete="username" value="duck"></label>
+    <label>Password<input id="login-pass" type="password" autocomplete="current-password" placeholder="any password works in the demo"></label>
+    <p class="err" id="login-err"></p>
+    <button class="btn" type="submit">Sign in</button>
+    <p class="hint">Demo sign-in: use the account <b>duck</b>.</p>
+  </form>
+</div>
 <div class="app">
   <aside>
     <div class="brand"><img src="assets/nabu-bird.svg" alt=""><div>Nabu<small>delivery risk review</small></div></div>
@@ -158,7 +183,9 @@ td code { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
     <nav><p class="side-h">Menu</p>
       <a class="nav" href="#" data-view="dash">Dashboard</a>
       <a class="nav" href="#how" data-view="how">How it works</a>
+      <a class="nav" href="#architecture" data-view="architecture">Architecture</a>
     </nav>
+    <div class="account" id="account" hidden><span class="av">D</span><div><b id="account-name">duck</b><small>Demo account</small></div><button id="sign-out" type="button">Sign out</button></div>
     <p class="side-foot">Each new epic is reviewed against the project's own history. Open risks are still waiting for their outcome; checked ones show how earlier warnings turned out.</p>
   </aside>
 
@@ -184,6 +211,11 @@ td code { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
       <section class="card note"><h2>About this demo</h2>
         <p>The data is the public issue tracker of Spring XD, an open-source project, from the TAWOS research dataset. The dashboard shows the project as it stood on the date shown there. It uses only what was known by then, with no information from later.</p></section>
     </div>
+  </main>
+
+  <main id="view-architecture" hidden>
+    <div class="top"><div><h1>Architecture</h1><div class="sub">How data and agents fit together during a replay of a project's history.</div></div></div>
+    <section class="card arch"><img src="assets/architecture.png" alt="Nabu architecture: tracker adapters feed a ring-fenced canonical store; the Historian learns patterns; for each new epic the Planner hands work to the Estimator, Dependency hunter and Gap finder; Data quality, Critic and Writer produce the risk review; the Scorekeeper scores outcomes and feeds pattern weights back to the Historian."></section>
   </main>
 
   <main id="view-dash">
@@ -271,11 +303,26 @@ setTheme(store.get("nabu-theme"));
 $("theme").onclick = () => { const t = isDark() ? "light" : "dark"; store.set("nabu-theme", t); setTheme(t); };
 $("refresh").onclick = () => location.reload();
 
-// Two views in one page: the dashboard, and #how for "How it works".
+// Mock sign-in for the demo: only the "duck" account exists, and any password is accepted.
+function showAccount() {
+  const user = store.get("nabu-user");
+  $("login").hidden = !!user; $("account").hidden = !user;
+  if (user) $("account-name").textContent = user;
+}
+$("login-form").onsubmit = e => {
+  e.preventDefault();
+  const user = $("login-user").value.trim().toLowerCase();
+  if (user !== "duck") { $("login-err").textContent = "No account called \"" + user + "\". Try duck."; return; }
+  store.set("nabu-user", user); $("login-err").textContent = ""; showAccount();
+};
+$("sign-out").onclick = () => { try { localStorage.removeItem("nabu-user"); } catch (e) {} showAccount(); };
+showAccount();
+
+// Views in one page: the dashboard, #how for "How it works" and #architecture.
 function route() {
-  const how = location.hash === "#how";
-  $("view-how").hidden = !how; $("view-dash").hidden = how;
-  for (const a of document.querySelectorAll(".nav")) a.classList.toggle("on", (a.dataset.view === "how") === how);
+  const view = { "#how": "how", "#architecture": "architecture" }[location.hash] || "dash";
+  for (const v of ["dash", "how", "architecture"]) $("view-" + v).hidden = v !== view;
+  for (const a of document.querySelectorAll(".nav")) a.classList.toggle("on", a.dataset.view === view);
 }
 window.addEventListener("hashchange", route); route();
 for (const t of document.querySelectorAll(".tab")) t.onclick = () => {
