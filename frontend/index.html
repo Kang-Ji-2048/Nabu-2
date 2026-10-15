@@ -3,169 +3,289 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nabu Replay</title>
+<link rel="icon" href="assets/nabu-bird.svg">
+<title>Nabu Risk Review</title>
 <style>
 :root {
-  --bg: #f6f6f4; --surface: #ffffff; --border: #e3e2de; --grid: #ecebe7;
-  --ink: #1f1e1c; --ink-2: #5d5b56; --ink-3: #8a8780;
-  --accent: #2f6fd6; --accent-tint: #e8f0fc;
-  --good: #1f8a4c; --good-tint: #e5f4ea; --bad: #c2412d; --bad-tint: #fbe9e5;
-  --warn: #a8650a; --warn-tint: #fbf1de;
+  --bg: #f5f5f0; --surface: #ffffff; --border: #e2e1d8; --ink: #1d1d1b; --ink-2: #5c5a55; --ink-3: #8b8881;
+  --side: #1f2814; --side-ink: #d6dcc4; --side-ink-2: #8f9a78; --side-hover: #2e3a1f; --side-line: #3a4828;
+  --accent: #4f6b1f; --accent-tint: #eef3e0; --on-accent: #ffffff; --brand: #c5dc7a;
+  --good: #1f8a4c; --good-tint: #e4f3e9; --bad: #c2412d; --bad-tint: #fbe8e4; --wait: #b8860b; --wait-tint: #f8f0da;
+  --c-est: #5b7a1e; --c-dep: #c27c0e; --c-gap: #2f7d6d; --c-oth: #8b8881;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #151514; --surface: #1e1e1c; --border: #33322f; --grid: #2a2927;
-    --ink: #ecebe7; --ink-2: #b3b0a9; --ink-3: #85827b;
-    --accent: #6b9ef0; --accent-tint: #1d2a40;
-    --good: #4cc27c; --good-tint: #18301f; --bad: #ef7a64; --bad-tint: #3a1f19;
-    --warn: #e0a447; --warn-tint: #352816;
+    --bg: #141513; --surface: #1d1f1b; --border: #32352f; --ink: #ecede8; --ink-2: #b3b5ab; --ink-3: #868a7f;
+    --side: #10140b; --side-hover: #222b17; --side-line: #2e3a1f;
+    --accent: #c5dc7a; --accent-tint: #2a3320; --on-accent: #1d1f1b;
+    --good: #5cc98a; --good-tint: #17301f; --bad: #ef7d68; --bad-tint: #3a1f19; --wait: #e2bf5c; --wait-tint: #352c14;
+    --c-est: #b5d06a; --c-dep: #e8a93c; --c-gap: #5fbfa9;
   }
 }
+:root[data-theme="dark"] {
+    --bg: #141513; --surface: #1d1f1b; --border: #32352f; --ink: #ecede8; --ink-2: #b3b5ab; --ink-3: #868a7f;
+    --side: #10140b; --side-hover: #222b17; --side-line: #2e3a1f;
+    --accent: #c5dc7a; --accent-tint: #2a3320; --on-accent: #1d1f1b;
+    --good: #5cc98a; --good-tint: #17301f; --bad: #ef7d68; --bad-tint: #3a1f19; --wait: #e2bf5c; --wait-tint: #352c14;
+    --c-est: #b5d06a; --c-dep: #e8a93c; --c-gap: #5fbfa9;
+}
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
-header { padding: 16px 24px; display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: center; border-bottom: 1px solid var(--border); background: var(--surface); }
-h1 { font-size: 20px; margin: 0; letter-spacing: -0.01em; }
-h1 small { font-weight: 400; color: var(--ink-2); font-size: 13px; margin-left: 8px; }
-.pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; background: var(--accent-tint); color: var(--accent); }
-.pill.finished { background: var(--good-tint); color: var(--good); }
-.clock { font-variant-numeric: tabular-nums; }
-.clock b { font-size: 22px; display: block; }
-.label { color: var(--ink-2); font-size: 12px; }
-.tiles { display: flex; gap: 24px; flex-wrap: wrap; margin-left: auto; }
-.tile b { display: block; font-size: 22px; font-variant-numeric: tabular-nums; }
-select { font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; }
-main { display: grid; align-items: start; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 16px; padding: 16px 24px; }
-.panel { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; min-width: 0; }
-.panel > h2 { font-size: 14px; margin: 0; padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
-.panel > h2 .spacer { flex: 1; }
-#log { height: 560px; overflow: auto; font-size: 12.5px; }
-.row { display: grid; grid-template-columns: 78px 120px 1fr; gap: 8px; padding: 5px 16px; border-bottom: 1px solid var(--grid); }
-.row .when { color: var(--ink-3); font-family: var(--mono); font-size: 11.5px; }
-.row .who { color: var(--ink-2); font-weight: 600; }
-.row .kind { color: var(--ink-3); margin-right: 6px; }
-.row.k-hit .kind { color: var(--good); } .row.k-miss .kind { color: var(--bad); }
-.row.k-suppressed .kind, .row.k-revise .kind, .row.k-recovered .kind { color: var(--warn); }
-.row.new { animation: flash 1.2s ease-out; }
-@keyframes flash { from { background: var(--accent-tint); } to { background: transparent; } }
-.right { display: grid; gap: 16px; align-content: start; min-width: 0; }
-#epics { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 16px; }
-.epic { border: 1px solid var(--border); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 4px 10px; cursor: pointer; font: inherit; font-size: 12.5px; }
-.epic[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-tint); }
-.epic .n { color: var(--ink-3); margin-left: 4px; }
-#review { padding: 16px; }
-#review h3 { margin: 0 0 4px; font-size: 17px; }
-.summary { color: var(--ink-2); margin: 0 0 12px; }
-.forecast { display: flex; gap: 24px; margin: 0 0 16px; }
-.forecast b { font-size: 18px; display: block; font-variant-numeric: tabular-nums; }
-.warning { border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px; }
-.warning .meta { display: flex; gap: 8px; align-items: center; font-size: 12px; color: var(--ink-2); margin-bottom: 4px; }
-.outcome { margin-left: auto; padding: 1px 8px; border-radius: 999px; font-size: 12px; }
-.outcome.hit { background: var(--good-tint); color: var(--good); }
-.outcome.miss { background: var(--bad-tint); color: var(--bad); }
-.outcome.pending { background: var(--grid); color: var(--ink-2); }
-.cites { margin: 8px 0 0; padding: 0; list-style: none; font-size: 12.5px; color: var(--ink-2); }
-.cites li { padding: 2px 0; }
-.cites code { font-family: var(--mono); font-size: 11.5px; color: var(--ink); }
-.fence { border: 1px dashed var(--warn); background: var(--warn-tint); color: var(--ink); border-radius: 8px; padding: 10px 12px; margin-bottom: 10px; font-size: 13px; }
-.missing { margin: 4px 0 0 18px; padding: 0; }
-.empty { color: var(--ink-3); padding: 24px 16px; }
-#chart { padding: 8px 16px 16px; position: relative; }
-#chart svg { width: 100%; height: auto; display: block; }
-#chart .axis { stroke: var(--border); } #chart .gridline { stroke: var(--grid); }
-#chart text { fill: var(--ink-2); font-size: 11px; }
-#tip { position: absolute; pointer-events: none; background: var(--ink); color: var(--surface); font-size: 12px; padding: 6px 8px; border-radius: 6px; display: none; white-space: nowrap; }
-#team { display: flex; align-items: stretch; gap: 6px; padding: 12px 16px; overflow-x: auto; }
-#team .col { display: flex; flex-direction: column; gap: 6px; justify-content: center; flex: 1 1 0; min-width: 118px; }
-#team .arrow { align-self: center; color: var(--ink-3); flex: none; }
-.agent { border: 1px solid var(--border); border-radius: 8px; padding: 6px 8px; font-size: 12px; transition: background .4s, border-color .4s; }
-.agent b { display: block; font-size: 12.5px; }
-.agent .role { color: var(--ink-3); }
-.agent .last { color: var(--ink-2); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; font-family: var(--mono); font-size: 11px; }
-.agent.store { border-style: dashed; }
-.agent.active { border-color: var(--accent); background: var(--accent-tint); }
-.agent.active.k-hit { border-color: var(--good); background: var(--good-tint); }
-.agent.active.k-miss { border-color: var(--bad); background: var(--bad-tint); }
-.agent.active.k-suppressed, .agent.active.k-revise, .agent.active.k-recovered { border-color: var(--warn); background: var(--warn-tint); }
-.loop { padding: 0 16px 12px; font-size: 12px; color: var(--ink-3); }
-.mock { background: var(--warn-tint); color: var(--warn); }
-@media (max-width: 900px) { #team { flex-wrap: wrap; } #team .arrow { display: none; } main { grid-template-columns: 1fr; padding: 16px; } header { padding: 16px; } #log { height: 360px; } .row { grid-template-columns: 84px 1fr; } .row > span:last-child { grid-column: 1 / -1; } .tiles { margin-left: 0; } }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.app { display: grid; grid-template-columns: 232px minmax(0, 1fr); min-height: 100vh; }
+aside { background: var(--side); color: var(--side-ink); padding: 20px 16px; display: flex; flex-direction: column; gap: 20px; }
+.brand { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 650; color: var(--brand); letter-spacing: -0.02em; }
+.brand img { width: 32px; height: 32px; }
+.brand small { display: block; font-size: 11px; font-weight: 400; color: var(--side-ink-2); letter-spacing: 0; }
+.side-h { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--side-ink-2); margin: 0 0 8px; }
+aside select { width: 100%; font: inherit; font-size: 13px; color: var(--side-ink); background: var(--side-hover); border: 1px solid var(--side-line); border-radius: 8px; padding: 7px 10px; }
+nav { display: grid; gap: 2px; }
+.nav { display: block; font-size: 13.5px; padding: 8px 10px; border-radius: 6px; color: var(--side-ink); text-decoration: none; }
+.nav:hover { background: var(--side-hover); }
+.nav.on { background: var(--side-hover); color: #fff; }
+.how { display: grid; gap: 12px; max-width: 820px; }
+.step { display: flex; gap: 14px; }
+.step .num { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-tint); color: var(--accent); font-weight: 700; }
+.how h2 { margin: 3px 0 6px; } .how p { margin: 0 0 8px; color: var(--ink-2); } .how p:last-child { margin-bottom: 0; } .how b { color: var(--ink); }
+.how ul { margin: 4px 0 10px; padding: 0; list-style: none; display: grid; gap: 8px; color: var(--ink-2); }
+.how .tag { margin-right: 6px; }
+.card.note { border-left: 4px solid var(--accent); }
+.side-foot { margin-top: auto; font-size: 11.5px; color: var(--side-ink-2); line-height: 1.5; }
+main { padding: 22px 28px 40px; min-width: 0; }
+.top { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-bottom: 18px; }
+.top h1 { font-size: 20px; margin: 0; letter-spacing: -0.01em; }
+.top .sub { color: var(--ink-2); font-size: 13px; }
+.top .sub b { color: var(--ink); font-variant-numeric: tabular-nums; }
+.controls { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+button { font: inherit; font-size: 13px; }
+.btn { background: var(--accent); color: var(--on-accent); border: 0; border-radius: 8px; padding: 8px 14px; cursor: pointer; font-weight: 500; }
+.btn.ghost { background: var(--surface); color: var(--ink-2); border: 1px solid var(--border); }
+.btn.icon { padding: 7px 12px; }
+.btn:disabled { opacity: .6; cursor: default; }
+.pill { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: var(--wait-tint); color: var(--wait); font-weight: 500; }
+.pill.live { background: var(--good-tint); color: var(--good); }
+.kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; margin-bottom: 16px; }
+.kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; display: flex; gap: 12px; align-items: center; }
+.kpi .ic { width: 38px; height: 38px; border-radius: 10px; display: grid; place-items: center; font-size: 17px; font-weight: 700; background: var(--t, var(--accent-tint)); color: var(--c, var(--accent)); flex: none; }
+.kpi b { display: block; font-size: 24px; font-weight: 650; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; line-height: 1.15; }
+.kpi span { color: var(--ink-2); font-size: 12px; }
+.kpi em { display: block; font-style: normal; color: var(--ink-3); font-size: 11.5px; }
+.kpi.open { --c: var(--wait); --t: var(--wait-tint); } .kpi.hit { --c: var(--good); --t: var(--good-tint); }
+.kpi.miss { --c: var(--bad); --t: var(--bad-tint); } .kpi.acc { --c: var(--accent); --t: var(--accent-tint); }
+.kpi.epics { --c: var(--c-gap); --t: color-mix(in srgb, var(--c-gap) 14%, transparent); }
+.grid { display: grid; gap: 14px; margin-bottom: 14px; }
+.g3 { grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1.4fr); }
+.g2 { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); align-items: start; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; min-width: 0; }
+.card h2 { font-size: 14px; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+.card h2 .hint { margin-left: auto; font-size: 12px; font-weight: 400; color: var(--ink-3); }
+.donut { display: flex; align-items: center; gap: 16px; }
+.donut svg { width: 120px; height: 120px; flex: none; }
+.legend { display: grid; gap: 6px; font-size: 12.5px; }
+.legend i, .key i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.legend b { font-variant-numeric: tabular-nums; margin-left: 4px; }
+.bars { display: grid; gap: 12px; }
+.bar-row .lbl { display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 4px; }
+.bar-row .lbl span { color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.bar-row .lbl span.name { color: var(--ink); }
+.learn { font-size: 10.5px; padding: 1px 6px; border-radius: 999px; background: var(--wait-tint); color: var(--wait); margin-left: 4px; }
+.bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: var(--bg); }
+.bar > div { height: 100%; transition: width .4s; }
+.key { display: flex; gap: 12px; font-size: 12px; color: var(--ink-2); margin-top: 12px; flex-wrap: wrap; }
+#timeline svg { width: 100%; height: 150px; display: block; }
+#timeline text { font-size: 10px; fill: var(--ink-3); }
+.empty-s { color: var(--ink-3); font-size: 12.5px; padding: 20px 0; text-align: center; }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin: -4px 0 12px; }
+.tab { background: none; border: 0; border-bottom: 2px solid transparent; padding: 8px 12px; color: var(--ink-2); cursor: pointer; }
+.tab[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+.tab .n { display: inline-block; min-width: 20px; margin-left: 6px; padding: 0 6px; border-radius: 999px; background: var(--bg); color: var(--ink-2); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+#risks { max-height: 760px; overflow: auto; padding-right: 4px; }
+.risk { border: 1px solid var(--border); border-left: 4px solid var(--rc, var(--c-oth)); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+.risk.flash { animation: flash 1.5s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 3px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+.risk.estimator { --rc: var(--c-est); } .risk.dependency_hunter { --rc: var(--c-dep); } .risk.gap_finder { --rc: var(--c-gap); }
+.risk .head { display: flex; flex-wrap: wrap; gap: 6px 8px; align-items: center; margin-bottom: 4px; }
+.tag { font-size: 11.5px; font-weight: 600; padding: 2px 8px; border-radius: 6px; color: var(--rc); background: color-mix(in srgb, var(--rc) 13%, transparent); }
+.conf { font-size: 11.5px; color: var(--ink-3); }
+.risk .epic { font-weight: 600; margin: 2px 0; }
+.risk .epic code { font-family: var(--mono); font-size: 12px; color: var(--ink-2); font-weight: 400; margin-right: 6px; }
+.badge { margin-left: auto; font-size: 11.5px; font-weight: 500; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
+.badge.wait { background: var(--wait-tint); color: var(--wait); }
+.badge.hit { background: var(--good-tint); color: var(--good); }
+.badge.miss { background: var(--bad-tint); color: var(--bad); }
+.risk .claim { margin: 2px 0 0; font-size: 13.5px; }
+.risk .why { font-size: 13px; margin-top: 8px; color: var(--ink-2); }
+.risk .why b { color: var(--ink); }
+.risk .fix { font-size: 13px; margin-top: 8px; padding: 7px 10px; border-radius: 6px; background: var(--accent-tint); }
+.risk .fix b { color: var(--accent); }
+.risk .detail { color: var(--ink-2); font-size: 12px; margin-top: 6px; }
+details { margin-top: 6px; font-size: 12px; color: var(--ink-2); }
+details summary { cursor: pointer; color: var(--accent); }
+details ul { margin: 6px 0 0; padding-left: 18px; }
+details code { font-family: var(--mono); font-size: 11.5px; color: var(--ink); }
+.empty { color: var(--ink-3); padding: 24px 4px; }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+th { text-align: left; font-weight: 500; color: var(--ink-3); font-size: 11.5px; padding: 0 6px 6px; }
+td { padding: 7px 6px; border-top: 1px solid var(--border); vertical-align: top; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+td code { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
+.dots i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-left: 2px; }
+#new-panel { margin-bottom: 14px; }
+#plan-form { display: grid; gap: 10px; }
+#plan-form label { display: grid; gap: 4px; font-size: 12px; color: var(--ink-2); }
+#plan-form input, #plan-form textarea { font: inherit; font-size: 13px; color: var(--ink); background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 7px 9px; width: 100%; }
+#plan-form textarea { font-family: var(--mono); font-size: 12px; min-height: 80px; resize: vertical; }
+#plan-msg { font-size: 12px; color: var(--ink-2); }
+#log { max-height: 330px; overflow: auto; font-size: 12px; }
+.row { display: grid; grid-template-columns: 78px 1fr; gap: 2px 8px; padding: 6px 0; border-top: 1px solid var(--border); }
+.row .when { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+.row .who { color: var(--accent); font-weight: 600; }
+.row .msg { grid-column: 1 / -1; color: var(--ink-2); }
+@media (max-width: 1100px) { .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } .g3 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } #timeline { grid-column: 1 / -1; } }
+@media (max-width: 860px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  aside { gap: 14px; } nav { grid-template-columns: 1fr 1fr; } .side-foot { display: none; }
+  main { padding: 18px 16px 32px; } .g2, .g3 { grid-template-columns: minmax(0, 1fr); } .controls { margin-left: 0; }
+  .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 </style>
 </head>
 <body>
-<header>
-  <h1>Nabu <small>delivery risk replay</small></h1>
-  <div><span class="label">Run</span> <select id="run"></select> <span id="status" class="pill">loading</span></div>
-  <div class="clock"><span class="label">Replay clock</span><b id="clock">-</b></div>
-  <div class="tiles">
-    <div class="tile"><span class="label">Epics reviewed</span><b id="t-reviews">0</b></div>
-    <div class="tile"><span class="label">Warnings published</span><b id="t-warnings">0</b></div>
-    <div class="tile"><span class="label">Came true</span><b id="t-acc">-</b></div>
-    <div class="tile"><span class="label">Withheld by ring-fence</span><b id="t-fence">0</b></div>
-  </div>
-</header>
-<section class="panel" style="margin: 16px 24px 0">
-  <h2>Agent team <span class="spacer"></span><span class="label">Boxes light up as each agent acts</span></h2>
-  <div id="team">
-    <div class="col"><div class="agent store" data-agent="replay"><b>Replay clock</b><span class="role">Ring-fenced store, cut off at the sim date</span><span class="last"></span></div></div>
-    <span class="arrow">&rarr;</span>
-    <div class="col"><div class="agent" data-agent="historian"><b>Historian</b><span class="role">Mines past patterns</span><span class="last"></span></div></div>
-    <span class="arrow">&rarr;</span>
-    <div class="col"><div class="agent" data-agent="planner"><b>Planner</b><span class="role">Routes the new epic</span><span class="last"></span></div></div>
-    <span class="arrow">&rarr;</span>
-    <div class="col">
-      <div class="agent" data-agent="estimator"><b>Estimator</b><span class="role">Overrun risk</span><span class="last"></span></div>
-      <div class="agent" data-agent="dependency_hunter"><b>Dependency hunter</b><span class="role">Blockers</span><span class="last"></span></div>
-      <div class="agent" data-agent="gap_finder"><b>Gap finder</b><span class="role">Missing tickets</span><span class="last"></span></div>
+<div class="app">
+  <aside>
+    <div class="brand"><img src="assets/nabu-bird.svg" alt=""><div>Nabu<small>delivery risk review</small></div></div>
+    <div><p class="side-h">Project</p><select id="run" aria-label="Project run"></select></div>
+    <nav><p class="side-h">Menu</p>
+      <a class="nav" href="#" data-view="dash">Dashboard</a>
+      <a class="nav" href="#how" data-view="how">How it works</a>
+    </nav>
+    <p class="side-foot">Each new epic is reviewed against the project's own history. Open risks are still waiting for their outcome; checked ones show how earlier warnings turned out.</p>
+  </aside>
+
+  <main id="view-how" hidden>
+    <div class="top"><div><h1>How it works</h1><div class="sub">Nabu reviews a new epic against the project's own history, before work starts.</div></div></div>
+    <div class="how">
+      <section class="card step"><span class="num">1</span><div><h2>Read the tracker history</h2>
+        <p>Nabu pulls the project's tickets, epics, estimates and links from the tracker. Jira and GitHub Issues are mapped into one common format, and every record is tagged with the team or project it belongs to.</p></div></section>
+      <section class="card step"><span class="num">2</span><div><h2>Learn from finished work</h2>
+        <p>The <b>Historian</b> looks only at work that has already finished. It works out which kinds of tickets overran their estimates, what work tended to block other work, and what epics often forgot to plan.</p></div></section>
+      <section class="card step"><span class="num">3</span><div><h2>Review each new epic</h2>
+        <p>A day after an epic is created, the <b>Planner</b> reads its tickets and hands them to three specialists:</p>
+        <ul>
+          <li><span class="tag" style="--rc:var(--c-est)">Overrun risk</span> The <b>Estimator</b> flags tickets in areas that have run over before.</li>
+          <li><span class="tag" style="--rc:var(--c-dep)">Blocker risk</span> The <b>Dependency hunter</b> flags work that blocked similar epics but isn't in this plan.</li>
+          <li><span class="tag" style="--rc:var(--c-gap)">Missing work</span> The <b>Gap finder</b> flags work, such as deployment, that similar epics had to add later.</li>
+        </ul>
+        <p>Every warning has to cite the past tickets it's based on.</p></div></section>
+      <section class="card step"><span class="num">4</span><div><h2>Check the evidence</h2>
+        <p>The <b>Data quality</b> agent rates how much to trust the history behind each warning. The <b>Critic</b> drops warnings with weak evidence, or evidence from a team the viewer isn't allowed to see. The <b>Writer</b> turns what's left into a short summary and a delivery forecast, and each risk gets a suggested fix.</p></div></section>
+      <section class="card step"><span class="num">5</span><div><h2>Learn from the outcome</h2>
+        <p>When the epic finishes, the <b>Scorekeeper</b> checks each warning against what actually happened. Patterns that came true get more weight next time, and patterns that didn't get less. That's the track record shown on the dashboard.</p></div></section>
+      <section class="card note"><h2>About this demo</h2>
+        <p>The data is the public issue tracker of Spring XD, an open-source project, from the TAWOS research dataset. The dashboard shows the project as it stood on the date shown there. It uses only what was known by then, with no information from later.</p></section>
     </div>
-    <span class="arrow">&rarr;</span>
-    <div class="col">
-      <div class="agent" data-agent="data_quality"><b>Data quality</b><span class="role">Confidence</span><span class="last"></span></div>
-      <div class="agent" data-agent="critic"><b>Critic</b><span class="role">Citations, ring-fence, revise</span><span class="last"></span></div>
+  </main>
+
+  <main id="view-dash">
+    <div class="top">
+      <div>
+        <h1>Delivery risk overview</h1>
+        <div class="sub">Data up to <b id="clock">-</b></div>
+      </div>
+      <div class="controls">
+        <span id="status" class="pill">loading</span>
+        <button class="btn ghost icon" id="refresh" title="Refresh data" aria-label="Refresh data">&#8635; Refresh</button>
+        <button class="btn ghost icon" id="theme" title="Switch light or dark mode" aria-label="Switch light or dark mode">&#9790; Dark</button>
+        <button class="btn ghost" id="new-toggle" hidden>Review a new epic</button>
+      </div>
     </div>
-    <span class="arrow">&rarr;</span>
-    <div class="col"><div class="agent" data-agent="writer"><b>Writer</b><span class="role">Review + P50/P90</span><span class="last"></span></div></div>
-    <span class="arrow">&rarr;</span>
-    <div class="col"><div class="agent" data-agent="scorekeeper"><b>Scorekeeper</b><span class="role">Grades warnings when the epic ends</span><span class="last"></span></div></div>
-  </div>
-  <div class="loop">&#8634; Learning loop: each hit adds 0.2 to the pattern's weight and each miss takes off 0.3; the specialists ignore patterns below 0.5.</div>
-</section>
-<main>
-  <section class="panel">
-    <h2>Agent log <span class="spacer"></span>
-      <select id="agent-filter" aria-label="Filter by agent"><option value="">All agents</option></select>
-      <label class="label"><input type="checkbox" id="follow" checked> Follow</label>
-    </h2>
-    <div id="log" role="log" aria-live="polite"></div>
-  </section>
-  <div class="right">
-    <section class="panel">
-      <h2>Reviews <span class="spacer"></span><span class="label" id="viewer"></span></h2>
-      <div id="epics"></div>
-      <div id="review"><p class="empty">Reviews appear here as the replay reaches each new epic.</p></div>
+
+    <section class="card" id="new-panel" hidden>
+      <h2>Review a new epic against the project's history</h2>
+      <form id="plan-form">
+        <label>Epic title<input id="plan-title" required value="Support Kafka as a message bus transport"></label>
+        <label>Tickets, one per line: title | points | component
+          <textarea id="plan-tickets" required>Kafka message bus implementation | 8 | Runtime
+Configure Kafka connection properties | 3 | Configuration
+Kafka source and sink stream modules | 5 | Stream Module</textarea></label>
+        <div><button class="btn" type="submit" id="plan-go">Review it</button> <span id="plan-msg"></span></div>
+      </form>
     </section>
-    <section class="panel">
-      <h2>Share of scored warnings that came true</h2>
-      <div id="chart"><p class="empty">The Scorekeeper's results appear here once the first reviewed epic finishes.</p><div id="tip"></div></div>
-    </section>
-  </div>
-</main>
+
+    <div class="kpis">
+      <div class="kpi open"><div class="ic">!</div><div><b id="t-open">0</b><span>Open risks</span></div></div>
+      <div class="kpi hit"><div class="ic">&#10003;</div><div><b id="t-hit">0</b><span>Came true</span></div></div>
+      <div class="kpi miss"><div class="ic">&#10007;</div><div><b id="t-miss">0</b><span>Didn't happen</span></div></div>
+      <div class="kpi acc"><div class="ic">%</div><div><b id="t-acc">-</b><span>Overrun hit rate <em id="t-acc-all"></em></span></div></div>
+      <div class="kpi epics"><div class="ic">#</div><div><b id="t-epics">0</b><span>Epics reviewed</span></div></div>
+    </div>
+
+    <div class="grid g3">
+      <section class="card"><h2>Risks by type</h2><div id="by-type"></div></section>
+      <section class="card"><h2>Outcomes by type<span class="hint">track record</span></h2><div id="by-outcome"></div>
+        <div class="key"><span><i style="background:var(--good)"></i>Came true</span><span><i style="background:var(--bad)"></i>Didn't happen</span><span><i style="background:var(--wait)"></i>Open</span></div></section>
+      <section class="card" id="timeline"><h2>Risks found per month</h2><div id="per-month"></div></section>
+    </div>
+
+    <div class="grid g2">
+      <section class="card">
+        <div class="tabs" role="tablist">
+          <button class="tab" role="tab" data-tab="open" aria-selected="true">Open risks<span class="n" id="n-open">0</span></button>
+          <button class="tab" role="tab" data-tab="graded" aria-selected="false">Checked against outcome<span class="n" id="n-graded">0</span></button>
+        </div>
+        <div id="risks"><p class="empty">Risks appear here as the agents find them.</p></div>
+      </section>
+      <div class="grid" style="margin:0">
+        <section class="card"><h2>Riskiest epics</h2><div id="epics"></div></section>
+        <section class="card"><h2>Agent activity<span class="hint">live log</span></h2><div id="log" role="log"></div></section>
+      </div>
+    </div>
+  </main>
+</div>
 <script src="config.js"></script>
 <script>
-const AGENT = { replay: "Replay clock", planner: "Planner", data_quality: "Data quality", estimator: "Estimator",
-  dependency_hunter: "Dependency hunter", gap_finder: "Gap finder", critic: "Critic", writer: "Writer",
-  scorekeeper: "Scorekeeper", historian: "Historian" };
+const AGENT = { replay: "Replay clock", historian: "Historian", planner: "Planner", estimator: "Estimator",
+  dependency_hunter: "Dependency hunter", gap_finder: "Gap finder", data_quality: "Data quality", critic: "Critic",
+  writer: "Writer", scorekeeper: "Scorekeeper" };
+const RISK = { estimator: "Overrun risk", dependency_hunter: "Blocker risk", gap_finder: "Missing work" };
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const day = iso => iso ? iso.slice(0, 10) : "";
 const params = new URLSearchParams(location.search);
 // Where the live API is: ?api=https://... in the URL, else config.js, else the server that served this page.
 const API = (params.get("api") || window.NABU_API || "").replace(/\/$/, "");
-let run = params.get("run"), after = 0, data = null, selected = null, timer = null;
-const seenAgents = new Set();
+let run = params.get("run"), after = 0, data = null, tab = "open", seen = new Set(), firstRender = true;
+
+// Light/dark toggle; the choice is remembered in this browser if storage is available.
+const store = { get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } },
+                set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) { /* private mode */ } } };
+function isDark() {
+  const t = document.documentElement.dataset.theme;
+  return t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+}
+function setTheme(t) {
+  if (t) document.documentElement.dataset.theme = t;
+  $("theme").innerHTML = isDark() ? "&#9788; Light" : "&#9790; Dark";
+}
+setTheme(store.get("nabu-theme"));
+$("theme").onclick = () => { const t = isDark() ? "light" : "dark"; store.set("nabu-theme", t); setTheme(t); };
+$("refresh").onclick = () => location.reload();
+
+// Two views in one page: the dashboard, and #how for "How it works".
+function route() {
+  const how = location.hash === "#how";
+  $("view-how").hidden = !how; $("view-dash").hidden = how;
+  for (const a of document.querySelectorAll(".nav")) a.classList.toggle("on", (a.dataset.view === "how") === how);
+}
+window.addEventListener("hashchange", route); route();
+for (const t of document.querySelectorAll(".tab")) t.onclick = () => {
+  tab = t.dataset.tab;
+  for (const x of document.querySelectorAll(".tab")) x.setAttribute("aria-selected", String(x === t));
+  renderRisks();
+};
 
 // Static mode: with no server (e.g. on Vercel) the page replays a run exported to runs/<id>.json.
-let recorded = null, shown = 0;
+let recorded = null, shown = 0, pauseAt = null;
 async function listRuns() {
   try {
     const res = await fetch(`${API}/api/runs`);
@@ -180,32 +300,39 @@ async function init() {
   const runs = await listRuns();
   if (!runs.length) { $("status").textContent = "no runs yet"; return; }
   run = run || runs[0].id;
-  $("run").innerHTML = runs.map(r => `<option ${r.id === run ? "selected" : ""}>${esc(r.id)}</option>`).join("");
+  $("run").innerHTML = runs.map(r => `<option value="${esc(r.id)}" ${r.id === run ? "selected" : ""}>${esc(r.id === "xd-demo" ? "Spring XD" : r.id)}</option>`).join("");
   $("run").onchange = () => { params.set("run", $("run").value); location.search = params.toString(); };
-  $("agent-filter").onchange = applyFilter;
   if (recorded) {
-    recorded = await (await fetch(`runs/${encodeURIComponent(run)}.json`)).json();
+    // A recorded run is treated as "today" at pause_at; nothing after it is shown.
+    pauseAt = (runs.find(r => r.id === run) || {}).pause_at || null;
+    const full = await (await fetch(`runs/${encodeURIComponent(run)}.json`)).json();
+    if (pauseAt) full.log = full.log.filter(e => (e.sim_at || "") <= pauseAt);
+    recorded = full;
     tick();
-  } else poll();
+  } else {
+    $("new-toggle").hidden = false;
+    poll();
+  }
 }
 
-// Reveal one replay step (the log rows sharing a sim time) at a time, as if the run were live.
+
+// Show one replay step (the log rows sharing a sim time) at a time, as if the run were live.
 function tick() {
   const full = recorded, log = full.log;
   let end = shown;
-  if (end < log.length) { const at = log[end].sim_at; while (end < log.length && log[end].sim_at === at) end++; }
+  if (pauseAt) end = log.length;
+  else if (end < log.length) { const at = log[end].sim_at; while (end < log.length && log[end].sim_at === at) end++; }
   const clock = end ? log[end - 1].sim_at : null, done = end >= log.length;
   const upTo = t => clock && t && t <= clock;
   render({
-    run: { ...full.run, clock, status: done ? "finished" : "replaying recording",
-           stats: { ...full.run.stats, accuracy: (full.run.stats.accuracy || []).filter(p => upTo(p[0])) } },
+    run: { ...full.run, clock, status: pauseAt ? "up to date" : done ? "finished" : "replaying" },
     log: log.slice(shown, end),
     reviews: full.reviews.filter(v => upTo(v.as_of)),
     scores: Object.fromEntries(Object.entries(full.scores).filter(([, v]) => upTo(v.at))),
     items: full.items,
   });
   shown = end;
-  if (!done) timer = setTimeout(tick, 1500);
+  if (!done) setTimeout(tick, 600);
 }
 
 async function poll() {
@@ -213,136 +340,203 @@ async function poll() {
     const res = await fetch(`${API}/api/state?run=${encodeURIComponent(run)}&after=${after}`);
     if (res.ok) render(await res.json());
   } catch (e) { /* server restarting; try again */ }
-  const done = data && data.run.status === "finished";
-  timer = setTimeout(poll, done ? 10000 : 1500);
+  setTimeout(poll, data && data.run.status === "finished" ? 10000 : 1500);
+}
+
+function risksOf(s) {
+  const out = [];
+  for (const v of s.reviews) for (const w of v.report.warnings)
+    out.push({ ...w, epic: v.report.epic, title: v.report.title, as_of: v.as_of, score: s.scores[w.id] });
+  return out.sort((a, b) => (b.as_of || "").localeCompare(a.as_of || ""));
 }
 
 function render(s) {
-  const first = data === null;
   data = s;
-  const r = s.run;
-  $("status").textContent = r.status;
-  $("status").className = "pill " + (r.status === "finished" ? "finished" : "");
-  $("clock").textContent = day(r.clock) || "-";
-  $("viewer").textContent = `Reader sees: ${r.viewer_scopes.join(", ")}`;
-  appendLog(s.log, first);
-  if (s.log.length) after = s.log[s.log.length - 1].seq;
-  const published = s.reviews.reduce((n, v) => n + v.report.warnings.length, 0);
-  const fenced = s.reviews.reduce((n, v) => n + (v.report.suppressed_by_ring_fence || 0), 0);
-  const scored = Object.values(s.scores), hits = scored.filter(x => x.hit).length;
-  $("t-reviews").textContent = s.reviews.length;
-  $("t-warnings").textContent = published;
-  $("t-acc").textContent = scored.length ? `${Math.round(100 * hits / scored.length)}% (${hits}/${scored.length})` : "-";
-  $("t-fence").textContent = fenced;
-  renderEpics(s);
-  renderChart(r.stats.accuracy || []);
-}
-
-function appendLog(rows, first) {
-  const box = $("log");
-  const filter = $("agent-filter").value;
-  const frag = document.createDocumentFragment();
-  for (const e of rows) {
-    if (!seenAgents.has(e.agent)) {
-      seenAgents.add(e.agent);
-      $("agent-filter").insertAdjacentHTML("beforeend", `<option value="${esc(e.agent)}">${esc(AGENT[e.agent] || e.agent)}</option>`);
-    }
-    const div = document.createElement("div");
-    div.className = `row k-${e.kind}${first ? "" : " new"}`;
-    div.dataset.agent = e.agent;
-    if (filter && e.agent !== filter) div.hidden = true;
-    div.innerHTML = `<span class="when">${esc(day(e.sim_at))}</span><span class="who">${esc(AGENT[e.agent] || e.agent)}</span>` +
-      `<span><span class="kind">${esc(e.kind)}</span>${esc(e.message)}</span>`;
-    frag.appendChild(div);
-    if (first) pulse(e, false); else queue.push(e);
+  $("status").textContent = s.run.status;
+  $("status").classList.add("live");
+  $("clock").textContent = day(s.run.clock) || "-";
+  const log = $("log");
+  for (const e of s.log) {
+    log.insertAdjacentHTML("beforeend", `<div class="row"><span class="when">${esc(day(e.sim_at))}</span>` +
+      `<span class="who">${esc(AGENT[e.agent] || e.agent)}</span><span class="msg">${esc(e.message)}</span></div>`);
+    if (!firstRender) queue.push(e.agent);
   }
-  box.appendChild(frag);
-  if ($("follow").checked && rows.length) box.scrollTop = box.scrollHeight;
+  if (s.log.length) { after = s.log[s.log.length - 1].seq; log.scrollTop = log.scrollHeight; }
+  const all = risksOf(s), graded = all.filter(r => r.score), hits = graded.filter(r => r.score.hit).length;
+  $("t-open").textContent = all.length - graded.length;
+  $("t-hit").textContent = hits;
+  $("t-miss").textContent = graded.length - hits;
+  // Headline the overrun risks, which have enough outcomes to judge; the other types are still building a record.
+  const est = graded.filter(r => r.agent === "estimator"), estHits = est.filter(r => r.score.hit).length;
+  $("t-acc").textContent = est.length ? `${Math.round(100 * estHits / est.length)}%` : "-";
+  $("t-acc").title = `${estHits} of ${est.length} checked overrun risks`;
+  $("t-acc-all").textContent = graded.length ? `${estHits} of ${est.length} · all types ${Math.round(100 * hits / graded.length)}%` : "";
+  $("n-open").textContent = all.length - graded.length;
+  $("n-graded").textContent = graded.length;
+  $("t-epics").textContent = s.reviews.length;
+  renderCharts(all);
+  renderRisks();
+  firstRender = false;
 }
 
-// A step's log rows land together when it commits, so play them through the boxes one at a time.
-const queue = [], pulseTimers = {};
-setInterval(() => { if (queue.length > 40) queue.splice(0, queue.length - 40); if (queue.length) pulse(queue.shift(), true); }, 350);
-function pulse(e, flash) {
-  const box = document.querySelector(`.agent[data-agent="${e.agent}"]`);
-  if (!box) return;
-  box.querySelector(".last").textContent = `${e.kind}: ${e.message}`;
-  box.querySelector(".last").title = e.message;
-  if (!flash) return;
-  box.className = `agent${e.agent === "replay" ? " store" : ""} active k-${e.kind}`;
-  clearTimeout(pulseTimers[e.agent]);
-  pulseTimers[e.agent] = setTimeout(() => box.classList.remove("active"), 1800);
-}
-
-function applyFilter() {
-  const f = $("agent-filter").value;
-  for (const row of $("log").children) row.hidden = !!f && row.dataset.agent !== f;
-}
-
-function renderEpics(s) {
-  if (!s.reviews.length) return;
-  if (!selected || !s.reviews.some(v => v.epic_id === selected)) selected = s.reviews[s.reviews.length - 1].epic_id;
-  $("epics").innerHTML = s.reviews.map(v => {
-    const n = v.report.warnings.length;
-    return `<button class="epic" aria-pressed="${v.epic_id === selected}" data-id="${esc(v.epic_id)}">${esc(v.report.epic)}<span class="n">${n}</span></button>`;
+// Charts: everything below is drawn from risksOf(data), so it never shows a risk found after the clock.
+const TYPES = [["estimator", "var(--c-est)"], ["dependency_hunter", "var(--c-dep)"], ["gap_finder", "var(--c-gap)"]];
+const typeOf = r => TYPES.some(([k]) => k === r.agent) ? r.agent : "other";
+function renderCharts(all) {
+  const none = `<p class="empty-s">No risks found yet.</p>`;
+  // Donut of risks by type.
+  const counts = TYPES.map(([k, c]) => [k, c, all.filter(r => r.agent === k).length]).filter(x => x[2]);
+  if (!all.length) $("by-type").innerHTML = none;
+  else {
+    let acc = 0; const C = 2 * Math.PI * 40;
+    const arcs = counts.map(([, c, n]) => {
+      const len = C * n / all.length, a = `<circle r="40" cx="60" cy="60" fill="none" stroke="${c}" stroke-width="18" ` +
+        `stroke-dasharray="${len} ${C - len}" stroke-dashoffset="${-acc}" transform="rotate(-90 60 60)"/>`;
+      acc += len; return a;
+    }).join("");
+    $("by-type").innerHTML = `<div class="donut"><svg viewBox="0 0 120 120" role="img" aria-label="Risks by type">${arcs}` +
+      `<text x="60" y="58" text-anchor="middle" style="font-size:22px;font-weight:650;fill:var(--ink)">${all.length}</text>` +
+      `<text x="60" y="75" text-anchor="middle" style="font-size:10px;fill:var(--ink-3)">risks</text></svg>` +
+      `<div class="legend">${counts.map(([k, c, n]) => `<div><i style="background:${c}"></i>${RISK[k]}<b>${n}</b></div>`).join("")}</div></div>`;
+  }
+  // Stacked bars: came true / didn't happen / open, per type.
+  $("by-outcome").innerHTML = !all.length ? none : `<div class="bars">${TYPES.map(([k]) => {
+    const rs = all.filter(r => r.agent === k); if (!rs.length) return "";
+    const hit = rs.filter(r => r.score && r.score.hit).length, miss = rs.filter(r => r.score && !r.score.hit).length, open = rs.length - hit - miss;
+    const pct = n => `${100 * n / rs.length}%`, g = hit + miss;
+    const learning = k !== "estimator" ? ` <small class="learn">still learning</small>` : "";
+    return `<div class="bar-row"><div class="lbl"><span class="name">${RISK[k]}${learning}</span><span>${g ? `${hit} of ${g} came true · ` : ""}${rs.length} found</span></div>` +
+      `<div class="bar"><div style="width:${pct(hit)};background:var(--good)"></div><div style="width:${pct(miss)};background:var(--bad)"></div>` +
+      `<div style="width:${pct(open)};background:var(--wait);opacity:.55"></div></div></div>`;
+  }).join("")}</div>`;
+  // Column chart: risks found per month, stacked by type.
+  const months = [...new Set(all.map(r => (r.as_of || "").slice(0, 7)))].sort();
+  if (!months.length) { $("per-month").innerHTML = none; return; }
+  const W = 360, H = 150, pad = 18, bw = Math.min(26, (W - 8) / months.length - 4);
+  const per = months.map(m => TYPES.map(([k]) => all.filter(r => r.as_of.startsWith(m) && r.agent === k).length));
+  const max = Math.max(1, ...per.map(p => p.reduce((a, b) => a + b, 0)));
+  const step = (W - 8) / months.length;
+  const cols = per.map((p, i) => {
+    let y = H - pad; const x = 4 + i * step + (step - bw) / 2;
+    const rects = p.map((n, j) => { const h = (H - pad - 10) * n / max; y -= h; return n ? `<rect x="${x}" y="${y}" width="${bw}" height="${h}" rx="2" fill="${TYPES[j][1]}"><title>${months[i]}: ${n} ${RISK[TYPES[j][0]]}</title></rect>` : ""; }).join("");
+    const lbl = (months.length <= 12 || i % 2 === 0) ? `<text x="${x + bw / 2}" y="${H - 4}" text-anchor="middle">${months[i].slice(2).replace("-", "/")}</text>` : "";
+    return rects + lbl;
   }).join("");
-  for (const b of $("epics").children) b.onclick = () => { selected = b.dataset.id; renderEpics(data); };
-  renderReview(s.reviews.find(v => v.epic_id === selected), s);
+  $("per-month").innerHTML = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Risks found per month">` +
+    `<line x1="0" x2="${W}" y1="${H - pad}" y2="${H - pad}" stroke="var(--border)"/>${cols}</svg>` +
+    `<div class="key">${TYPES.map(([k, c]) => `<span><i style="background:${c}"></i>${RISK[k]}</span>`).join("")}</div>`;
+  // Epics with the most risks found so far.
+  const by = {};
+  for (const r of all) (by[r.epic] = by[r.epic] || { title: r.title, rs: [] }).rs.push(r);
+  const top = Object.entries(by).sort((a, b) => b[1].rs.length - a[1].rs.length).slice(0, 7);
+  $("epics").innerHTML = `<table><tr><th>Epic</th><th style="text-align:right">Risks</th></tr>${top.map(([e, v]) =>
+    `<tr><td><code>${esc(e)}</code><br>${esc(v.title)}</td><td class="num">${v.rs.length}<div class="dots">${v.rs.slice(0, 6).map(r =>
+      `<i style="background:${r.score ? (r.score.hit ? "var(--good)" : "var(--bad)") : "var(--wait)"}" title="${r.score ? (r.score.hit ? "came true" : "didn't happen") : "open"}"></i>`).join("")}</div></td></tr>`).join("")}</table>`;
 }
 
-function renderReview(v, s) {
-  const r = v.report, f = r.forecast || {};
-  const fmt = d => d == null ? "-" : `${d} days`;
-  let html = `<h3>${esc(r.epic)} ${esc(r.title)}</h3><p class="summary">Reviewed as of ${esc(day(r.as_of))}, using only what was known then.</p>`;
-  html += `<div class="forecast"><div><span class="label">P50</span><b>${fmt(f.p50_days)}</b></div><div><span class="label">P90</span><b>${fmt(f.p90_days)}</b></div></div>`;
-  if (r.suppressed_by_ring_fence) {
-    html += `<div class="fence">${r.suppressed_by_ring_fence} warning${r.suppressed_by_ring_fence > 1 ? "s" : ""} withheld: the evidence is in a scope this reader can't see.</div>`;
+// A plain-language reason per risk, from the same numbers the agent cited.
+function whyFor(r) {
+  const c = r.claim || "", n = (r.evidence || []).length, past = n ? `${n} similar past ticket${n > 1 ? "s" : ""}` : "past work";
+  if (r.agent === "estimator") {
+    const m = c.match(/'([^']+)' work took ([\d.]+)x/);
+    return m ? `On this project, '${m[1]}' work has taken ${m[2]}x the usual time per story point (${past}), so the estimate is probably too low. ` +
+      "If that repeats, these tickets will run late and push the epic's end date out."
+      : `Similar work here has taken longer than estimated (${past}), so this plan is likely to run late.`;
   }
-  if (!r.warnings.length) html += `<p class="empty">No warnings passed the critic for this epic.</p>`;
-  for (const w of r.warnings) {
-    const sc = s.scores[w.id];
-    const out = sc ? (sc.hit ? `<span class="outcome hit">&#10003; Came true</span>` : `<span class="outcome miss">&#10007; Didn't happen</span>`)
-                   : `<span class="outcome pending">Waiting for outcome</span>`;
-    const cites = w.evidence.map(id => {
-      const it = s.items[id];
+  if (r.agent === "dependency_hunter") {
+    const m = c.match(/by '([^']+)' work/);
+    return `Epics like this one were held up waiting on ${m ? `'${m[1]}'` : "other"} work (${past}), and nothing in this plan covers it. ` +
+      "The team could get blocked partway through.";
+  }
+  if (r.agent === "gap_finder") {
+    const m = c.match(/no (.+?) tickets, and (\d+)%/);
+    return m ? `${m[2]}% of past epics that started without ${m[1]} tickets had to add them later. ` +
+      "Work found mid-epic is unplanned, so it usually means a slip or a cut." 
+      : "Past epics with the same gap had to add this work later, which usually means a slip.";
+  }
+  return "Past work on this project suggests this plan may not go as expected.";
+}
+
+// One concrete next step per risk, built from the numbers the agent already cited.
+function fixFor(r) {
+  const c = r.claim || "", t = r.suggested_ticket;
+  if (r.agent === "estimator") {
+    const m = c.match(/'([^']+)' work took ([\d.]+)x/), pts = c.match(/\((\d+) points?\)/);
+    if (m && pts) return `Plan the '${m[1]}' work at about ${Math.round(pts[1] * m[2])} points instead of ${pts[1]}, ` +
+      `or split it and re-estimate with someone who did the past tickets below.`;
+    return "Re-estimate this work against the similar past tickets below, and add buffer before committing to a date.";
+  }
+  if (r.agent === "dependency_hunter") {
+    const m = c.match(/by '([^']+)' work/);
+    return `${t ? t + "." : `Add a '${m ? m[1] : "blocking"}' ticket and link it as a blocker.`} ` +
+      "Start it first, so it doesn't hold up the rest of the epic.";
+  }
+  if (r.agent === "gap_finder") {
+    const m = c.match(/no (.+?) tickets/);
+    return `Add ${m ? `a ${m[1]} ticket` : t ? `"${t}"` : "the missing ticket"} to the plan now, sized and owned, ` +
+      "instead of finding it halfway through the epic.";
+  }
+  return t || "Review this with the team before the plan is committed.";
+}
+
+function renderRisks() {
+  if (!data) return;
+  const all = risksOf(data), list = all.filter(r => tab === "open" ? !r.score : r.score);
+  if (!list.length) {
+    $("risks").innerHTML = `<p class="empty">${tab === "open" ? "No open risks right now." : "No risks have reached their outcome yet."}</p>`;
+    return;
+  }
+  $("risks").innerHTML = list.map(r => {
+    const badge = !r.score ? `<span class="badge wait">Waiting for outcome</span>`
+      : r.score.hit ? `<span class="badge hit">&#10003; Came true</span>` : `<span class="badge miss">&#10007; Didn't happen</span>`;
+    const cites = (r.evidence || []).map(id => {
+      const it = data.items[id];
       return `<li><code>${esc(it ? it.key : id)}</code> ${esc(it ? it.title : "")}</li>`;
     }).join("");
-    html += `<div class="warning"><div class="meta"><b>${esc(AGENT[w.agent] || w.agent)}</b><span>${esc(w.confidence || "")} confidence</span>${out}</div>` +
-      `<div>${esc(w.claim)}</div>${sc && sc.detail ? `<div class="label">${esc(sc.detail)}</div>` : ""}` +
-      `<ul class="cites">${cites}</ul></div>`;
-  }
-  if (r.missing_tickets && r.missing_tickets.length) {
-    html += `<div class="label">Suggested missing tickets</div><ul class="missing">${r.missing_tickets.map(t => `<li>${esc(t)}</li>`).join("")}</ul>`;
-  }
-  $("review").innerHTML = html;
+    const fresh = !firstRender && !seen.has(r.id + (r.score ? "s" : ""));
+    seen.add(r.id + (r.score ? "s" : ""));
+    return `<article class="risk ${esc(r.agent)}${fresh ? " flash" : ""}"><div class="head"><span class="tag">${esc(RISK[r.agent] || r.agent)}</span>` +
+      `<span class="conf">${esc(r.confidence || "")} confidence · found ${esc(day(r.as_of))}</span>${badge}</div>` +
+      `<div class="epic"><code>${esc(r.epic)}</code>${esc(r.title)}</div>` +
+      `<p class="claim">${esc(r.claim)}</p>` +
+      `<div class="why"><b>Why it's a risk:</b> ${esc(whyFor(r))}</div>` +
+      `<div class="fix"><b>Suggested fix:</b> ${esc(fixFor(r))}</div>` +
+      (r.score && r.score.detail ? `<div class="detail">Outcome: ${esc(r.score.detail)}</div>` : "") +
+      (cites ? `<details><summary>Evidence: ${r.evidence.length} past tickets</summary><ul>${cites}</ul></details>` : "") +
+      `</article>`;
+  }).join("");
+  if (firstRender) for (const r of all) seen.add(r.id + (r.score ? "s" : ""));
 }
 
-function renderChart(points) {
-  const box = $("chart");
-  if (!points.length) return;
-  const W = 640, H = 220, L = 44, R = 16, T = 12, B = 28;
-  const xs = points.map(p => Date.parse(p[0])), lo = Math.min(...xs), hi = Math.max(...xs, lo + 1);
-  const X = t => L + (t - lo) / (hi - lo) * (W - L - R), Y = v => T + (1 - v) * (H - T - B);
-  const grid = [0, 0.25, 0.5, 0.75, 1].map(v =>
-    `<line class="gridline" x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}"/><text x="${L - 6}" y="${Y(v) + 4}" text-anchor="end">${v * 100}%</text>`).join("");
-  const d = points.map((p, i) => `${i ? "L" : "M"}${X(xs[i]).toFixed(1)} ${Y(p[1]).toFixed(1)}`).join("");
-  const dots = points.map((p, i) => `<circle cx="${X(xs[i])}" cy="${Y(p[1])}" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>`).join("");
-  const hits = points.map((p, i) => `<rect x="${X(xs[i]) - 12}" y="${T}" width="24" height="${H - T - B}" fill="transparent" data-i="${i}"/>`).join("");
-  box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Share of scored warnings that came true, over replay time">${grid}` +
-    `<line class="axis" x1="${L}" x2="${W - R}" y1="${Y(0)}" y2="${Y(0)}"/>` +
-    `<text x="${L}" y="${H - 8}">${day(points[0][0])}</text><text x="${W - R}" y="${H - 8}" text-anchor="end">${day(points[points.length - 1][0])}</text>` +
-    `<path d="${d}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>${dots}${hits}</svg><div id="tip"></div>`;
-  const tip = $("tip");
-  for (const rect of box.querySelectorAll("rect[data-i]")) {
-    rect.onmouseenter = ev => {
-      const p = points[+rect.dataset.i];
-      tip.textContent = `${day(p[0])}: ${Math.round(p[1] * 100)}% came true so far`;
-      const bb = box.getBoundingClientRect(), rb = rect.getBoundingClientRect();
-      tip.style.left = `${Math.min(rb.left - bb.left, bb.width - 200)}px`; tip.style.top = "8px"; tip.style.display = "block";
-    };
-    rect.onmouseleave = () => { tip.style.display = "none"; };
-  }
-}
+// A step's log rows land together, so light the agents up one at a time.
+const queue = [];
+setInterval(() => {
+  if (queue.length > 30) queue.splice(0, queue.length - 30);
+  const agent = queue.shift();
+  if (!agent) return;
+  const el = document.querySelector(`.agent[data-agent="${agent}"]`);
+  if (!el) return;
+  el.classList.add("active");
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove("active"), 900);
+}, 250);
+
+$("new-toggle").onclick = () => { $("new-panel").hidden = !$("new-panel").hidden; };
+$("plan-form").onsubmit = async ev => {
+  ev.preventDefault();
+  const tickets = $("plan-tickets").value.split("\n").map(l => l.split("|").map(x => x.trim())).filter(p => p[0])
+    .map(([title, points, component]) => ({ title, estimate: points ? Number(points) : null, component: component || null }));
+  $("plan-go").disabled = true;
+  $("plan-msg").textContent = "Sent to the agents. Watch them light up.";
+  try {
+    const res = await fetch(`${API}/api/plan`, { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: $("plan-title").value, tickets }) });
+    if (!res.ok) throw new Error(await res.text());
+    const { run: live } = await res.json();
+    if (run !== live) { params.set("run", live); location.search = params.toString(); return; }
+  } catch (e) { $("plan-msg").textContent = "Couldn't reach the agents: " + e.message; }
+  setTimeout(() => { $("plan-go").disabled = false; }, 4000);
+};
 
 init();
 </script>
