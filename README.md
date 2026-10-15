@@ -13,4 +13,4 @@ Built for the Accel AI Innovate London hackathon (15 Oct 2026), challenge "Long 
 
 ![Architecture](docs/architecture.png)
 
-See [docs/plan.md](docs/plan.md) for the full build plan and [docs/agents.md](docs/agents.md) to run the agents.
+See [docs/plan.md](docs/plan.md) for the full build plan and [docs/agents.md](docs/agents.md) to run the agents. Moving to a new machine? See [HANDOVER.md](HANDOVER.md).

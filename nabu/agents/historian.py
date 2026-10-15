@@ -6,10 +6,11 @@ on them hit or miss, which is how the team improves over the replay.
 """
 
 import json
+from datetime import datetime, timedelta
 import statistics
 from collections import defaultdict
 
-from ..store import duration, tokens
+from ..store import duration, joined, tokens
 
 # Work categories a plan can be missing. Keyword cues on title + description.
 CATEGORIES = {
@@ -110,22 +111,31 @@ class Historian:
                 for key, ids in blockers.items() if len(blocked[key]) >= 2]
 
     def _gaps(self, store, scope) -> list:
-        """Categories of work that most finished epics ended up needing."""
-        epics = store.completed("epic")
-        if len(epics) < 2:
-            return []
-        seen = defaultdict(list)
-        for epic in epics:
-            for category in {c for child in store.children(epic["id"]) for c in categories_of(child)}:
-                seen[category].append(epic["id"])
+        """Categories of work that finished epics left out of their day-one plan and had to add later.
+
+        This matches what a gap warning predicts (the work gets added after the review), so a category
+        that is merely common, but usually planned up front, does not become a pattern."""
+        later, missing = defaultdict(list), defaultdict(int)
+        for epic in store.completed("epic"):
+            review_at = (datetime.fromisoformat(epic["created_at"].replace("Z", "+00:00")) + timedelta(days=1)
+                         ).isoformat().replace("+00:00", "Z")
+            children = store.children(epic["id"])
+            planned = {c for child in children if joined(child) <= review_at for c in categories_of(child)}
+            for category in CATEGORIES:
+                if category in planned:
+                    continue
+                missing[category] += 1
+                added = [child["id"] for child in children if joined(child) > review_at and category in categories_of(child)]
+                if added:
+                    later[category].append(added)
         patterns = []
-        for category, epic_ids in seen.items():
-            share = len(epic_ids) / len(epics)
-            if share >= 0.5 and len(epic_ids) >= 2:
-                evidence = [child["id"] for epic_id in epic_ids for child in store.children(epic_id)
-                            if category in categories_of(child)]
+        for category, added in later.items():
+            share = len(added) / missing[category]
+            if share >= 0.5 and len(added) >= 2:
+                evidence = [item for ids in added for item in ids]
                 patterns.append({"id": f"{scope}:gap:{category}", "scope": scope, "kind": "gap", "key": category,
                                  "stat": round(share, 2), "evidence": evidence[:6],
-                                 "name": f"Epics end up needing {category} work",
-                                 "description": f"{share:.0%} of finished epics included {category} tickets."})
+                                 "name": f"Epics add {category} work late",
+                                 "description": f"{share:.0%} of finished epics planned without {category} tickets "
+                                                f"had to add them later."})
         return patterns
