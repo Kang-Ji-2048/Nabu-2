@@ -178,6 +178,8 @@ td code { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
 
 /* Align epic rows with the compact risk cards; content and ordering are unchanged. */
 .epic-panel h2{margin-bottom:8px}.epic-panel table{table-layout:fixed;border-collapse:separate;border-spacing:0 9px}.epic-panel th{font-size:10.5px;padding:0 13px 2px}.epic-panel th:last-child{width:63px;text-align:right}.epic-panel td{padding:13px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;font-size:12px;line-height:1.55}.epic-panel td:first-child{border-left:1px solid var(--border);border-radius:10px 0 0 10px}.epic-panel td:last-child{border-right:1px solid var(--border);border-radius:0 10px 10px 0}.epic-panel td code{display:inline-block;font:10.5px var(--mono);color:var(--ink-3);margin-bottom:5px}.epic-panel .epic-name{display:inline-block;overflow-wrap:anywhere;color:var(--ink);font-weight:500}.epic-panel td.num{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;padding-left:4px}.epic-panel .dots{display:flex;justify-content:flex-end;gap:3px;margin-top:7px;flex-wrap:wrap}.epic-panel .dots i{width:6px;height:6px;margin:0;flex:none}.epic-panel table tr:last-child td{border-bottom:1px solid var(--border)}
+
+.epic-panel th:last-child{width:78px}.epic-panel td.num{vertical-align:middle}.epic-risk-count{display:inline-grid;place-items:center;min-width:42px;min-height:42px;padding:4px 8px;border-radius:12px;background:var(--accent-tint);color:var(--accent);font-size:26px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}.epic-panel .dots{gap:4px;margin-top:9px}.epic-panel .dots i{width:8px;height:8px}
 </style>
 </head>
 <body>
@@ -468,7 +470,7 @@ function renderCharts(all) {
   for (const r of all) (by[r.epic] = by[r.epic] || { title: r.title, rs: [] }).rs.push(r);
   const top = Object.entries(by).sort((a, b) => b[1].rs.length - a[1].rs.length).slice(0, 7);
   $("epics").innerHTML = `<table><tr><th>Epic</th><th style="text-align:right">Risks</th></tr>${top.map(([e, v]) =>
-    `<tr><td><code>${esc(e)}</code><br><span class="epic-name">${esc(v.title)}</span></td><td class="num">${v.rs.length}<div class="dots">${v.rs.slice(0, 6).map(r =>
+    `<tr><td><code>${esc(e)}</code><br><span class="epic-name">${esc(v.title)}</span></td><td class="num"><span class="epic-risk-count" aria-label="${v.rs.length} risks">${v.rs.length}</span><div class="dots">${v.rs.slice(0, 6).map(r =>
       `<i style="background:${r.score ? (r.score.hit ? "var(--good)" : "var(--bad)") : "var(--wait)"}" title="${r.score ? (r.score.hit ? "came true" : "didn't happen") : "open"}"></i>`).join("")}</div></td></tr>`).join("")}</table>`;
 }
 
