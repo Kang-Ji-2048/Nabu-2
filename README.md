@@ -1,5 +1,13 @@
 # Nabu: Delivery Risk Reviewer
 
+## Python library
+
+Nabu is also available as the MIT-licensed `nabu-delivery` Python package
+(`from nabu import Reviewer, Viewer, WorkItem`). Install from this checkout with
+`python -m pip install .`; offline execution needs no API key. See
+[the library guide](docs/library.md) and [runnable example](examples/library_quickstart.py).
+The package is experimental and has not yet been published to PyPI.
+
 Nabu reads a team's ticket history from any tracker and warns them, before work starts, where a new plan is likely to go wrong.
 
 - **In:** past tickets from Jira, Linear, GitHub Issues or Azure DevOps, normalised into one schema, plus a new epic or sprint plan.

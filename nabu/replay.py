@@ -24,7 +24,7 @@ END_OF_TIME = "9999-12-31T00:00:00Z"
 
 def plus_days(timestamp, days) -> str:
     moment = datetime.fromisoformat(timestamp.replace("Z", "+00:00")) + timedelta(days=days)
-    return moment.isoformat().replace("+00:00", "Z")
+    return moment.isoformat(timespec="microseconds").replace("+00:00", "Z")
 
 
 def timeline(conn, tenant_id, scopes, review_after_days=1.0) -> list:
@@ -58,7 +58,7 @@ def start(conn, run_id, tenant_id, scopes, viewer_scopes=None):
                      (run_id, json.dumps(timeline(conn, tenant_id, viewer_scopes))))
 
 
-def run(conn, run_id, *, offline=None, stop_after=None, quiet=False, pace=0.0, max_calls=1000) -> dict:
+def run(conn, run_id, *, offline=None, stop_after=None, quiet=False, pace=0.0, max_calls=1000, llm_factory=None) -> dict:
     if pace < 0:
         raise ValueError("pace must be non-negative")
     row = conn.execute("SELECT * FROM run WHERE id=?", (run_id,)).fetchone()
@@ -67,7 +67,8 @@ def run(conn, run_id, *, offline=None, stop_after=None, quiet=False, pace=0.0, m
     tenant_id, scopes, viewer_scopes = row["tenant_id"], json.loads(row["scopes"]), json.loads(row["viewer_scopes"])
     stats = json.loads(row["stats"])
     log = Log(conn, run_id, quiet=quiet)
-    llm = LLM(log, offline=offline, max_calls=max_calls, calls=stats.get("model_calls", 0))
+    llm = (llm_factory(log, max_calls, stats.get("model_calls", 0)) if llm_factory else
+           LLM(log, offline=offline, max_calls=max_calls, calls=stats.get("model_calls", 0)))
     historian, team, scorekeeper = Historian(llm, log), ReviewTeam(llm, log), Scorekeeper(log)
     saved = conn.execute("SELECT steps FROM run_timeline WHERE run_id=?", (run_id,)).fetchone()
     if saved is None:  # compatibility with runs created before timeline snapshots
