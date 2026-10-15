@@ -32,11 +32,17 @@ aside { background: var(--side); color: var(--side-ink); padding: 20px 16px; dis
 .brand small { display: block; font-size: 11px; font-weight: 400; color: var(--side-ink-2); letter-spacing: 0; }
 .side-h { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--side-ink-2); margin: 0 0 8px; }
 aside select { width: 100%; font: inherit; font-size: 13px; color: #fff; background: var(--side-hover); border: 1px solid #2c3450; border-radius: 8px; padding: 7px 10px; }
-#team { display: grid; gap: 2px; }
-.agent { display: flex; align-items: center; gap: 10px; font-size: 13px; padding: 6px 8px; border-radius: 6px; color: var(--side-ink); transition: background .3s, color .3s; }
-.agent .dot { width: 8px; height: 8px; border-radius: 50%; background: #3a4260; transition: background .3s, box-shadow .3s; }
-.agent.active { background: var(--side-hover); color: #fff; }
-.agent.active .dot { background: #4ade80; box-shadow: 0 0 0 4px rgba(74, 222, 128, .2); }
+nav { display: grid; gap: 2px; }
+.nav { display: block; font-size: 13.5px; padding: 8px 10px; border-radius: 6px; color: var(--side-ink); text-decoration: none; }
+.nav:hover { background: var(--side-hover); }
+.nav.on { background: var(--side-hover); color: #fff; box-shadow: inset 3px 0 0 var(--accent); }
+.how { display: grid; gap: 12px; max-width: 820px; }
+.step { display: flex; gap: 14px; }
+.step .num { flex: none; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-tint); color: var(--accent); font-weight: 700; }
+.how h2 { margin: 3px 0 6px; } .how p { margin: 0 0 8px; color: var(--ink-2); } .how p:last-child { margin-bottom: 0; } .how b { color: var(--ink); }
+.how ul { margin: 4px 0 10px; padding: 0; list-style: none; display: grid; gap: 8px; color: var(--ink-2); }
+.how .tag { margin-right: 6px; }
+.card.note { border-left: 4px solid var(--accent); }
 .side-foot { margin-top: auto; font-size: 11.5px; color: var(--side-ink-2); line-height: 1.5; }
 main { padding: 22px 28px 40px; min-width: 0; }
 .top { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-bottom: 18px; }
@@ -97,6 +103,8 @@ button { font: inherit; font-size: 13px; }
 .badge.hit { background: var(--good-tint); color: var(--good); }
 .badge.miss { background: var(--bad-tint); color: var(--bad); }
 .risk .claim { margin: 2px 0 0; font-size: 13.5px; }
+.risk .why { font-size: 13px; margin-top: 8px; color: var(--ink-2); }
+.risk .why b { color: var(--ink); }
 .risk .fix { font-size: 13px; margin-top: 8px; padding: 7px 10px; border-radius: 6px; background: var(--accent-tint); }
 .risk .fix b { color: var(--accent); }
 .risk .detail { color: var(--ink-2); font-size: 12px; margin-top: 6px; }
@@ -125,7 +133,7 @@ td code { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
 @media (max-width: 1100px) { .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } .g3 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } #timeline { grid-column: 1 / -1; } }
 @media (max-width: 860px) {
   .app { grid-template-columns: minmax(0, 1fr); }
-  aside { gap: 14px; } #team { grid-template-columns: repeat(2, minmax(0, 1fr)); } .side-foot { display: none; }
+  aside { gap: 14px; } nav { grid-template-columns: 1fr 1fr; } .side-foot { display: none; }
   main { padding: 18px 16px 32px; } .g2, .g3 { grid-template-columns: minmax(0, 1fr); } .controls { margin-left: 0; }
   .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
@@ -136,11 +144,38 @@ td code { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
   <aside>
     <div class="brand"><img src="assets/nabu-bird.svg" alt=""><div>Nabu<small>delivery risk review</small></div></div>
     <div><p class="side-h">Project</p><select id="run" aria-label="Project run"></select></div>
-    <div><p class="side-h">Agent team</p><div id="team"></div></div>
+    <nav><p class="side-h">Menu</p>
+      <a class="nav" href="#" data-view="dash">Dashboard</a>
+      <a class="nav" href="#how" data-view="how">How it works</a>
+    </nav>
     <p class="side-foot">Each new epic is reviewed against the project's own history. Open risks are still waiting for their outcome; checked ones show how earlier warnings turned out.</p>
   </aside>
 
-  <main>
+  <main id="view-how" hidden>
+    <div class="top"><div><h1>How it works</h1><div class="sub">Nabu reviews a new epic against the project's own history, before work starts.</div></div></div>
+    <div class="how">
+      <section class="card step"><span class="num">1</span><div><h2>Read the tracker history</h2>
+        <p>Nabu pulls the project's tickets, epics, estimates and links from the tracker. Jira and GitHub Issues are mapped into one common format, and every record is tagged with the team or project it belongs to.</p></div></section>
+      <section class="card step"><span class="num">2</span><div><h2>Learn from finished work</h2>
+        <p>The <b>Historian</b> looks only at work that has already finished. It works out which kinds of tickets overran their estimates, what work tended to block other work, and what epics often forgot to plan.</p></div></section>
+      <section class="card step"><span class="num">3</span><div><h2>Review each new epic</h2>
+        <p>A day after an epic is created, the <b>Planner</b> reads its tickets and hands them to three specialists:</p>
+        <ul>
+          <li><span class="tag" style="--rc:var(--c-est)">Overrun risk</span> The <b>Estimator</b> flags tickets in areas that have run over before.</li>
+          <li><span class="tag" style="--rc:var(--c-dep)">Blocker risk</span> The <b>Dependency hunter</b> flags work that blocked similar epics but isn't in this plan.</li>
+          <li><span class="tag" style="--rc:var(--c-gap)">Missing work</span> The <b>Gap finder</b> flags work, such as deployment, that similar epics had to add later.</li>
+        </ul>
+        <p>Every warning has to cite the past tickets it's based on.</p></div></section>
+      <section class="card step"><span class="num">4</span><div><h2>Check the evidence</h2>
+        <p>The <b>Data quality</b> agent rates how much to trust the history behind each warning. The <b>Critic</b> drops warnings with weak evidence, or evidence from a team the viewer isn't allowed to see. The <b>Writer</b> turns what's left into a short summary and a delivery forecast, and each risk gets a suggested fix.</p></div></section>
+      <section class="card step"><span class="num">5</span><div><h2>Learn from the outcome</h2>
+        <p>When the epic finishes, the <b>Scorekeeper</b> checks each warning against what actually happened. Patterns that came true get more weight next time, and patterns that didn't get less. That's the track record shown on the dashboard.</p></div></section>
+      <section class="card note"><h2>About this demo</h2>
+        <p>The data is the public issue tracker of Spring XD, an open-source project, from the TAWOS research dataset. The dashboard shows the project as it stood on the date shown there. It uses only what was known by then, with no information from later.</p></section>
+    </div>
+  </main>
+
+  <main id="view-dash">
     <div class="top">
       <div>
         <h1>Delivery risk overview</h1>
@@ -208,8 +243,13 @@ const params = new URLSearchParams(location.search);
 const API = (params.get("api") || window.NABU_API || "").replace(/\/$/, "");
 let run = params.get("run"), after = 0, data = null, tab = "open", seen = new Set(), firstRender = true;
 
-$("team").insertAdjacentHTML("beforeend", Object.entries(AGENT)
-  .map(([k, v]) => `<div class="agent" data-agent="${k}"><span class="dot"></span>${v}</div>`).join(""));
+// Two views in one page: the dashboard, and #how for "How it works".
+function route() {
+  const how = location.hash === "#how";
+  $("view-how").hidden = !how; $("view-dash").hidden = how;
+  for (const a of document.querySelectorAll(".nav")) a.classList.toggle("on", (a.dataset.view === "how") === how);
+}
+window.addEventListener("hashchange", route); route();
 for (const t of document.querySelectorAll(".tab")) t.onclick = () => {
   tab = t.dataset.tab;
   for (const x of document.querySelectorAll(".tab")) x.setAttribute("aria-selected", String(x === t));
@@ -361,6 +401,29 @@ function renderCharts(all) {
       `<i style="background:${r.score ? (r.score.hit ? "var(--good)" : "var(--bad)") : "var(--wait)"}" title="${r.score ? (r.score.hit ? "came true" : "didn't happen") : "open"}"></i>`).join("")}</div></td></tr>`).join("")}</table>`;
 }
 
+// A plain-language reason per risk, from the same numbers the agent cited.
+function whyFor(r) {
+  const c = r.claim || "", n = (r.evidence || []).length, past = n ? `${n} similar past ticket${n > 1 ? "s" : ""}` : "past work";
+  if (r.agent === "estimator") {
+    const m = c.match(/'([^']+)' work took ([\d.]+)x/);
+    return m ? `On this project, '${m[1]}' work has taken ${m[2]}x the usual time per story point (${past}), so the estimate is probably too low. ` +
+      "If that repeats, these tickets will run late and push the epic's end date out."
+      : `Similar work here has taken longer than estimated (${past}), so this plan is likely to run late.`;
+  }
+  if (r.agent === "dependency_hunter") {
+    const m = c.match(/by '([^']+)' work/);
+    return `Epics like this one were held up waiting on ${m ? `'${m[1]}'` : "other"} work (${past}), and nothing in this plan covers it. ` +
+      "The team could get blocked partway through.";
+  }
+  if (r.agent === "gap_finder") {
+    const m = c.match(/no (.+?) tickets, and (\d+)%/);
+    return m ? `${m[2]}% of past epics that started without ${m[1]} tickets had to add them later. ` +
+      "Work found mid-epic is unplanned, so it usually means a slip or a cut." 
+      : "Past epics with the same gap had to add this work later, which usually means a slip.";
+  }
+  return "Past work on this project suggests this plan may not go as expected.";
+}
+
 // One concrete next step per risk, built from the numbers the agent already cited.
 function fixFor(r) {
   const c = r.claim || "", t = r.suggested_ticket;
@@ -403,6 +466,7 @@ function renderRisks() {
       `<span class="conf">${esc(r.confidence || "")} confidence · found ${esc(day(r.as_of))}</span>${badge}</div>` +
       `<div class="epic"><code>${esc(r.epic)}</code>${esc(r.title)}</div>` +
       `<p class="claim">${esc(r.claim)}</p>` +
+      `<div class="why"><b>Why it's a risk:</b> ${esc(whyFor(r))}</div>` +
       `<div class="fix"><b>Suggested fix:</b> ${esc(fixFor(r))}</div>` +
       (r.score && r.score.detail ? `<div class="detail">Outcome: ${esc(r.score.detail)}</div>` : "") +
       (cites ? `<details><summary>Evidence: ${r.evidence.length} past tickets</summary><ul>${cites}</ul></details>` : "") +
