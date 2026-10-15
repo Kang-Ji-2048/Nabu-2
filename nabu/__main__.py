@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -9,7 +10,20 @@ from . import demo_data, replay
 from .store import connect, load_jsonl
 
 
+def load_env(path=".env"):
+    """Read KEY=value lines from .env (if present) into the environment, without overriding it."""
+    try:
+        lines = Path(path).read_text(encoding="utf-8-sig").splitlines()
+    except FileNotFoundError:
+        return
+    for line in lines:
+        key, sep, value = line.partition("=")
+        if sep and key.strip() and not key.strip().startswith("#"):
+            os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
+
+
 def main(argv=None):
+    load_env()
     parser = argparse.ArgumentParser(prog="nabu", description="Nabu delivery risk reviewer")
     parser.add_argument("--db", default="data/nabu.sqlite")
     commands = parser.add_subparsers(dest="command", required=True)
