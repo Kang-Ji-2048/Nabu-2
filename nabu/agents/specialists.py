@@ -139,7 +139,7 @@ class GapFinder(Specialist):
 
     def candidates(self, ctx, plan, patterns):
         present = {c for i in plan for c in categories_of(i)}
-        return [self.warning(ctx, p, f"This plan has no {p['key']} tickets, but {p['stat']:.0%} of past epics needed them.",
+        return [self.warning(ctx, p, f"This plan has no {p['key']} tickets, and {p['stat']:.0%} of past epics planned without them had to add them later.",
                              p["evidence"], {"type": "missing_category", "category": p["key"]},
                              f"{p['key'].capitalize()} for {ctx['epic']['title']}")
                 for p in patterns if p["key"] not in present]
