@@ -45,6 +45,20 @@ The skill's general 16px base is adapted to a compact desktop workspace; the 16p
 - Tables preserve readable columns inside their own horizontal scroll region. The document itself should not scroll sideways.
 - Dialogs remain inside the dynamic viewport, scroll internally when necessary, and preserve the visible close control. Small phone widths use tighter outer gutters rather than tiny text.
 
+## Dataset census and coverage
+
+Coverage uses the same visual vocabulary as the rest of the workspace: a quiet sage progress bar, a clear count and denominator, and a written percentage. A percentage never substitutes for its population. Dataset totals, review coverage, ticket coverage, and replay progress should have distinct labels because they measure different things.
+
+The overview uses `.progress-stat` cards. Each value can show the analyzed count with a smaller `.stat-total` denominator, followed by a percentage and its description. Secondary pages use a compact `.coverage-strip` so the same context remains available without repeating the full inventory.
+
+The **Dataset coverage** panel combines an `.inventory-summary`, a separately labeled `.run-progress`, and a scope breakdown. Scope rows align the scope name, epic coverage, and ticket coverage on desktop. On phones, they become vertical groups with explicit labels in the markup; no labels are generated through CSS. Unlinked or uncovered work is explained with `.coverage-alert` in a restrained amber surface, with text carrying the meaning.
+
+All coverage bars use native `<progress>` elements with an accessible name and a determinate percentage when a denominator exists. The styling uses a 6px track and a dark green fill; the numerical labels remain visible at every size. The native fill is not animated: a changed value should reflect the actual record immediately. Unavailable totals must be described as unavailable rather than being represented as 0% completion. Run progress must remain distinct from dataset analysis coverage and must not imply that model inference is running during recorded playback.
+
+The UI UX Pro Max search `progress percentage status accessible` returned the **Progress Indicators** recommendation, which supports pairing process information with a visible bar. This is applied specifically to Nabu's measured coverage and replay state, with the existing contrast and readable text rules preserved. A persistent `.sr-only` status region can announce meaningful progress changes without moving focus or announcing every visual refresh.
+
+Coverage components wrap long counts, scope names, and explanatory copy. The compact strip and scope rows stack below 760px, and all explanatory text remains at least 12px on desktop and 13px on phones. Browser checks should include no data, 0%, partial coverage, 100%, long scope names, large counts, and unavailable denominators.
+
 ## Interaction and accessibility
 
 Interactive elements have visible focus rings. Desktop controls exceed the web minimum of 24×24 CSS pixels; touch layouts use at least 44px control heights. Links and review titles have padded hit areas, and primary actions have a stronger visual weight than secondary actions. Written status labels accompany status colors.

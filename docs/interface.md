@@ -4,7 +4,7 @@ Nabu's frontend is a delivery-review workspace for a team lead: start with the w
 
 ## Workspace views
 
-- **Overview:** review and outcome totals, recent reviews, and an introduction to the agent workflow.
+- **Overview:** completed / total epics and tickets, fixed dataset inventory, progress by scope, outcome coverage, and recent reviews.
 - **Reviews:** searchable and filterable epic reviews, accepted warnings, confidence, suggested work, and P50/P90 duration forecasts. Open cited tickets in an evidence dialog or download the selected review as JSON.
 - **Agent activity:** filter the recorded actions from the Historian, Planner, specialists, Data quality, Critic, Writer, and Scorekeeper.
 - **Outcomes:** confirmed and unconfirmed predictions, with the share of scored warnings that came true over replay time.
@@ -12,6 +12,18 @@ Nabu's frontend is a delivery-review workspace for a team lead: start with the w
 - **Workspace:** inspect the run, dataset, scope, and connection information.
 
 The run selector changes the source run across the workspace. Forecasts are historical durations in days, not promised completion dates. Confidence describes evidence strength; an unscored warning is pending, not a failed prediction. Suggested tickets and downloaded JSON are review outputs; they do not create or change tracker tickets.
+
+## Dataset inventory and progress
+
+Starting a run inventories the entire imported dataset in the intersection of its agent and viewer scopes, before the first review. It records total work items, epics, non-epic tickets, linked and unlinked tickets, and counts per scope. The inventory and planned review/outcome steps are saved with the run, so pausing, resuming, or importing more data does not change its denominators. Start a new run to include a newly imported dataset.
+
+Every dashboard view shows **epics reviewed / total epics** and **tickets covered / total tickets**, with percentages. Overview and Workspace include scope breakdowns. Agent activity also shows completed replay steps, including outcome checks that produced no scores. Counts update only when a step commits, alongside its reports and checkpoint.
+
+Ticket coverage means unique baseline tickets present in a visible epic's plan at the time of its review. Tickets added later, unlinked tickets, and tickets whose epic was not reviewed remain uncovered; a completed replay can therefore show less than 100% ticket coverage. This is not a claim that each ticket received an independent review. Findings scored uses the number of findings published so far as its denominator, separately from business inventory coverage and confirmation rate.
+
+The inventory is operational metadata. It never becomes input to the time-fenced agents; reviews still use only history available at their simulated date. Workspace separately shows how many records were known at that replay date. Totals reflect the loaded dataset and configured scopes, not data that has never been imported.
+
+Saved playback starts at zero and advances through committed progress checkpoints while retaining the same totals. Older database runs receive an explicitly labelled reconstruction from currently loaded data. Older JSON exports without a census show unknown totals rather than implying complete coverage.
 
 ## Run locally
 

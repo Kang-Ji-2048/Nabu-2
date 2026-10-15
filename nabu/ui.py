@@ -14,6 +14,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
+from .progress import public_state as progress_state
+
 WEB = Path(__file__).resolve().parent.parent / "frontend"
 STATIC_FILES = {
     "/": ("index.html", "text/html; charset=utf-8"),
@@ -34,6 +36,24 @@ def _connect(db):
 
 def runs(conn):
     return [dict(r) for r in conn.execute("SELECT id, status, clock FROM run ORDER BY rowid DESC")]
+
+
+def _public_stats(reviews, scores):
+    """Derive display statistics from the same viewer-filtered records returned.
+
+    Internal run.stats can contain additional execution state or counters from a
+    broader agent view. It must not become an unfiltered API extension point.
+    """
+    ordered = sorted(scores.values(), key=lambda score: score["at"])
+    hits, accuracy = 0, []
+    for index, score in enumerate(ordered, 1):
+        hits += int(bool(score["hit"]))
+        point = [score["at"], round(hits / index, 3)]
+        if accuracy and accuracy[-1][0] == score["at"]:
+            accuracy[-1] = point
+        else:
+            accuracy.append(point)
+    return {"reviews": len(reviews), "hits": hits, "misses": len(ordered) - hits, "accuracy": accuracy}
 
 
 def state(conn, run_id, after):
@@ -143,10 +163,11 @@ def state(conn, run_id, after):
     return {
         "run": {"id": run["id"], "status": run["status"], "clock": run["clock"], "cursor": run["cursor"],
                 "tenant": run["tenant_id"], "scopes": scopes, "viewer_scopes": viewer_scopes,
-                "stats": json.loads(run["stats"] or "{}"),
+                "stats": _public_stats(reviews, scores),
                 # Replay does not currently persist its offline/live setting.
                 "offline": None},
         "log": log, "reviews": reviews, "scores": scores, "items": items, "dataset": dataset,
+        **progress_state(conn, run),
     }
 
 

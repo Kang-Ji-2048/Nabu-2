@@ -67,6 +67,10 @@ CREATE TABLE IF NOT EXISTS agent_log (
     kind TEXT NOT NULL, message TEXT NOT NULL, data TEXT,
     PRIMARY KEY (run_id, seq)
 );
+-- Full-dataset presentation metadata, never an input to time-fenced agents.
+CREATE TABLE IF NOT EXISTS replay_progress (
+    run_id TEXT PRIMARY KEY, state TEXT NOT NULL
+);
 """
 
 ITEM_FIELDS = ("id", "tenant_id", "scope", "source", "source_key", "type", "title", "description",

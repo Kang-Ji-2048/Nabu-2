@@ -15,6 +15,7 @@ from datetime import datetime, timedelta
 
 from .agents.historian import Historian
 from .agents.writer import Scorekeeper
+from . import progress
 from .llm import LLM, Log
 from .review import ReviewTeam
 from .store import ScopedStore
@@ -41,9 +42,14 @@ def timeline(conn, tenant_id, scopes, review_after_days=1.0) -> list:
 def start(conn, run_id, tenant_id, scopes, viewer_scopes=None):
     if conn.execute("SELECT 1 FROM run WHERE id=?", (run_id,)).fetchone():
         raise ValueError(f"Run {run_id!r} already exists; use resume")
+    scopes = list(scopes)
+    viewer_scopes = list(scopes if viewer_scopes is None else viewer_scopes)
+    census = progress.capture(conn, tenant_id, scopes, viewer_scopes)
     conn.execute("INSERT INTO run VALUES (?,?,?,?,?,?,?,?)",
-                 (run_id, tenant_id, json.dumps(scopes), json.dumps(viewer_scopes or scopes), 0, None, "running",
+                 (run_id, tenant_id, json.dumps(scopes), json.dumps(viewer_scopes), 0, None,
+                  "running" if census["steps"] else "finished",
                   json.dumps({"reviews": 0, "hits": 0, "misses": 0, "accuracy": []})))
+    progress.save(conn, run_id, census)
     conn.commit()
 
 
@@ -53,11 +59,14 @@ def run(conn, run_id, *, offline=None, stop_after=None, quiet=False, pace=0.0) -
         raise ValueError(f"No run {run_id!r}")
     tenant_id, scopes, viewer_scopes = row["tenant_id"], json.loads(row["scopes"]), json.loads(row["viewer_scopes"])
     stats = json.loads(row["stats"])
+    census = progress.ensure(conn, row)
+    conn.commit()  # a legacy reconstruction is frozen before the next step
     log = Log(conn, run_id, quiet=quiet)
     llm = LLM(log, offline=offline)
     historian, team, scorekeeper = Historian(llm, log), ReviewTeam(llm, log), Scorekeeper(log)
-    steps = timeline(conn, tenant_id, viewer_scopes)  # only epics the reader can see get reviewed
-    cursor = row["cursor"]
+    steps = census["steps"]
+    cursor = census["done"]["steps"]
+    visible = progress.visible_scopes(scopes, viewer_scopes)
     if cursor:
         log.emit("replay", "resume", f"resuming at step {cursor + 1} of {len(steps)}")
     else:
@@ -66,15 +75,23 @@ def run(conn, run_id, *, offline=None, stop_after=None, quiet=False, pace=0.0) -
     while cursor < len(steps):
         if stop_after is not None and done_now >= stop_after:
             log.emit("replay", "paused", f"stopped after {done_now} steps (checkpoint at step {cursor + 1})")
+            conn.execute("UPDATE run SET status='paused' WHERE id=?", (run_id,))
             conn.commit()
             return stats
-        at, kind, epic_id = steps[cursor]
+        step = steps[cursor]
+        at, kind, epic_id = step["at"], step["kind"], step["epic_id"]
         log.sim_at = at
         store = ScopedStore(conn, tenant_id, scopes, at)
         epic = store.get(epic_id)
-        if kind == "review":
+        reviewed, plan = False, []
+        if epic is None or step["scope"] not in visible:
+            log.emit("replay", "unavailable", "A scheduled epic is no longer available in this run's visible scopes.")
+        elif kind == "review":
             historian.refresh(conn, run_id, store)
-            team.review(conn, run_id, epic, store, ScopedStore(conn, tenant_id, viewer_scopes, at))
+            viewer = ScopedStore(conn, tenant_id, visible, at)
+            plan = viewer.children(epic_id)
+            team.review(conn, run_id, epic, store, viewer)
+            reviewed = True
             stats["reviews"] += 1
         else:
             tally = scorekeeper.score(conn, run_id, epic, store)
@@ -85,12 +102,15 @@ def run(conn, run_id, *, offline=None, stop_after=None, quiet=False, pace=0.0) -
                 stats["accuracy"].append([at, round(stats["hits"] / graded, 3)])
                 log.emit("replay", "accuracy", f"{stats['hits']}/{graded} warnings confirmed so far "
                                                f"({stats['hits'] / graded:.0%})")
+        progress.advance(census, step, plan, reviewed)
+        progress.save(conn, run_id, census)
         cursor += 1
         done_now += 1
         conn.execute("UPDATE run SET cursor=?, clock=?, stats=?, status=? WHERE id=?",
                      (cursor, at, json.dumps(stats), "running" if cursor < len(steps) else "finished", run_id))
         conn.commit()  # checkpoint: this step's warnings, scores, patterns and log rows land together
         time.sleep(pace)  # slows an offline replay down so the interface can be watched
+    conn.execute("UPDATE run SET status='finished', cursor=? WHERE id=?", (cursor, run_id))
     log.emit("replay", "finished", f"{stats['reviews']} epics reviewed, {stats['hits']} hits, {stats['misses']} misses, "
                                    f"{llm.calls} Claude calls")
     conn.commit()

@@ -72,7 +72,8 @@ function harness() {
         refreshEnabled = !paused; render();
       },
       poll: () => poll(generation),
-      renderOverview, reviewTable,
+      renderOverview, reviewTable, renderReviews, renderAgents, renderOutcomes, renderEvidence, renderWorkspace,
+      snapshotAt, metric,
       reviewDocument: () => reviewDocument(data.reviews[0]),
     };
   `, context, {filename: 'frontend/app.js'});
@@ -153,4 +154,64 @@ test('concurrent polling calls issue one request and schedule one continuation',
   assert.equal(h.requests.length, 2, 'the in-flight guard must release after completion');
   assert.equal(h.timers.size, 1);
   assert.match(h.main(), /Next plan/);
+});
+
+function progressFixture() {
+  const s=fixture();
+  const m=(done,total)=>({done,total,percent:total?done/total*100:null});
+  const progress=(epics,tickets,steps)=>({epics:m(epics,10),tickets:m(tickets,50),steps:m(steps,20),by_scope:[{scope:'payments',epics:m(epics,10),tickets:m(tickets,50),steps:m(steps,20)}]});
+  s.inventory={work_items:60,epics:10,tickets:50,linked_tickets:47,unlinked_tickets:3,source:'run_start',by_scope:[{scope:'payments',work_items:60,epics:10,tickets:50}]};
+  s.progress=progress(10,32,20);
+  s.checkpoints=[{at:'2026-04-01T00:00:00Z',progress:progress(1,3,1)},{at:'2026-05-01T00:00:00Z',progress:s.progress}];
+  s.run.status='finished';
+  return s;
+}
+
+test('every dashboard view exposes completed and total epic and ticket coverage',()=>{
+  const h=harness();h.app.prepare(progressFixture());
+  for(const render of ['renderOverview','renderReviews','renderAgents','renderOutcomes','renderEvidence','renderWorkspace']){
+    const html=h.app[render]();
+    assert.match(html,/Epics reviewed/);
+    assert.match(html,/Tickets covered/);
+    assert.match(html,/64%/);
+    assert.match(html,/100%/);
+    assert.match(html,/aria-label="[^"]*10 \/ 10/);
+    assert.match(html,/aria-label="[^"]*32 \/ 50/);
+  }
+  assert.match(h.app.renderOverview(),/18 tickets were not included/);
+  assert.match(h.elements.get('coverage-status').textContent,/10 \/ 10 epics reviewed/);
+});
+
+test('recorded playback starts at zero and restores committed progress without changing totals',()=>{
+  const h=harness(), snapshot=progressFixture();
+  const before=h.app.snapshotAt(snapshot,null);
+  assert.equal(before.progress.epics.done,0);
+  assert.equal(before.progress.epics.total,10);
+  assert.equal(before.progress.tickets.done,0);
+  assert.equal(before.reviews.length,0);
+  const partial=h.app.snapshotAt(snapshot,'2026-04-15T00:00:00Z');
+  assert.equal(partial.progress.epics.done,1);
+  assert.equal(partial.progress.tickets.done,3);
+  assert.equal(partial.progress.tickets.total,50);
+  assert.equal(partial.run.cursor,1);
+  assert.equal(partial.inventory.work_items,60);
+  assert.equal(partial.reviews.length,1);
+  const complete=h.app.snapshotAt(snapshot,snapshot.run.clock);
+  assert.equal(complete.progress.epics.done,10);
+  assert.equal(complete.progress.tickets.done,32,'finishing the replay must not imply all tickets were covered');
+  assert.equal(snapshot.progress.epics.done,10,'playback must not mutate the recording');
+});
+
+test('legacy exports and empty datasets never report invented completion',()=>{
+  const h=harness();h.app.prepare(fixture());
+  assert.match(h.app.renderOverview(),/Dataset coverage unavailable/);
+  assert.match(h.app.renderReviews(),/1 \/ —/);
+  assert.doesNotMatch(h.app.renderOverview(),/NaN|Infinity|100%/);
+  const s=progressFixture();
+  s.inventory={...s.inventory,work_items:0,epics:0,tickets:0,by_scope:[]};
+  s.progress={epics:{done:0,total:0},tickets:{done:0,total:0},steps:{done:0,total:0},by_scope:[]};
+  h.app.prepare(s);
+  assert.match(h.main(),/No items/);
+  assert.doesNotMatch(h.main(),/NaN|Infinity/);
+  assert.equal(h.app.metric({done:9999,total:10000}).percent,99.9,'incomplete coverage cannot round to 100%');
 });

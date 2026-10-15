@@ -6,18 +6,20 @@ from http.client import HTTPResponse
 from pathlib import Path
 from unittest.mock import patch
 
-from nabu import ui
+from nabu import replay, ui
 from nabu.store import connect
 
 
 AT = "2026-05-01T00:00:00Z"
 
 
-def add_item(conn, item_id, *, tenant="company", scope="payments", type_="task", created="2026-01-01T00:00:00Z"):
+def add_item(conn, item_id, *, tenant="company", scope="payments", type_="task", created="2026-01-01T00:00:00Z",
+             parent=None, parent_at=None, resolved=None):
     conn.execute(
-        "INSERT INTO work_item (id, tenant_id, scope, source, source_key, type, title, status_category, created_at) "
-        "VALUES (?, ?, ?, 'jira', ?, ?, ?, 'todo', ?)",
-        (item_id, tenant, scope, item_id.upper(), type_, f"Title for {item_id}", created))
+        "INSERT INTO work_item (id, tenant_id, scope, source, source_key, type, title, status_category, created_at, "
+        "parent_id, parent_at, resolved_at) VALUES (?, ?, ?, 'jira', ?, ?, ?, ?, ?, ?, ?, ?)",
+        (item_id, tenant, scope, item_id.upper(), type_, f"Title for {item_id}", "done" if resolved else "todo",
+         created, parent, parent_at, resolved))
 
 
 def add_run(conn, run_id="r", *, scopes=None, viewer_scopes=None):
@@ -73,6 +75,10 @@ class StateTest(unittest.TestCase):
                           (AT, "Original summary with forecast 42 days", json.dumps({"epic": "epic"})))
         for w in warnings:
             self.conn.execute("INSERT INTO score VALUES ('r', ?, ?, 1, ?)", (w["id"], AT, w["claim"]))
+        self.conn.execute("UPDATE run SET stats = ? WHERE id = 'r'", (json.dumps({
+            "reviews": 999, "hits": 888, "misses": 777, "accuracy": [[AT, 0.8]],
+            "raw_inventory_ids": ["other-tenant"], "private_scope_counters": {"private-warning": 600},
+        }),))
         result = ui.state(self.conn, "r", 0)
         self.assertEqual(len(result["reviews"]), 1)
         report = result["reviews"][0]["report"]
@@ -83,6 +89,7 @@ class StateTest(unittest.TestCase):
         self.assertEqual(report["missing_tickets"], ["Follow up public-warning"])
         self.assertNotIn("42 days", report["summary"])
         self.assertEqual(set(result["scores"]), {"public-warning"})
+        self.assertEqual(result["run"]["stats"], {"reviews": 1, "hits": 1, "misses": 0, "accuracy": [[AT, 1.0]]})
         encoded = json.dumps(result)
         for secret in ("private-warning", "foreign-warning", "future-warning", "Title for private", "other-tenant", "42 days"):
             self.assertNotIn(secret, encoded)
@@ -118,6 +125,122 @@ class StateTest(unittest.TestCase):
         self.assertEqual(result["log"][3]["message"], "Visible detail")
         self.assertNotIn("secret", json.dumps(result))
         self.assertNotIn("hidden-warning", json.dumps(result))
+
+
+class ProgressStateTest(unittest.TestCase):
+    def setUp(self):
+        self.conn = connect(":memory:")
+        self.addCleanup(self.conn.close)
+        add_item(self.conn, "first-epic", type_="epic", resolved="2026-01-10T00:00:00Z")
+        add_item(self.conn, "second-epic", type_="epic", created="2026-02-01T00:00:00Z",
+                 resolved="2026-02-10T00:00:00Z")
+        add_item(self.conn, "first-plan-ticket", parent="first-epic")
+        add_item(self.conn, "second-plan-ticket", parent="second-epic", created="2026-02-01T00:00:00Z")
+        add_item(self.conn, "late-ticket", parent="first-epic", created="2026-01-03T00:00:00Z")
+        add_item(self.conn, "orphan-ticket")
+        add_item(self.conn, "hidden-parent-ticket", parent="private-epic")
+        add_item(self.conn, "private-epic", type_="epic", scope="platform")
+        add_item(self.conn, "private-ticket", scope="platform", parent="private-epic")
+        add_item(self.conn, "foreign-epic", type_="epic", tenant="another-company")
+        add_item(self.conn, "outside-epic", type_="epic", scope="finance")
+
+    def start(self):
+        replay.start(self.conn, "progress-run", "company", ["payments", "platform"], ["payments"])
+
+    def state(self):
+        return ui.state(self.conn, "progress-run", 0)
+
+    def test_initial_inventory_is_complete_but_replay_dataset_is_empty(self):
+        self.start()
+        result = self.state()
+        inventory = result["inventory"]
+        self.assertIsNone(result["run"]["clock"])
+        self.assertEqual(result["dataset"]["work_items"], 0)
+        self.assertEqual({key: inventory[key] for key in ("work_items", "epics", "tickets", "linked_tickets", "unlinked_tickets")},
+                         {"work_items": 7, "epics": 2, "tickets": 5, "linked_tickets": 3, "unlinked_tickets": 2})
+        self.assertEqual(inventory["source"], "run_start")
+        self.assertTrue(inventory["captured_at"])
+        self.assertEqual([row["scope"] for row in inventory["by_scope"]], ["payments"])
+        for kind, total in (("epics", 2), ("tickets", 5), ("steps", 4)):
+            self.assertEqual(result["progress"][kind], {"done": 0, "total": total, "percent": 0})
+        self.assertEqual(result["checkpoints"], [])
+        for secret in ("private-epic", "private-ticket", "foreign-epic", "outside-epic", "hidden-parent-ticket"):
+            self.assertNotIn(secret, json.dumps({key: result[key] for key in ("inventory", "progress", "checkpoints")}))
+
+    def test_progress_counts_only_committed_visible_review_plans(self):
+        self.start()
+        inventory = self.state()["inventory"]
+        replay.run(self.conn, "progress-run", offline=True, stop_after=1, quiet=True)
+        partial = self.state()
+        self.assertEqual(partial["inventory"], inventory)
+        self.assertEqual(partial["progress"]["epics"], {"done": 1, "total": 2, "percent": 50})
+        self.assertEqual(partial["progress"]["tickets"], {"done": 1, "total": 5, "percent": 20})
+        self.assertEqual(partial["progress"]["steps"], {"done": 1, "total": 4, "percent": 25})
+        self.assertEqual(partial["checkpoints"][-1]["progress"], partial["progress"])
+        self.assertEqual(partial["checkpoints"][-1]["at"], partial["run"]["clock"])
+        self.assertEqual([row["scope"] for row in partial["progress"]["by_scope"]], ["payments"])
+        replay.run(self.conn, "progress-run", offline=True, quiet=True)
+        final = self.state()
+        self.assertEqual(final["run"]["status"], "finished")
+        self.assertEqual(final["inventory"], inventory)
+        self.assertEqual(final["progress"]["epics"], {"done": 2, "total": 2, "percent": 100})
+        self.assertEqual(final["progress"]["tickets"], {"done": 2, "total": 5, "percent": 40})
+        self.assertEqual(final["progress"]["steps"], {"done": 4, "total": 4, "percent": 100})
+        self.assertEqual(final["checkpoints"][0], partial["checkpoints"][0])
+        self.assertEqual(final["checkpoints"][-1]["progress"], final["progress"])
+
+    def test_inventory_and_step_plan_stay_frozen_after_new_data_is_loaded(self):
+        self.start()
+        inventory = self.state()["inventory"]
+        add_item(self.conn, "new-epic", type_="epic", created="2026-03-01T00:00:00Z")
+        add_item(self.conn, "new-ticket", parent="new-epic", created="2026-03-01T00:00:00Z")
+        self.conn.commit()
+        replay.run(self.conn, "progress-run", offline=True, quiet=True)
+        result = self.state()
+        self.assertEqual(result["inventory"], inventory)
+        self.assertEqual(result["progress"]["steps"], {"done": 4, "total": 4, "percent": 100})
+        self.assertNotIn("new-epic", [review["epic_id"] for review in result["reviews"]])
+
+    def test_persisted_progress_respects_a_narrower_viewer_scope(self):
+        replay.start(self.conn, "progress-run", "company", ["payments", "platform"], ["payments", "platform"])
+        replay.run(self.conn, "progress-run", offline=True, quiet=True)
+        self.conn.execute("UPDATE run SET viewer_scopes = '[\"payments\"]' WHERE id = 'progress-run'")
+        result = self.state()
+        self.assertEqual(result["inventory"]["epics"], 2)
+        self.assertEqual(result["inventory"]["tickets"], 5)
+        self.assertEqual(result["progress"]["epics"], {"done": 2, "total": 2, "percent": 100})
+        self.assertEqual(result["progress"]["tickets"], {"done": 2, "total": 5, "percent": 40})
+        self.assertEqual(result["progress"]["steps"], {"done": 4, "total": 4, "percent": 100})
+        self.assertEqual(result["run"]["stats"]["reviews"], 2)
+        for checkpoint in result["checkpoints"]:
+            self.assertEqual([row["scope"] for row in checkpoint["progress"]["by_scope"]], ["payments"])
+        self.assertEqual(len(result["checkpoints"]), 4)
+        public = json.dumps({key: result[key] for key in ("inventory", "progress", "checkpoints")})
+        for secret in ("platform", "private-epic", "private-ticket", "foreign-epic"):
+            self.assertNotIn(secret, public)
+
+    def test_legacy_inventory_is_labelled_reconstructed_and_does_not_write(self):
+        add_run(self.conn, "progress-run")
+        self.conn.execute("UPDATE run SET cursor = 0, clock = NULL WHERE id = 'progress-run'")
+        self.conn.execute("DROP TABLE IF EXISTS replay_progress")
+        self.conn.commit()
+        result = self.state()
+        self.assertEqual(result["inventory"]["source"], "legacy_reconstructed")
+        self.assertIsNone(result["inventory"]["captured_at"])
+        self.assertEqual(result["inventory"]["tickets"], 5)
+        self.assertEqual(result["progress"]["tickets"], {"done": 0, "total": 5, "percent": 0})
+        self.assertIsNone(self.conn.execute("SELECT name FROM sqlite_master WHERE name = 'replay_progress'").fetchone())
+
+    def test_legacy_cursor_cannot_advance_past_the_committed_clock(self):
+        add_run(self.conn, "progress-run")
+        # A legacy cursor may include steps outside today's viewer scopes.
+        # It cannot prove that a future step in the visible timeline ran.
+        self.conn.execute("UPDATE run SET clock = '2026-01-01T12:00:00Z' WHERE id = 'progress-run'")
+        result = self.state()
+        self.assertEqual(result["progress"]["epics"]["done"], 0)
+        self.assertEqual(result["progress"]["tickets"]["done"], 0)
+        self.assertEqual(result["progress"]["steps"]["done"], 0)
+        self.assertEqual(result["checkpoints"], [])
 
 
 class ServerTest(unittest.TestCase):

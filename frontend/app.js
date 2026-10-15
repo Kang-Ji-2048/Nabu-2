@@ -57,7 +57,7 @@ function pageHead(title,subtitle,action = '') { return `<div class="page-head"><
 function button(label,action,primary=false,ic='arrow') { return `<button class="button ${primary?'primary':''}" data-action="${action}">${esc(label)}${icon(ic)}</button>`; }
 function empty(title,body,action='') { return `<div class="empty-state">${icon('reviews')}<h2>${title}</h2><p>${body}</p>${action}</div>`; }
 function safeScopeLabel(scope) { return scope ? scope.charAt(0).toUpperCase() + scope.slice(1) : 'Workspace'; }
-function isSynthetic() { return data?.dataset?.sources?.includes('synthetic') || ['demo','company-demo'].includes(data?.run.id) && data?.run.tenant === 'demo'; }
+function isSynthetic() { return (data?.inventory?.sources || data?.dataset?.sources)?.includes('synthetic') || ['demo','company-demo'].includes(data?.run.id) && data?.run.tenant === 'demo'; }
 
 function renderNavigation() {
   $('navigation').innerHTML = NAV.map(([id,label]) => `<a href="#${id}" class="nav-item ${currentView===id?'active':''}" ${currentView===id?'aria-current="page"':''}>${icon(id)}<span>${label}</span>${id==='reviews'&&data?`<span class="count">${data.reviews.length}</span>`:''}</a>`).join('');
@@ -71,7 +71,10 @@ function updateChrome() {
   const banner = $('data-banner');
   banner.hidden = false;
   banner.innerHTML = `${icon('shield')}<strong>${isSynthetic()?'Synthetic demo data':mode==='snapshot'?'Recorded run':'Connected workspace'}</strong><span class="dot">·</span><span>${mode==='snapshot'?'Saved replay; no agents are running in this browser.':data.run.offline===true?'Deterministic agents; no model calls.':'Read-only reviews from your Nabu server.'}</span>${snapshotFailure?'<span>API unavailable. Showing the saved demo.</span>':''}`;
-  $('footer-context').textContent = `Replay clock: ${date(data.run.clock,true)}`;
+  $('footer-context').textContent = `Replay clock: ${data.run.clock ? date(data.run.clock,true) : 'Not started'}`;
+  const p=coverage();
+  const progressText=`${fraction(p.epics)} epics reviewed, ${percentLabel(p.epics)}. ${fraction(p.tickets)} tickets covered, ${percentLabel(p.tickets)}.`;
+  if($('coverage-status').textContent!==progressText)$('coverage-status').textContent=progressText;
   renderNavigation();
 }
 function render() {
@@ -93,10 +96,44 @@ function route() {
 function go(view, id) { const hash = `#${view}${id?'/'+encodeURIComponent(id):''}`; if(location.hash===hash) route(); else location.hash=hash; }
 
 function stat(label,value,note,ic,tag='') { return `<div class="stat"><div class="stat-head"><span>${label}</span>${icon(ic)}</div><div class="stat-value"><strong>${value}</strong>${tag?`<span class="stat-inline">${tag}</span>`:''}</div><p>${note}</p></div>`; }
+// Unknown totals stay unknown in older exports; a review count is not a census.
+function metric(value, fallbackDone = null) {
+  const valid = n => Number.isSafeInteger(n) && n >= 0;
+  const total = valid(value?.total) ? value.total : null;
+  const done = valid(value?.done) ? value.done : fallbackDone;
+  const percent = total > 0 && valid(done) ? (done >= total ? 100 : Math.min(99.9, Math.round(done / total * 1000) / 10)) : null;
+  return {done, total, percent};
+}
+const count = n => Number.isSafeInteger(n) && n >= 0 ? n.toLocaleString('en-GB') : '—';
+const fraction = m => `${count(m.done)} / ${count(m.total)}`;
+const percentLabel = m => m.percent === null ? (m.total === 0 ? 'No items' : 'Total not recorded') : `${m.percent}%`;
+function coverage() {
+  return {epics:metric(data.progress?.epics, data.reviews.length), tickets:metric(data.progress?.tickets), steps:metric(data.progress?.steps)};
+}
+function progressBar(m, label) {
+  if (m.total === null || m.done === null) return '';
+  return `<progress class="coverage-bar" max="100" value="${m.percent ?? 0}" aria-label="${esc(label)}: ${fraction(m)}${m.percent === null ? '' : `, ${m.percent}%`}">${percentLabel(m)}</progress>`;
+}
+function progressStat(label, m, note, ic) {
+  return `<div class="stat progress-stat"><div class="stat-head"><span>${esc(label)}</span>${icon(ic)}</div><div class="stat-value"><strong>${count(m.done)}<span class="stat-total"> / ${count(m.total)}</span></strong></div><div class="stat-meta"><b>${percentLabel(m)}</b><span>${m.total === null ? 'Coverage unavailable' : `${count(Math.max(0,m.total-(m.done||0)))} ${label==='Tickets covered'?'not covered':'remaining'}`}</span></div>${progressBar(m,label)}<p>${esc(note)}</p></div>`;
+}
+function coverageStrip(includeSteps = false) {
+  const p=coverage(), cells=[['Epics reviewed',p.epics],['Tickets covered',p.tickets],...(includeSteps?[['Replay steps',p.steps]]:[])];
+  return `<section class="coverage-strip" aria-label="Analysis coverage">${cells.map(([label,m])=>`<div class="coverage-item"><h3>${label}</h3><div class="coverage-figure"><b>${fraction(m)}</b><span>${percentLabel(m)}</span></div>${progressBar(m,label)}</div>`).join('')}</section>`;
+}
+function inventoryPanel() {
+  const inv=data.inventory, p=coverage();
+  if(!inv) return `<section class="panel info-panel inventory-panel"><h2>Dataset coverage unavailable</h2><p>This older export has no full dataset inventory. Start a new run and export it to see reliable totals and completion percentages.</p></section>`;
+  const status=data.run.status==='finished'?'Replay complete':data.run.status==='paused'?'Replay paused':data.run.status==='recorded playback'?'Recorded playback':p.steps.done===0?'Ready to analyse':'Analysis in progress';
+  const missing=p.tickets.total===null||p.tickets.done===null?null:Math.max(0,p.tickets.total-p.tickets.done);
+  const legacy=inv.source==='legacy_reconstructed';
+  return `<section class="panel inventory-panel" aria-label="Dataset coverage"><div class="panel-header"><div><h2>Dataset coverage</h2><p>${legacy?'Inventory reconstructed from the currently loaded dataset.':'Full inventory captured before the first review.'} Totals cover this run’s viewer scopes.</p></div>${badge(status,data.run.status==='finished'?'green':'gray')}</div><div class="inventory-summary"><span><strong>${count(inv.work_items)}</strong> work items</span><span><strong>${count(inv.epics)}</strong> epics</span><span><strong>${count(inv.tickets)}</strong> tickets</span><span><strong>${count(inv.by_scope?.length)}</strong> scopes</span></div><div class="run-progress"><div class="coverage-figure"><b>Replay steps · ${fraction(p.steps)}</b><span>${percentLabel(p.steps)}</span></div>${progressBar(p.steps,'Replay steps')}<p class="coverage-note">Reviews and outcome checks completed. Progress updates after each committed step.</p></div><div class="scope-coverage"><div class="scope-coverage-row scope-coverage-head"><span>Scope</span><span>Epics reviewed</span><span>Tickets covered</span></div>${(data.progress?.by_scope||[]).map(row=>{const epics=metric(row.epics), tickets=metric(row.tickets);return `<div class="scope-coverage-row"><strong>${esc(safeScopeLabel(row.scope))}</strong><div><small class="scope-mobile-label">Epics reviewed</small><div class="coverage-figure"><b>${fraction(epics)}</b><span>${percentLabel(epics)}</span></div>${progressBar(epics,`${row.scope} epics reviewed`)}</div><div><small class="scope-mobile-label">Tickets covered</small><div class="coverage-figure"><b>${fraction(tickets)}</b><span>${percentLabel(tickets)}</span></div>${progressBar(tickets,`${row.scope} tickets covered`)}</div></div>`;}).join('')}</div><p class="coverage-note">Ticket coverage counts unique tickets present in an epic’s plan at its review date, out of all tickets in the inventory. It does not mean each ticket received a separate review.</p>${missing?`<p class="coverage-alert"><strong>${count(missing)} tickets ${data.run.status==='finished'?'were not included':'not yet included'} in reviewed plans.</strong> ${count(inv.unlinked_tickets)} have no linked epic in this inventory. Tickets added after a review also remain uncovered.</p>`:''}${legacy?'<p class="coverage-note">This run predates saved inventories; its original starting totals cannot be verified. Start a new run for a fixed baseline.</p>':''}</section>`;
+}
 function renderOverview() {
   const t = totals(), latest = newestReviews()[0], scopes = data.run.viewer_scopes;
+  const p = coverage();
   return pageHead('Delivery overview','A clearer view of your plans, grounded in your team’s history.',latest?button('Explore reviews','reviews',true):'')+
-  `<div class="stats-grid">${stat('Epics reviewed',data.reviews.length,'Plans checked against past work','reviews')}${stat('Published findings',t.warnings.length,'Evidence checked by the Critic','shield')}${stat('Confirmed outcomes',t.rate===null?'—':t.rate+'%',t.scores.length?`${t.hits} of ${t.scores.length} scored findings`:'Waiting for completed work','outcomes',t.scores.length?'Replay result':'')}${stat('Visible scopes',scopes.length,scopes.map(esc).join(' & '),'workspace')}</div>`+
+  `<div class="stats-grid">${progressStat('Epics reviewed',p.epics,'Reviewed / all epics in the inventory','reviews')}${progressStat('Tickets covered',p.tickets,'Included in reviewed plans / all tickets','evidence')}${progressStat('Findings scored',metric({done:t.scores.length,total:t.warnings.length}),'Outcome checked / published findings','shield')}${stat('Confirmation rate',t.rate===null?'—':t.rate+'%',t.scores.length?`${t.hits} of ${t.scores.length} scored findings confirmed`:'Waiting for completed work','outcomes',t.scores.length?'Replay result':'')}</div>`+inventoryPanel()+
   (latest?`<section class="hero" aria-labelledby="latest-title"><div><div class="eyebrow">LATEST REVIEW ${badge(safeScopeLabel(scopeFor(latest)))}</div><h2 id="latest-title">${esc(latest.report.title)}<span>${esc(latest.report.epic)}</span></h2><p>${latest.report.warnings.length?`${latest.report.warnings.length} evidence-backed findings to consider before work starts.`:'No findings passed the evidence checks for this plan.'} Reviewed using history available on ${date(latest.as_of,true)}.</p><button class="button" data-review="${esc(latest.epic_id)}">Open review ${icon('arrow')}</button></div><div class="hero-right"><div class="forecast-header"><span>Historical delivery forecast</span>${icon('clock')}</div><div class="forecast-values"><div>Typical duration · P50<strong>${number(latest.report.forecast?.p50_days)}<small>days</small></strong></div><div>Upper range · P90<strong>${number(latest.report.forecast?.p90_days)}<small>days</small></strong></div></div><div class="forecast-track" aria-hidden="true"></div><div class="track-labels"><span>Based on completed epics</span><span>Duration, not a deadline</span></div></div></section>`:'')+
   `<div class="two-col"><section class="panel"><div class="panel-header"><div><h2>Recent reviews</h2><p>See the context behind each plan.</p></div><a class="text-button" href="#reviews">View all ${icon('arrow')}</a></div><div class="filter-bar"><div class="tabs" role="group" aria-label="Filter by scope">${['',...scopes].map(s=>`<button class="tab" data-scope="${esc(s)}" aria-pressed="${tableScope===s}">${s?esc(safeScopeLabel(s)):'All scopes'}</button>`).join('')}</div>${searchInput('review-search',tableQuery,'Find a review')}</div><div id="overview-table">${reviewTable()}</div></section><section class="panel"><div class="panel-header"><div><h2>Agent activity</h2><p>Latest actions in this replay</p></div><a class="text-button" href="#agents" aria-label="View all agent activity">${icon('arrow')}</a></div><div class="activity-list">${recentActivity()}</div><div class="table-footer"><span>${mode==='live'?'Updates after each committed step':'Saved agent activity'}</span><span>${date(data.run.clock)}</span></div></section></div>`+
   `<div class="pipeline-strip"><span>Behind every review</span>${[['historian','Learn'],['planner','Plan'],['agents','Investigate'],['critic','Validate'],['writer','Review'],['scorekeeper','Learn again']].map(([id,label],i)=>`${i?'<span class="arrow" aria-hidden="true">›</span>':''}<span class="step">${label}</span>`).join('')}<button class="text-button" data-action="how">Meet the agents ${icon('arrow')}</button></div>`;
@@ -113,7 +150,7 @@ function recentActivity() {
 
 function renderReviews() {
   const r = selected();
-  return pageHead('Delivery reviews','What could affect delivery, and the history behind it.',button('How to run a review','run-help',false,'reviews'))+
+  return pageHead('Delivery reviews','What could affect delivery, and the history behind it.',button('How to run a review','run-help',false,'reviews'))+coverageStrip()+
     (data.reviews.length?`<div class="review-layout"><section class="panel review-selector" aria-label="Choose a review">${searchInput('review-list-search',reviewQuery,'Search reviews')}<div id="review-options" class="review-options">${reviewOptions()}</div></section><article class="panel review-document" id="review-document">${r?reviewDocument(r):empty('Review not found','Choose a review from the list.')}</article></div>`:empty('No reviews yet','Run the pipeline against your tracker history. Published reviews will appear here.',button('Run instructions','run-help')));
 }
 function reviewOptions() {
@@ -136,7 +173,7 @@ const STAGES = [
   ['scorekeeper','Learn from outcomes','Score predictions and adjust the weight of their patterns.',['scorekeeper']]
 ];
 function renderAgents() {
-  return pageHead('Agent activity','A transparent view of the work behind every delivery review.',mode==='snapshot'?button(playbackTimer?'Pause replay':'Play replay','playback',true,'replay'):button(refreshEnabled?'Pause updates':'Resume updates','refresh',false,'replay'))+
+  return pageHead('Agent activity','A transparent view of the work behind every delivery review.',mode==='snapshot'?button(playbackTimer?'Pause replay':'Play replay','playback',true,'replay'):button(refreshEnabled?'Pause updates':'Resume updates','refresh',false,'replay'))+coverageStrip(true)+
   `<div class="flow-grid">${STAGES.map(([id,title,desc,agents],i)=>`<section class="flow-card"><span class="number">0${i+1}</span><div class="agent-symbol">${icon(id)}</div><h3>${title}</h3><p>${desc}</p><div class="flow-count">${logs.filter(l=>agents.includes(l.agent)).length} recorded actions</div></section>`).join('')}</div><section class="panel"><div class="panel-header"><div><h2>Activity log</h2><p>${mode==='snapshot'?'Recorded agent actions. Playback reveals the saved timeline; it does not run inference.':'Committed agent actions, refreshed every 1.5 seconds while running.'}</p></div>${mode==='snapshot'?'<button class="text-button" data-action="reset-playback">Show complete run</button>':''}</div><div class="log-tools"><select id="agent-filter" aria-label="Filter by agent"><option value="">All agents</option>${Object.entries(AGENTS).map(([id,name])=>`<option value="${id}" ${agentFilter===id?'selected':''}>${name}</option>`).join('')}</select>${searchInput('log-search',logQuery,'Search agent activity')}</div><div id="log-box" class="log-box" tabindex="0" aria-label="Agent activity entries">${logRows()}</div></section>`;
 }
 function logRows() {
@@ -159,14 +196,14 @@ function outcomeChart() {
 }
 function renderOutcomes() {
   const t=totals();
-  return pageHead('Learning from outcomes','Check what happened after the review, then improve the next one.')+`<div class="stats-grid">${stat('Confirmed',t.hits,'Predictions observed in completed work','check')}${stat('Not observed',t.scores.length-t.hits,'Predictions not borne out in replay','outcomes')}${stat('Awaiting outcome',t.warnings.length-t.scores.length,'Scored once the epic finishes','clock')}${stat('Confirmation rate',t.rate===null?'—':t.rate+'%',`${t.scores.length} scored findings · visible scope`,'shield')}</div><div class="two-col"><section class="panel"><div class="panel-header"><div><h2>Confirmation over time</h2><p>How published findings compare with later outcomes</p></div></div>${outcomeChart()}</section><section class="panel"><div class="panel-header"><div><h2>By specialist</h2><p>Confirmed / scored findings</p></div></div><div class="breakdown">${['estimator','dependency_hunter','gap_finder'].map(a=>{const ids=new Set(t.warnings.filter(w=>w.agent===a).map(w=>w.id)); const scores=t.scores.filter(s=>ids.has(s.warning_id));const hits=scores.filter(s=>s.hit).length;return `<div class="breakdown-row"><span>${AGENTS[a]}</span><b>${hits} / ${scores.length}</b><div class="meter"><span style="width:${scores.length?hits/scores.length*100:0}%"></span></div></div>`;}).join('')}</div></section></div><section class="panel info-panel mt"><h2>How the learning loop works</h2><p>Every confirmed prediction adds 0.2 to its pattern’s weight. A miss subtracts 0.3. Specialists stop using patterns below 0.5. These updates influence subsequent reviews within the replay; they are not model fine-tuning. Confidence labels describe a finding’s evidence and are not calibrated probabilities.</p></section>`;
+  return pageHead('Learning from outcomes','Check what happened after the review, then improve the next one.')+coverageStrip()+`<div class="stats-grid">${stat('Confirmed',t.hits,'Predictions observed in completed work','check')}${stat('Not observed',t.scores.length-t.hits,'Predictions not borne out in replay','outcomes')}${progressStat('Findings scored',metric({done:t.scores.length,total:t.warnings.length}),'Of findings published so far','clock')}${stat('Confirmation rate',t.rate===null?'—':t.rate+'%',`${t.scores.length} scored findings · visible scope`,'shield')}</div><div class="two-col"><section class="panel"><div class="panel-header"><div><h2>Confirmation over time</h2><p>How published findings compare with later outcomes</p></div></div>${outcomeChart()}</section><section class="panel"><div class="panel-header"><div><h2>By specialist</h2><p>Confirmed / scored findings</p></div></div><div class="breakdown">${['estimator','dependency_hunter','gap_finder'].map(a=>{const ids=new Set(t.warnings.filter(w=>w.agent===a).map(w=>w.id)); const scores=t.scores.filter(s=>ids.has(s.warning_id));const hits=scores.filter(s=>s.hit).length;return `<div class="breakdown-row"><span>${AGENTS[a]}</span><b>${hits} / ${scores.length}</b><div class="meter"><span style="width:${scores.length?hits/scores.length*100:0}%"></span></div></div>`;}).join('')}</div></section></div><section class="panel info-panel mt"><h2>How the learning loop works</h2><p>Every confirmed prediction adds 0.2 to its pattern’s weight. A miss subtracts 0.3. Specialists stop using patterns below 0.5. These updates influence subsequent reviews within the replay; they are not model fine-tuning. Confidence labels describe a finding’s evidence and are not calibrated probabilities.</p></section>`;
 }
 function evidenceItems() {
   const counts=new Map(); data.reviews.forEach(r=>r.report.warnings.forEach(w=>w.evidence.forEach(id=>counts.set(id,(counts.get(id)||0)+1))));
   return [...counts].map(([id,count])=>({id,count,...data.items[id]})).sort((a,b)=>(a.key||a.id).localeCompare(b.key||b.id)).filter(i=>`${i.key} ${i.title} ${i.scope}`.toLowerCase().includes(evidenceQuery.toLowerCase()));
 }
 function renderEvidence() {
-  return pageHead('Evidence library','The historical tickets cited in published findings.')+`<div class="evidence-toolbar">${searchInput('evidence-search',evidenceQuery,'Search title, ticket key or scope')}<small>Only evidence available to this viewer is shown.</small></div><div id="evidence-grid" class="evidence-grid">${evidenceCards()}</div>`;
+  return pageHead('Evidence library','The historical tickets cited in published findings. Citations are a subset of the work covered.')+coverageStrip()+`<div class="evidence-toolbar">${searchInput('evidence-search',evidenceQuery,'Search title, ticket key or scope')}<small>Only evidence available to this viewer is shown.</small></div><div id="evidence-grid" class="evidence-grid">${evidenceCards()}</div>`;
 }
 function evidenceCards() {
   const items=evidenceItems();
@@ -175,7 +212,7 @@ function evidenceCards() {
 function renderWorkspace() {
   const ds=data.dataset||{}, t=totals();
   const def=(label,value)=>`<div class="definition"><span>${label}</span><strong>${esc(value)}</strong></div>`;
-  return pageHead('Workspace details','Understand the data and boundaries behind this workspace.')+`<div class="info-grid"><section class="panel info-panel"><h2>Current run</h2>${def('Run',data.run.id)}${def('Source',mode==='live'?'Connected Nabu API':'Recorded snapshot')}${def('Status',playbackTimer?'Playback in progress':data.run.status)}${def('Replay clock',date(data.run.clock,true))}${def('Tenant',data.run.tenant)}${def('Inference',data.run.offline===true?'Deterministic (offline)':data.run.offline===false?'Model-assisted':'Not recorded in this run')}<div class="help-actions">${button('Export visible data','export-all',false,'download')}${button('Run instructions','run-help',false,'reviews')}</div></section><section class="panel info-panel"><h2>Data visibility</h2>${def('Viewer scopes',data.run.viewer_scopes.join(', '))}${def('Source types',ds.sources?.join(', ')||'Not recorded')}${def('Visible work items',ds.work_items??'Not recorded')}${def('Visible epics',ds.epics??data.reviews.length)}${def('Withheld findings',t.withheld)}<p>Each review uses only the history available at its review date. Findings require cited evidence within the recorded viewer scope.</p></section><section class="panel info-panel"><h2>Connect your team’s history</h2><p>Load canonical JSONL into Nabu, then start a replay. The TAWOS adapter is available today. Direct Jira, Linear, GitHub and Azure DevOps connections are not implemented in this repository.</p><div class="help-actions">${button('View setup steps','run-help',false,'arrow')}</div></section><section class="panel info-panel"><h2>Company deployment</h2><p>This interface is a read-only client. It does not provide sign-in, role administration, tracker writeback or production tenant authentication. Deploy the API behind company identity and server-enforced access before connecting private company data.</p><p class="reduced-note">The recorded preview contains synthetic data. Browser filters are navigation tools, not access controls.</p></section></div>`;
+  return pageHead('Workspace details','Understand the data and boundaries behind this workspace.')+inventoryPanel()+`<div class="info-grid"><section class="panel info-panel"><h2>Current run</h2>${def('Run',data.run.id)}${def('Source',mode==='live'?'Connected Nabu API':'Recorded snapshot')}${def('Status',playbackTimer?'Playback in progress':data.run.status)}${def('Replay clock',date(data.run.clock,true))}${def('Tenant',data.run.tenant)}${def('Inference',data.run.offline===true?'Deterministic (offline)':data.run.offline===false?'Model-assisted':'Not recorded in this run')}<div class="help-actions">${button('Export visible data','export-all',false,'download')}${button('Run instructions','run-help',false,'reviews')}</div></section><section class="panel info-panel"><h2>Data visibility</h2>${def('Viewer scopes',data.run.viewer_scopes.join(', '))}${def('Source types',ds.sources?.join(', ')||'Not recorded')}${def('Work items known at replay date',ds.work_items??'Not recorded')}${def('Epics known at replay date',ds.epics??'Not recorded')}${def('Withheld findings',t.withheld)}<p>Each review uses only the history available at its review date. Findings require cited evidence within the recorded viewer scope.</p></section><section class="panel info-panel"><h2>Connect your team’s history</h2><p>Load canonical JSONL into Nabu, then start a replay. The TAWOS adapter is available today. Direct Jira, Linear, GitHub and Azure DevOps connections are not implemented in this repository.</p><div class="help-actions">${button('View setup steps','run-help',false,'arrow')}</div></section><section class="panel info-panel"><h2>Company deployment</h2><p>This interface is a read-only client. It does not provide sign-in, role administration, tracker writeback or production tenant authentication. Deploy the API behind company identity and server-enforced access before connecting private company data.</p><p class="reduced-note">The recorded preview contains synthetic data. Browser filters are navigation tools, not access controls.</p></section></div>`;
 }
 
 function openDialog(title,subtitle,body) {
@@ -306,18 +343,29 @@ async function poll(token,initial=false) {
   } finally { if(pollingToken===token)pollingToken=null; }
 }
 $('main').addEventListener('focusout',()=>requestAnimationFrame(()=>{if(pendingRender&&!$('main').contains(document.activeElement)){pendingRender=false;render();}}));
+function snapshotAt(snapshot, at) {
+  const checkpoint=[...(snapshot.checkpoints||[])].reverse().find(c=>at && c.at<=at);
+  const zero = p => ({...p,epics:{...p.epics,done:0,percent:p.epics?.total?0:null},tickets:{...p.tickets,done:0,percent:p.tickets?.total?0:null},steps:{...p.steps,done:0,percent:p.steps?.total?0:null},by_scope:(p.by_scope||[]).map(zero)});
+  // Older recordings do not contain reliable ticket/step checkpoints.
+  const progress=checkpoint?.progress || (snapshot.checkpoints && snapshot.progress ? zero(snapshot.progress) : undefined);
+  return {...snapshot,progress,
+    run:{...snapshot.run,clock:at,status:'recorded playback',cursor:progress?.steps?.done??0},
+    reviews:snapshot.reviews.filter(r=>at && r.as_of<=at),
+    scores:Object.fromEntries(Object.entries(snapshot.scores).filter(([,s])=>at && s.at<=at)),
+    log:snapshot.log.filter(l=>at && l.sim_at && l.sim_at<=at)};
+}
 let playbackIndex=0;
 function stopPlayback(){clearInterval(playbackTimer);playbackTimer=null;}
 function togglePlayback(){
   if(playbackTimer){stopPlayback();render();return;}
   if(!fullSnapshot)return;
-  const timeline=[...new Set([...fullSnapshot.log.map(l=>l.sim_at),...fullSnapshot.reviews.map(r=>r.as_of),...Object.values(fullSnapshot.scores).map(s=>s.at)])].filter(Boolean).sort();
-  if(!timeline.length){toast('This snapshot has no timeline to replay.');return;}
+  const moments=[...new Set([...fullSnapshot.log.map(l=>l.sim_at),...fullSnapshot.reviews.map(r=>r.as_of),...Object.values(fullSnapshot.scores).map(s=>s.at),...(fullSnapshot.checkpoints||[]).map(c=>c.at)])].filter(Boolean).sort();
+  if(!moments.length){toast('This snapshot has no timeline to replay.');return;}
+  const timeline=[null,...moments];
   if(data.run.clock===fullSnapshot.run.clock)playbackIndex=0;
   const tick=()=>{
-    const at=timeline[playbackIndex++];
-    if(!at){stopPlayback();data=structuredClone(fullSnapshot);logs=data.log;render();toast('Recorded replay complete.');return;}
-    data={...fullSnapshot,run:{...fullSnapshot.run,clock:at,status:'recorded playback'},reviews:fullSnapshot.reviews.filter(r=>r.as_of<=at),scores:Object.fromEntries(Object.entries(fullSnapshot.scores).filter(([,s])=>s.at<=at))};logs=fullSnapshot.log.filter(l=>l.sim_at<=at);render();
+    if(playbackIndex>=timeline.length){stopPlayback();data=structuredClone(fullSnapshot);logs=data.log;render();toast('Recorded replay complete.');return;}
+    data=snapshotAt(fullSnapshot,timeline[playbackIndex++]);logs=data.log;render();
   };
   playbackTimer=setInterval(tick,1000);tick();
 }
