@@ -16,12 +16,31 @@ python -m unittest discover -s tests
 - `--stop-after 5` pauses the run at a checkpoint; `python -m nabu resume --run demo1` carries on from there.
 - `--viewer-scopes payments` makes the reader payments-only while the agents read both scopes, so warnings citing platform tickets are suppressed by the ring-fence.
 
+## Real data: TAWOS
+
+Download and unzip TAWOS v1.1 (the inner `TAWOS.sql` is about 4.3 GB). The dump reader parses it directly, so no MySQL server is needed. Each project becomes one scope.
+
+```bash
+python -m nabu profile-dump --input data/source/TAWOS.sql            # pick a project with epics and estimates
+python -m nabu extract-dump --input data/source/TAWOS.sql --project XD --output data/raw/xd.jsonl
+python -m nabu tawos --input data/raw/xd.jsonl --output data/xd-canonical.jsonl
+python -m nabu load data/xd-canonical.jsonl
+python -m nabu replay --run xd1 --tenant tawos --scopes XD --offline
+```
+
+`dump.py`, `extract.py` and `mappings.json` are copied unchanged from Nabu 1. `tawos.py` maps them into the new schema:
+- **Epic membership:** TAWOS has no epic column. Membership comes from `Epic Link` and `Epic Child` change events, and `parent_at` records when a ticket joined its epic. If a ticket was put in an epic when it was created, no event may have been logged, so check the `with_epic` count in the report.
+- **Status:** a "done" ticket whose resolution is "Won't Fix", a duplicate or similar is counted as `cancelled`.
+- **Links:** a link's time comes from the `Link` change event when there is one. Otherwise the link counts as known once both tickets exist.
+
+TAWOS's authors state research-only use alongside the Apache 2.0 licence.
+
 ## Modules
 
 | Diagram box | Code |
 | --- | --- |
 | Canonical store, ring-fenced by tenant + scope | `nabu/store.py`: the schema and `ScopedStore`, the single query layer. Every read filters on tenant and scope and is cut off at `as_of`. Later items are invisible, and later resolutions and re-estimates are masked. |
-| Adapters | Not here yet. Any ETL only has to write canonical JSONL (`{"table": "work_item"|"link"|"event", "row": {...}}`), which `load_jsonl` reads. |
+| Adapters | `nabu/adapters/`: TAWOS, ported from Nabu 1 (see below). Any new adapter only has to write canonical JSONL (`{"table": "work_item"|"link"|"event", "row": {...}}`), which `load_jsonl` reads. |
 | Replay clock | `nabu/replay.py`: builds the timeline (review each epic one day after it appears; score it when it finishes) and checkpoints after every step. |
 | Historian | `nabu/agents/historian.py`: mines estimate, dependency and gap patterns per scope, with cited ticket ids. Claude names them. |
 | Planner, Estimator, Dependency hunter, Gap finder | `nabu/agents/specialists.py` |
@@ -41,4 +60,4 @@ python -m unittest discover -s tests
 
 - Similarity is token overlap, not embeddings.
 - The store is SQLite. plan.md says Supabase/Postgres, and the schema ports directly.
-- There's no TAWOS loader yet, pending the decision on Nabu 1's ETL.
+- Only TAWOS has an adapter. The GitHub Issues adapter in plan.md is still to do.

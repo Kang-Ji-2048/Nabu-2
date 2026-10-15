@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS work_item (
     id TEXT PRIMARY KEY, tenant_id TEXT NOT NULL, scope TEXT NOT NULL,
     source TEXT NOT NULL, source_key TEXT NOT NULL,
     type TEXT NOT NULL, title TEXT NOT NULL, description TEXT,
-    parent_id TEXT, components TEXT NOT NULL DEFAULT '[]', labels TEXT NOT NULL DEFAULT '[]',
+    parent_id TEXT, parent_at TEXT, components TEXT NOT NULL DEFAULT '[]', labels TEXT NOT NULL DEFAULT '[]',
     estimate REAL, estimate_unit TEXT, status_category TEXT NOT NULL,
     created_at TEXT NOT NULL, started_at TEXT, resolved_at TEXT, due_at TEXT,
     raw TEXT
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS agent_log (
 """
 
 ITEM_FIELDS = ("id", "tenant_id", "scope", "source", "source_key", "type", "title", "description",
-               "parent_id", "components", "labels", "estimate", "estimate_unit", "status_category",
+               "parent_id", "parent_at", "components", "labels", "estimate", "estimate_unit", "status_category",
                "created_at", "started_at", "resolved_at", "due_at", "raw")
 
 STOPWORDS = {"the", "a", "an", "and", "or", "to", "of", "for", "in", "on", "with", "add", "new",
@@ -182,7 +182,8 @@ class ScopedStore:
         return self.get(item_id) is not None
 
     def children(self, epic_id) -> list:
-        return self.items(parent_id=epic_id)
+        """Items in the epic at as_of. parent_at is when the item joined the epic (default: created)."""
+        return [i for i in self.items(parent_id=epic_id) if joined(i) <= self.as_of]
 
     def completed(self, type_=None) -> list:
         return [item for item in self.items(**({"type": type_} if type_ else {}))
@@ -199,6 +200,10 @@ class ScopedStore:
         query = tokens(text)
         scored = [(similarity(query, tokens(c["title"] + " " + (c["description"] or ""))), c) for c in candidates]
         return [c for score, c in sorted(scored, key=lambda pair: -pair[0]) if score >= threshold][:k]
+
+
+def joined(item) -> str:
+    return item.get("parent_at") or item["created_at"]
 
 
 def duration(item) -> float | None:

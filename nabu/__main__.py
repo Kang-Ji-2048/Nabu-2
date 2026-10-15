@@ -3,6 +3,7 @@
 import argparse
 import json
 import sys
+from pathlib import Path
 
 from . import demo_data, replay
 from .store import connect, load_jsonl
@@ -15,6 +16,19 @@ def main(argv=None):
 
     demo = commands.add_parser("demo-data", help="write synthetic history to a JSONL file")
     demo.add_argument("--out", default="data/demo.jsonl")
+
+    profile = commands.add_parser("profile-dump", help="list TAWOS projects in the SQL dump, with data coverage")
+    profile.add_argument("--input", required=True, help="path to TAWOS.sql")
+
+    extract = commands.add_parser("extract-dump", help="export one TAWOS project from the SQL dump to JSONL")
+    extract.add_argument("--input", required=True)
+    extract.add_argument("--project", required=True, help="project key, e.g. XD")
+    extract.add_argument("--output", required=True)
+
+    tawos = commands.add_parser("tawos", help="convert a TAWOS project export to canonical JSONL")
+    tawos.add_argument("--input", required=True)
+    tawos.add_argument("--output", required=True)
+    tawos.add_argument("--tenant", default="tawos")
 
     load = commands.add_parser("load", help="load canonical JSONL into the store")
     load.add_argument("input")
@@ -40,6 +54,18 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if args.command == "demo-data":
         print(json.dumps({"records": demo_data.write(args.out), "out": args.out}))
+        return 0
+    if args.command == "profile-dump":
+        from .adapters.dump import profile_dump
+        print(json.dumps(profile_dump(Path(args.input)), indent=2))
+        return 0
+    if args.command == "extract-dump":
+        from .adapters.dump import export_dump
+        print(json.dumps(export_dump(Path(args.input), args.project, Path(args.output))))
+        return 0
+    if args.command == "tawos":
+        from .adapters.tawos import convert
+        print(json.dumps(convert(Path(args.input), Path(args.output), tenant=args.tenant)))
         return 0
     conn = connect(args.db)
     if args.command == "load":

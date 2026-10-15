@@ -2,7 +2,7 @@
 
 import json
 
-from ..store import days_between, duration
+from ..store import days_between, duration, joined
 from .historian import categories_of
 
 WRITER_SYSTEM = """You are the Writer in Nabu, a delivery risk reviewer. Write a short summary
@@ -72,7 +72,7 @@ class Scorekeeper:
             return bool(done) and len(over) * 2 >= len(done), f"{len(over)}/{len(done)} finished tickets overran"
         if kind == "missing_category":
             added = [c for c in after.children(epic["id"])
-                     if c["created_at"] > as_of and prediction["category"] in categories_of(c)]
+                     if joined(c) > as_of and prediction["category"] in categories_of(c)]
             return bool(added), f"{len(added)} {prediction['category']} tickets added after the review"
         if kind == "blocked":
             hits = [link for i in prediction["item_ids"] for link in after.links(i)
