@@ -180,6 +180,9 @@ td code { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
 .epic-panel h2{margin-bottom:8px}.epic-panel table{table-layout:fixed;border-collapse:separate;border-spacing:0 9px}.epic-panel th{font-size:10.5px;padding:0 13px 2px}.epic-panel th:last-child{width:63px;text-align:right}.epic-panel td{padding:13px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);vertical-align:top;font-size:12px;line-height:1.55}.epic-panel td:first-child{border-left:1px solid var(--border);border-radius:10px 0 0 10px}.epic-panel td:last-child{border-right:1px solid var(--border);border-radius:0 10px 10px 0}.epic-panel td code{display:inline-block;font:10.5px var(--mono);color:var(--ink-3);margin-bottom:5px}.epic-panel .epic-name{display:inline-block;overflow-wrap:anywhere;color:var(--ink);font-weight:500}.epic-panel td.num{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;padding-left:4px}.epic-panel .dots{display:flex;justify-content:flex-end;gap:3px;margin-top:7px;flex-wrap:wrap}.epic-panel .dots i{width:6px;height:6px;margin:0;flex:none}.epic-panel table tr:last-child td{border-bottom:1px solid var(--border)}
 
 .epic-panel th:last-child{width:78px}.epic-panel td.num{vertical-align:middle}.epic-risk-count{display:inline-grid;place-items:center;min-width:42px;min-height:42px;padding:4px 8px;border-radius:12px;background:var(--accent-tint);color:var(--accent);font-size:26px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}.epic-panel .dots{gap:4px;margin-top:9px}.epic-panel .dots i{width:8px;height:8px}
+
+/* Activity entries share the risk and epic card language. */
+.activity-card h2{margin-bottom:16px}.activity-card h2 .hint{font-size:10px;padding:3px 8px;background:var(--accent-tint);color:var(--accent);border-radius:999px}.activity-card #log{max-height:440px;padding-right:4px}.activity-card .row{grid-template-columns:minmax(0,1fr) auto;gap:8px 10px;padding:13px;margin-bottom:9px;border:1px solid var(--border);border-radius:10px;background:var(--surface);align-items:center}.activity-card .row:last-child{margin-bottom:0}.activity-card .row .when{grid-column:2;grid-row:1;font-size:9.5px;color:var(--ink-3);white-space:nowrap}.activity-card .row .who{grid-column:1;grid-row:1;font-size:11px;font-weight:600;line-height:1.5;color:var(--accent)}.activity-card .row .msg{font-size:12px;line-height:1.6;color:var(--ink-2);overflow-wrap:anywhere;padding-top:2px}.activity-card .row .who:before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:7px;vertical-align:1px;opacity:.8}
 </style>
 </head>
 <body>
@@ -277,7 +280,7 @@ Kafka source and sink stream modules | 5 | Stream Module</textarea></label>
       </section>
       <div class="grid" style="margin:0">
         <section class="card epic-panel"><h2>Riskiest epics</h2><div id="epics"></div></section>
-        <section class="card"><h2>Agent activity<span class="hint">live log</span></h2><div id="log" role="log"></div></section>
+        <section class="card activity-card"><h2>Agent activity<span class="hint">live log</span></h2><div id="log" role="log"></div></section>
       </div>
     </div>
   </main>
