@@ -167,9 +167,6 @@ td code { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
 .workflow-reference { margin: 0; }
 .workflow-reference h2 { margin-bottom: 6px; }
 .workflow-reference > p { color: var(--ink-2); margin: 0 0 14px; }
-.workflow-image { display: block; position: relative; aspect-ratio: 876 / 489; overflow: hidden; border-radius: 8px; background: #1c211b; }
-.workflow-image img { position: absolute; display: block; max-width: none; width: 109.589%; height: auto; left: -4.795%; top: -10.838%; }
-.workflow-image:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
 .workflow-reference figcaption { margin-top: 10px; font-size: 12px; line-height: 1.5; color: var(--ink-2); }
 .workflow-reference figcaption a { color: var(--accent); text-underline-offset: 3px; }
 
@@ -183,6 +180,11 @@ td code { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
 
 /* Activity entries share the risk and epic card language. */
 .activity-card h2{margin-bottom:16px}.activity-card h2 .hint{font-size:10px;padding:3px 8px;background:var(--accent-tint);color:var(--accent);border-radius:999px}.activity-card #log{max-height:440px;padding-right:4px}.activity-card .row{grid-template-columns:minmax(0,1fr) auto;gap:8px 10px;padding:13px;margin-bottom:9px;border:1px solid var(--border);border-radius:10px;background:var(--surface);align-items:center}.activity-card .row:last-child{margin-bottom:0}.activity-card .row .when{grid-column:2;grid-row:1;font-size:9.5px;color:var(--ink-3);white-space:nowrap}.activity-card .row .who{grid-column:1;grid-row:1;font-size:11px;font-weight:600;line-height:1.5;color:var(--accent)}.activity-card .row .msg{font-size:12px;line-height:1.6;color:var(--ink-2);overflow-wrap:anywhere;padding-top:2px}.activity-card .row .who:before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:7px;vertical-align:1px;opacity:.8}
+
+
+.how{max-width:1160px}.how>.step,.how>.note{max-width:820px}.workflow-reference{padding:20px;min-width:0}.workflow-heading{display:flex;justify-content:space-between;align-items:start;gap:20px}.workflow-heading p{color:var(--ink-2);margin:5px 0 0;font-size:13px}.workflow-download{font-size:12px;color:var(--accent);white-space:nowrap;padding:6px 0}.workflow-tools{display:flex;align-items:center;gap:7px;margin:18px 0 10px;flex-wrap:wrap}.workflow-tools>span{color:var(--ink-2);font-size:12px;margin-right:auto}.workflow-tools button{border:1px solid var(--border);background:var(--surface);color:var(--ink);border-radius:5px;padding:6px 10px;min-width:32px;min-height:32px;font:inherit;font-size:12px;cursor:pointer}.workflow-tools button:hover{background:var(--accent-tint)}.workflow-tools button:disabled{opacity:.4;cursor:default}.workflow-tools button:focus-visible,.workflow-download:focus-visible{outline:2px solid var(--accent);outline-offset:3px}#workflow-zoom{font:11px var(--mono);min-width:40px;text-align:center;color:var(--ink-2)}.workflow-viewport{background:#1d231c;border-radius:8px;overflow:auto;max-height:530px;overscroll-behavior:contain;scrollbar-color:#617052 #22291e}.workflow-viewport:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.workflow-svg{display:block;width:100%;height:auto;max-width:none;touch-action:pan-x pan-y}.workflow-inspector{display:grid;grid-template-columns:155px 1fr;gap:16px;margin-top:12px;padding:14px;background:var(--accent-tint);border-radius:5px;align-items:baseline}.workflow-inspector strong{font-size:13px;color:var(--ink)}.workflow-inspector p{font-size:12px;color:var(--ink-2);margin:0;line-height:1.6}.workflow-reference figcaption{font-size:11px;margin-top:11px;color:var(--ink-3)}
+@media(max-width:760px){.workflow-reference{padding:14px}.workflow-heading{display:block}.workflow-download{display:inline-block;margin-top:6px}.workflow-tools{gap:6px}.workflow-tools>span{flex-basis:100%;margin-bottom:6px}.workflow-tools button{min-height:40px;min-width:40px}.workflow-viewport{max-height:440px}.workflow-inspector{grid-template-columns:1fr;gap:5px}}
+
 </style>
 </head>
 <body>
@@ -200,14 +202,95 @@ td code { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
   <main id="view-how" hidden>
     <div class="top"><div><h1>How it works</h1><div class="sub">Nabu reviews a new epic against the project's own history, before work starts.</div></div></div>
     <div class="how">
-      <figure class="card workflow-reference">
-        <h2>The agent workflow</h2>
-        <p>How a new plan moves through the review team, and how outcomes feed back into the next review.</p>
-        <a class="workflow-image" href="assets/agent-workflow-reference.png" target="_blank" rel="noopener" aria-label="Open the agent workflow diagram at full size">
-          <img src="assets/agent-workflow-reference.png" width="960" height="572" alt="The replay clock feeds the Historian, then the Planner routes work to the Estimator, Dependency hunter and Gap finder. Data quality and the Critic check the findings before the Writer publishes a review. The Scorekeeper compares outcomes and feeds them back to the Historian.">
-        </a>
-        <figcaption>Reference image; the status labels and controls shown are not live. <a href="assets/agent-workflow-reference.png" target="_blank" rel="noopener">Open full-size diagram</a>.</figcaption>
-      </figure>
+      <figure class="card workflow-reference" id="workflow-reference">
+<div class="workflow-heading"><div><h2>The agent workflow</h2><p>Follow a plan from historical evidence to a cited review.</p></div><a class="workflow-download" href="assets/agent-workflow.svg" download>Download SVG ↗</a></div>
+<div class="workflow-tools" role="group" aria-label="Diagram controls"><span>Select an agent to inspect its role</span><button type="button" id="workflow-zoom-out" aria-label="Zoom out">−</button><output id="workflow-zoom" aria-label="Diagram zoom">100%</output><button type="button" id="workflow-zoom-in" aria-label="Zoom in">+</button><button type="button" id="workflow-fit">Fit view</button><button type="button" id="workflow-reset">Reset selection</button></div>
+<div class="workflow-viewport" id="workflow-viewport" tabindex="0" aria-label="Agent diagram. Scroll to explore when zoomed."><svg xmlns="http://www.w3.org/2000/svg" id="agent-workflow-svg" class="workflow-svg" viewBox="0 0 1210 510" role="group" aria-labelledby="workflow-vector-title workflow-vector-description">
+<title id="workflow-vector-title">Nabu agent review workflow</title>
+<desc id="workflow-vector-description">The replay clock feeds the Historian, then the Planner routes a plan to the Estimator, Dependency hunter and Gap finder. Data quality and Critic assess findings before the Writer saves the review. Scorekeeper checks later outcomes and feeds pattern weights back to Historian. Critic can request one revision. Select an agent for details.</desc>
+<style>
+.wf-background{fill:#1d231c}.wf-stage{fill:#abb5a3;font:11px Arial,sans-serif;letter-spacing:2px}.wf-edge{fill:none;stroke:#788770;stroke-width:1.7;marker-end:url(#wf-arrow)}.wf-edge.feedback{stroke:#718361;stroke-dasharray:5 6}.wf-edge.revision{stroke:#ae9a6c;stroke-dasharray:4 5}.wf-edge.active{stroke:#d9ed89;stroke-width:2.5}.wf-node{cursor:pointer;outline:none}.wf-node .wf-box{fill:#282f25;stroke:#4b5743;stroke-width:1.2}.wf-node:hover .wf-box,.wf-node:focus .wf-box{stroke:#c7dc8b;stroke-width:2}.wf-node[aria-pressed="true"] .wf-box{fill:#34412c;stroke:#d9ed89;stroke-width:2}.wf-node .wf-divider{stroke:#424c3b;stroke-width:1}.wf-label{fill:#f0f4e8;font:500 14px Arial,sans-serif}.wf-description{fill:#b5c0aa;font:12px Arial,sans-serif}.wf-node-dot{fill:#c2d997}.wf-note{fill:#b4bfa7;font:12px Arial,sans-serif}.wf-revision-note{fill:#bead85;font:11px Arial,sans-serif}
+</style>
+<defs><marker id="wf-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#a2b189"/></marker></defs>
+<rect class="wf-background" width="1210" height="510" rx="8"/>
+<text class="wf-stage" x="30" y="31">01 / CONTEXT</text><text class="wf-stage" x="620" y="31">02 / ANALYSIS</text><text class="wf-stage" x="1020" y="31">03 / OUTPUT</text>
+<path class="wf-edge" data-from="replay" data-to="historian" d="M190 248H225"/>
+<path class="wf-edge" data-from="historian" data-to="planner" d="M385 248H420"/>
+<path class="wf-edge" data-from="planner" data-to="estimator" d="M580 248H595Q605 248 605 238V118Q605 108 615 108H620"/>
+<path class="wf-edge" data-from="planner" data-to="dependency" d="M580 248H620"/>
+<path class="wf-edge" data-from="planner" data-to="gaps" d="M580 248H595Q605 248 605 258V378Q605 388 615 388H620"/>
+<path class="wf-edge" data-from="estimator" data-to="quality" d="M780 108H825"/>
+<path class="wf-edge" data-from="quality" data-to="critic" d="M905 154V202"/>
+<path class="wf-edge" data-from="dependency" data-to="critic" d="M780 248H825"/>
+<path class="wf-edge" data-from="gaps" data-to="critic" d="M780 388H792Q802 388 802 378V278Q802 268 812 268H825"/>
+<path class="wf-edge" data-from="critic" data-to="writer" d="M985 248H1020"/>
+<path class="wf-edge" data-from="writer" data-to="scorekeeper" d="M1100 294V342"/>
+<path class="wf-edge feedback" data-from="scorekeeper" data-to="historian" d="M1100 434V456Q1100 468 1088 468H317Q305 468 305 456V294"/>
+
+<g class="wf-node" data-agent="replay" transform="translate(30 202)" role="button" tabindex="0" aria-pressed="false" aria-label="Replay clock: Advance review time. Save each checkpoint">
+<rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
+<text class="wf-label" x="24" y="27">Replay clock</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-description" x="13" y="62">Advance review time</text>
+<text class="wf-description" x="13" y="78">Save each checkpoint</text>
+</g>
+<g class="wf-node" data-agent="historian" transform="translate(225 202)" role="button" tabindex="0" aria-pressed="false" aria-label="Historian: Find recurring patterns. from completed work">
+<rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
+<text class="wf-label" x="24" y="27">Historian</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-description" x="13" y="62">Find recurring patterns</text>
+<text class="wf-description" x="13" y="78">from completed work</text>
+</g>
+<g class="wf-node" data-agent="planner" transform="translate(420 202)" role="button" tabindex="0" aria-pressed="false" aria-label="Planner: Read the new epic. Route planned tickets">
+<rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
+<text class="wf-label" x="24" y="27">Planner</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-description" x="13" y="62">Read the new epic</text>
+<text class="wf-description" x="13" y="78">Route planned tickets</text>
+</g>
+<g class="wf-node" data-agent="estimator" transform="translate(620 62)" role="button" tabindex="0" aria-pressed="false" aria-label="Estimator: Check estimate risk. against past delivery">
+<rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
+<text class="wf-label" x="24" y="27">Estimator</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-description" x="13" y="62">Check estimate risk</text>
+<text class="wf-description" x="13" y="78">against past delivery</text>
+</g>
+<g class="wf-node" data-agent="dependency" transform="translate(620 202)" role="button" tabindex="0" aria-pressed="false" aria-label="Dependency hunter: Find likely blockers. and missing dependencies">
+<rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
+<text class="wf-label" x="24" y="27">Dependency hunter</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-description" x="13" y="62">Find likely blockers</text>
+<text class="wf-description" x="13" y="78">and missing dependencies</text>
+</g>
+<g class="wf-node" data-agent="gaps" transform="translate(620 342)" role="button" tabindex="0" aria-pressed="false" aria-label="Gap finder: Find work the plan. may have left out">
+<rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
+<text class="wf-label" x="24" y="27">Gap finder</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-description" x="13" y="62">Find work the plan</text>
+<text class="wf-description" x="13" y="78">may have left out</text>
+</g>
+<g class="wf-node" data-agent="quality" transform="translate(825 62)" role="button" tabindex="0" aria-pressed="false" aria-label="Data quality: Assess history coverage. and warning confidence">
+<rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
+<text class="wf-label" x="24" y="27">Data quality</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-description" x="13" y="62">Assess history coverage</text>
+<text class="wf-description" x="13" y="78">and warning confidence</text>
+</g>
+<g class="wf-node" data-agent="critic" transform="translate(825 202)" role="button" tabindex="0" aria-pressed="false" aria-label="Critic: Check claims, citations. and viewer scope">
+<rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
+<text class="wf-label" x="24" y="27">Critic</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-description" x="13" y="62">Check claims, citations</text>
+<text class="wf-description" x="13" y="78">and viewer scope</text>
+</g>
+<g class="wf-node" data-agent="writer" transform="translate(1020 202)" role="button" tabindex="0" aria-pressed="false" aria-label="Writer: Save the cited review. and suggested tickets">
+<rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
+<text class="wf-label" x="24" y="27">Writer</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-description" x="13" y="62">Save the cited review</text>
+<text class="wf-description" x="13" y="78">and suggested tickets</text>
+</g>
+<g class="wf-node" data-agent="scorekeeper" transform="translate(1020 342)" role="button" tabindex="0" aria-pressed="false" aria-label="Scorekeeper: Check later outcomes. Update pattern weights">
+<rect class="wf-box" width="160" height="92" rx="7"/><circle class="wf-node-dot" cx="14" cy="22" r="2.5"/>
+<text class="wf-label" x="24" y="27">Scorekeeper</text><path class="wf-divider" d="M0 40H160"/>
+<text class="wf-description" x="13" y="62">Check later outcomes</text>
+<text class="wf-description" x="13" y="78">Update pattern weights</text>
+</g>
+<text class="wf-note" x="600" y="494">Outcomes inform the next historical review</text></svg></div>
+<div class="workflow-inspector" aria-live="polite"><strong id="workflow-agent-name">Review workflow</strong><p id="workflow-agent-detail">Select a node to see its purpose, inputs and output.</p></div>
+<figcaption>Interactive workflow reference. The diagram describes the implementation; it does not display live execution status.</figcaption>
+</figure>
       <section class="card step"><span class="num">1</span><div><h2>Read the tracker history</h2>
         <p>Nabu pulls the project's tickets, epics, estimates and links from the tracker. Jira and GitHub Issues are mapped into one common format, and every record is tagged with the team or project it belongs to.</p></div></section>
       <section class="card step"><span class="num">2</span><div><h2>Learn from finished work</h2>
@@ -614,5 +697,6 @@ $("plan-form").onsubmit = async ev => {
 
 init();
 </script>
+<script src="assets/agent-workflow.js" defer></script>
 </body>
 </html>
