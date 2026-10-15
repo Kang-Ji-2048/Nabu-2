@@ -30,6 +30,7 @@ python -m nabu replay --run xd1 --tenant tawos --scopes XD --offline
 
 `dump.py`, `extract.py` and `mappings.json` are copied unchanged from Nabu 1. `tawos.py` maps them into the new schema:
 - **Epic membership:** TAWOS has no epic column. Membership comes from `Epic Link` and `Epic Child` change events, and `parent_at` records when a ticket joined its epic. If a ticket was put in an epic when it was created, no event may have been logged, so check the `with_epic` count in the report.
+- **Open epics:** many epics were never closed in Jira. An open epic whose tickets are all resolved counts as done on the date of its last ticket, so the Scorekeeper can grade it (`epics_closed_from_children` in the report). Epics with any open ticket stay open and are reviewed but never scored.
 - **Status:** a "done" ticket whose resolution is "Won't Fix", a duplicate or similar is counted as `cancelled`.
 - **Links:** a link's time comes from the `Link` change event when there is one. Otherwise the link counts as known once both tickets exist.
 
