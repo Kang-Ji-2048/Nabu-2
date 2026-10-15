@@ -15,7 +15,9 @@ python -m nabu.ui --db data/nabu.sqlite --port 8000   # then open http://127.0.0
 
 ## Hosting the dashboard (Vercel)
 
-`frontend/` is a static site with no build step. In Vercel, import the repo, set **Root Directory** to `frontend` and **Framework** to Other.
+`frontend/` is a static site with no build step, and `vercel.json` points Vercel at it, so importing the repo in Vercel and pressing Deploy is enough.
+
+With no API, the hosted page plays the recorded Spring XD backtest (`frontend/runs/xd-demo.json`, built offline from the one-scope XD store). It pauses at the April 2014 cutoff (`pause_at` in `runs/index.json`) to show the open risks, and **Reveal what happened** plays the rest so the Scorekeeper grades them. The new-epic form is hidden there, because it needs the live API.
 
 The agents still run on a laptop, and the hosted page reads them live:
 
