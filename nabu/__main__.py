@@ -62,6 +62,7 @@ def main(argv=None):
         sub.add_argument("--offline", action="store_true", help="no Claude calls; deterministic agents only")
         sub.add_argument("--stop-after", type=int, help="pause after N steps (to demo checkpoint and resume)")
         sub.add_argument("--quiet", action="store_true")
+        sub.add_argument("--pace", type=float, default=0.0, help="seconds to wait after each step, for a watchable demo")
 
     show = commands.add_parser("show", help="print the stored review for an epic")
     show.add_argument("--run", required=True)
@@ -94,7 +95,7 @@ def main(argv=None):
             replay.start(conn, args.run, args.tenant, scopes,
                          args.viewer_scopes.split(",") if args.viewer_scopes else None)
         stats = replay.run(conn, args.run, offline=True if args.offline else None,
-                           stop_after=args.stop_after, quiet=args.quiet)
+                           stop_after=args.stop_after, quiet=args.quiet, pace=args.pace)
         print(json.dumps({k: v for k, v in stats.items() if k != "accuracy"}))
     elif args.command == "show":
         row = conn.execute("SELECT report FROM review WHERE run_id=? AND epic_id=?", (args.run, args.epic)).fetchone()

@@ -7,6 +7,7 @@ python -m nabu replay --run demo1 --tenant demo --scopes payments,platform --vie
 python -m nabu.ui --db data/nabu.sqlite --port 8000   # then open http://127.0.0.1:8000/?run=demo1
 ```
 
+- The **Agent team** strip at the top is the architecture diagram: each agent's box lights up as it acts and shows its latest action (green for a hit, red for a miss, amber for a suppression, revise or recovery). An offline replay is very fast, so add `--pace 2` to wait 2 seconds after each step.
 - Start `nabu.ui` before or during a replay: the page polls every 1.5 seconds and appends new `agent_log` rows, so it doubles as the live log for the demo.
 - The server opens SQLite read-only and only reads `run`, `agent_log`, `review`, `warning`, `score` and the titles of cited `work_item`s, so it can't interfere with a running replay.
 - No build step or dependencies: `web/index.html` is plain HTML and JavaScript, light and dark mode, and works at phone width.

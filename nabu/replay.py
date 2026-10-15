@@ -10,6 +10,7 @@ Ctrl-C loses at most the step in progress and `resume` carries on from there.
 """
 
 import json
+import time
 from datetime import datetime, timedelta
 
 from .agents.historian import Historian
@@ -46,7 +47,7 @@ def start(conn, run_id, tenant_id, scopes, viewer_scopes=None):
     conn.commit()
 
 
-def run(conn, run_id, *, offline=None, stop_after=None, quiet=False) -> dict:
+def run(conn, run_id, *, offline=None, stop_after=None, quiet=False, pace=0.0) -> dict:
     row = conn.execute("SELECT * FROM run WHERE id=?", (run_id,)).fetchone()
     if row is None:
         raise ValueError(f"No run {run_id!r}")
@@ -89,6 +90,7 @@ def run(conn, run_id, *, offline=None, stop_after=None, quiet=False) -> dict:
         conn.execute("UPDATE run SET cursor=?, clock=?, stats=?, status=? WHERE id=?",
                      (cursor, at, json.dumps(stats), "running" if cursor < len(steps) else "finished", run_id))
         conn.commit()  # checkpoint: this step's warnings, scores, patterns and log rows land together
+        time.sleep(pace)  # slows an offline replay down so the interface can be watched
     log.emit("replay", "finished", f"{stats['reviews']} epics reviewed, {stats['hits']} hits, {stats['misses']} misses, "
                                    f"{llm.calls} Claude calls")
     conn.commit()
