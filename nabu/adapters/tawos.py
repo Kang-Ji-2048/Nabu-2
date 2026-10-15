@@ -97,6 +97,16 @@ def convert(export: Path, output: Path, tenant: str = "tawos", mapping_file: Pat
         elif parent.get(child, (None, None))[0] != epic:
             parent[child] = (epic, at)
 
+    # Many epics were never closed in Jira. Treat an open epic as finished when every
+    # ticket in it is resolved, on the date of the last one, so the Scorekeeper can grade it.
+    epic_children = defaultdict(list)
+    for child, (epic, _) in parent.items():
+        epic_children[epic].append(issues[child])
+    closed_from_children = {}
+    for epic, children in epic_children.items():
+        if not issues[epic].get("Resolution_Date") and all(c.get("Resolution_Date") for c in children):
+            closed_from_children[epic] = max(timestamp(c["Resolution_Date"]) for c in children)
+
     output.parent.mkdir(parents=True, exist_ok=True)
     with open(output, "w", encoding="utf-8") as out:
         write = lambda table, row: out.write(json.dumps({"table": table, "row": row}) + "\n")
@@ -115,6 +125,10 @@ def convert(export: Path, output: Path, tenant: str = "tawos", mapping_file: Pat
                            and mappings["statuses"].get((row.get("To_String") or "").casefold()) == "in_progress"),
                           default=None)
             epic = parent.get(issue_id)
+            resolved = timestamp(issue.get("Resolution_Date"))
+            if issue_id in closed_from_children:
+                resolved, status = closed_from_children[issue_id], "done"
+                report["epics_closed_from_children"] += 1
             write("work_item", {
                 "id": nid(issue), "tenant_id": tenant, "scope": scope(issue), "source": "tawos",
                 "source_key": issue["Issue_Key"], "type": item_type, "title": issue.get("Title") or "",
@@ -124,7 +138,7 @@ def convert(export: Path, output: Path, tenant: str = "tawos", mapping_file: Pat
                 "components": issue_components.get(issue_id, []), "labels": [],
                 "estimate": issue.get("Story_Point"), "estimate_unit": "points" if issue.get("Story_Point") is not None else None,
                 "status_category": status, "created_at": timestamp(issue["Creation_Date"]), "started_at": started,
-                "resolved_at": timestamp(issue.get("Resolution_Date")), "due_at": None,
+                "resolved_at": resolved, "due_at": None,
                 "raw": {"url": issue.get("URL"), "priority": issue.get("Priority"), "resolution": issue.get("Resolution")}})
             report["work_items"] += 1
             report["with_epic"] += int(bool(epic))

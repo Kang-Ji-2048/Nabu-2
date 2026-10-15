@@ -8,8 +8,8 @@ from nabu.store import ScopedStore, connect, load_jsonl
 
 ROWS = [
     ("Project", {"ID": 1, "Project_Key": "XD", "Name": "Synthetic"}),
-    ("Issue", {"ID": 1, "Project_ID": 1, "Issue_Key": "XD-1", "Type": "Epic", "Title": "Epic", "Status": "Closed",
-               "Resolution": "Fixed", "Creation_Date": "2021-01-01 09:00:00", "Resolution_Date": "2021-02-01 09:00:00"}),
+    ("Issue", {"ID": 1, "Project_ID": 1, "Issue_Key": "XD-1", "Type": "Epic", "Title": "Epic", "Status": "Open",
+               "Creation_Date": "2021-01-01 09:00:00"}),
     ("Issue", {"ID": 2, "Project_ID": 1, "Issue_Key": "XD-2", "Type": "Story", "Title": "Schema", "Status": "Closed",
                "Resolution": "Fixed", "Story_Point": 3, "Creation_Date": "2021-01-01 10:00:00",
                "Resolution_Date": "2021-01-10 09:00:00"}),
@@ -37,6 +37,7 @@ class TawosAdapterTest(unittest.TestCase):
             export.write_text("".join(json.dumps({"table": t, "row": r}) + "\n" for t, r in ROWS))
             report = convert(export, canonical, tenant="t")
             self.assertEqual((report["work_items"], report["links"], report["with_epic"]), (3, 1, 2))
+            self.assertEqual(report["epics_closed_from_children"], 1)
             conn = connect(Path(tmp) / "nabu.sqlite")
             load_jsonl(conn, canonical)
             full = ScopedStore(conn, "t", ["XD"], "2099-01-01T00:00:00Z")
@@ -45,6 +46,8 @@ class TawosAdapterTest(unittest.TestCase):
                              ("t:XD-1", ["Database"], "2021-01-03T10:00:00Z"))
             self.assertEqual((task["parent_id"], task["parent_at"], task["status_category"]),
                              ("t:XD-1", "2021-01-08T10:00:00Z", "cancelled"))
+            epic = full.get("t:XD-1")  # never closed in Jira; finished when its last ticket resolved
+            self.assertEqual((epic["status_category"], epic["resolved_at"]), ("done", "2021-01-12T09:00:00Z"))
             link = full.links("t:XD-3")[0]
             self.assertEqual((link["from_id"], link["to_id"], link["created_at"]), ("t:XD-2", "t:XD-3", "2021-01-06T10:00:00Z"))
             # On day one the epic held only the story; the task joined later.
