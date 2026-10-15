@@ -46,6 +46,9 @@ CREATE TABLE IF NOT EXISTS pattern (
     stat REAL, weight REAL NOT NULL DEFAULT 1.0, updated_at TEXT NOT NULL,
     PRIMARY KEY (run_id, id)
 );
+CREATE TABLE IF NOT EXISTS run_timeline (
+    run_id TEXT PRIMARY KEY, steps TEXT NOT NULL
+);
 CREATE TABLE IF NOT EXISTS warning (
     id TEXT NOT NULL, run_id TEXT NOT NULL, epic_id TEXT NOT NULL, as_of TEXT NOT NULL,
     agent TEXT NOT NULL, pattern_id TEXT, claim TEXT NOT NULL, evidence TEXT NOT NULL,
@@ -157,8 +160,9 @@ class ScopedStore:
             item["status_category"] = "in_progress" if item["started_at"] else "todo"
         # The estimate as it stood at as_of: undo any later re-estimates.
         later = self.conn.execute(
-            "SELECT from_value FROM event WHERE item_id=? AND kind='estimate_changed' AND at>? ORDER BY at LIMIT 1",
-            (item["id"], self.as_of)).fetchone()
+            "SELECT from_value FROM event WHERE item_id=? AND tenant_id=? AND scope=? "
+            "AND kind='estimate_changed' AND at>? ORDER BY at LIMIT 1",
+            (item["id"], self.tenant_id, item["scope"], self.as_of)).fetchone()
         if later is not None:
             item["estimate"] = float(later[0]) if later[0] not in (None, "") else None
         return item
@@ -168,6 +172,8 @@ class ScopedStore:
         sql = f"SELECT * FROM work_item WHERE {where} AND created_at<=?"
         params.append(self.as_of)
         for key, value in filters.items():
+            if key not in ITEM_FIELDS:
+                raise ValueError(f"Unknown item filter {key!r}")
             sql += f" AND {key}=?"
             params.append(value)
         return [self._mask(row) for row in self.conn.execute(sql + " ORDER BY created_at", params)]

@@ -30,7 +30,7 @@ class Writer:
 
     def forecast(self, epic, store) -> dict:
         """P50/P90 duration in days, from the most similar finished epics (all of them if too few match)."""
-        epics = [e for e in store.completed("epic") if duration(e)]
+        epics = [e for e in store.completed("epic") if e["id"] != epic["id"] and duration(e)]
         similar = store.similar(epic["title"] + " " + (epic["description"] or ""), epics, k=8, threshold=0.1)
         basis = similar if len(similar) >= 3 else epics
         if len(basis) < 3:

@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from contextlib import closing
 
 from nabu.adapters.dump import values, dump_rows, export_dump, profile_dump
 from nabu.adapters.tawos import convert
@@ -63,7 +64,8 @@ INSERT INTO `Comment` VALUES (100,10,'One'),(200,20,'Two');
         self.assertEqual([r["row"]["ID"] for r in records], [1, 10, 100])
         canonical = self.root / "canonical.jsonl"
         self.assertEqual(convert(output, canonical)["work_items"], 1)
-        self.assertEqual(load_jsonl(connect(self.root / "nabu.sqlite"), canonical)["work_item"], 1)
+        with closing(connect(self.root / "nabu.sqlite")) as conn:
+            self.assertEqual(load_jsonl(conn, canonical)["work_item"], 1)
 
     def test_column_mismatch_fails(self):
         source = self.root / "bad.sql"

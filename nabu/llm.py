@@ -9,20 +9,27 @@ Offline mode (no API key) uses the deterministic result directly.
 import json
 import os
 
-MODEL = os.environ.get("NABU_MODEL", "claude-opus-5-5")
-EFFORT = os.environ.get("NABU_EFFORT", "low")
+from .validation import validate
+
+MODEL = "claude-opus-5-5"
+EFFORT = "low"
 
 
 class LLM:
-    def __init__(self, log, offline=None, client=None):
+    def __init__(self, log, offline=None, client=None, max_calls=1000, calls=0):
         self.log = log
+        # The CLI loads .env after importing this module.
+        self.model = os.environ.get("NABU_MODEL", MODEL)
+        self.effort = os.environ.get("NABU_EFFORT", EFFORT)
         self.offline = offline if offline is not None else client is None and not (
             os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_AUTH_TOKEN"))
         self.client = client
-        self.calls = 0
+        if max_calls < 0 or calls < 0:
+            raise ValueError("Call limits must be non-negative")
+        self.calls, self.max_calls = calls, max_calls
         if not self.offline and self.client is None:
             import anthropic
-            self.client = anthropic.Anthropic()
+            self.client = anthropic.Anthropic(timeout=60.0, max_retries=0)
 
     def json(self, agent: str, system: str, payload: dict, schema: dict, fallback):
         """Return a dict matching `schema`, or `fallback()` if Claude can't provide one."""
@@ -30,25 +37,26 @@ class LLM:
             return fallback()
         content = json.dumps(payload, default=str)
         for attempt in (1, 2):
+            if self.calls >= self.max_calls:
+                self.log.emit(agent, "recovered", "model call budget exhausted; using deterministic result")
+                return fallback()
             try:
                 self.calls += 1
                 response = self.client.beta.messages.create(
-                    model=MODEL, max_tokens=16000, system=system,
+                    model=self.model, max_tokens=16000, system=system,
                     messages=[{"role": "user", "content": content}],
-                    output_config={"effort": EFFORT, "format": {"type": "json_schema", "schema": schema}},
+                    output_config={"effort": self.effort, "format": {"type": "json_schema", "schema": schema}},
                     betas=["server-side-fallback-2026-07-01"], fallbacks="default",
                 )
-                if response.stop_reason == "refusal":
-                    raise ValueError("model refused")
+                if response.stop_reason != "end_turn":
+                    raise ValueError(f"incomplete response: {response.stop_reason}")
                 text = next(block.text for block in response.content if block.type == "text")
                 result = json.loads(text)
-                missing = [key for key in schema.get("required", []) if key not in result]
-                if missing:
-                    raise ValueError(f"missing keys {missing}")
+                validate(result, schema)
                 return result
             except Exception as exc:  # malformed output or API failure: retry once, then fall back
                 self.log.emit(agent, "retry" if attempt == 1 else "recovered",
-                              f"attempt {attempt} failed ({type(exc).__name__}: {exc})"
+                              f"attempt {attempt} failed ({type(exc).__name__})"
                               + ("; retrying" if attempt == 1 else "; using deterministic result"))
         return fallback()
 

@@ -1,0 +1,1175 @@
+{
+  "dataset": "Synthetic tracker history; not customer data",
+  "mode": "offline deterministic replay",
+  "run": "deck-proof",
+  "stats": {
+    "reviews": 10,
+    "hits": 19,
+    "misses": 3,
+    "accuracy": [
+      [
+        "2023-03-22T22:35:19.503192Z",
+        1.0
+      ],
+      [
+        "2023-04-16T18:22:27.606999Z",
+        1.0
+      ],
+      [
+        "2023-05-21T02:08:44.482532Z",
+        1.0
+      ],
+      [
+        "2023-06-21T12:07:22.714537Z",
+        1.0
+      ],
+      [
+        "2023-07-25T12:14:02.725156Z",
+        0.923
+      ],
+      [
+        "2023-08-11T10:21:09.491926Z",
+        0.875
+      ],
+      [
+        "2023-09-16T09:07:54.494285Z",
+        0.895
+      ],
+      [
+        "2023-10-25T06:48:38.692277Z",
+        0.864
+      ]
+    ],
+    "model_calls": 0
+  },
+  "review": {
+    "epic": "PAY-111",
+    "title": "Fraud rules",
+    "as_of": "2023-10-04T11:08:10.105835Z",
+    "summary": "3 warnings for PAY-111; expect 15.4 days (P50) to 20.2 days (P90). Consider adding: Documentation for Fraud rules; Testing for Fraud rules.",
+    "forecast": {
+      "p50_days": 15.4,
+      "p90_days": 20.2,
+      "basis": [
+        "demo:PAY-61",
+        "demo:PAY-66",
+        "demo:PAY-71",
+        "demo:PAY-77",
+        "demo:PAY-83",
+        "demo:PAY-89",
+        "demo:PAY-95",
+        "demo:PAY-100",
+        "demo:PAY-105"
+      ]
+    },
+    "missing_tickets": [
+      "Documentation for Fraud rules",
+      "Testing for Fraud rules"
+    ],
+    "suppressed_by_ring_fence": 1,
+    "warnings": [
+      {
+        "id": "demo:PAY-111:payments:estimate:database",
+        "agent": "estimator",
+        "claim": "1 planned 'database' tickets (8 points) match a pattern of overruns: past 'database' work took 1.92x the usual time per point.",
+        "evidence": [
+          "demo:PAY-62",
+          "demo:PAY-67",
+          "demo:PAY-74",
+          "demo:PAY-78",
+          "demo:PAY-84",
+          "demo:PAY-91"
+        ],
+        "confidence": "high",
+        "suggested_ticket": null
+      },
+      {
+        "id": "demo:PAY-111:payments:gap:documentation",
+        "agent": "gap_finder",
+        "claim": "This plan has no documentation tickets, and 78% of past epics planned without them had to add them later.",
+        "evidence": [
+          "demo:PAY-65",
+          "demo:PAY-76",
+          "demo:PAY-82",
+          "demo:PAY-88",
+          "demo:PAY-94",
+          "demo:PAY-99"
+        ],
+        "confidence": "high",
+        "suggested_ticket": "Documentation for Fraud rules"
+      },
+      {
+        "id": "demo:PAY-111:payments:gap:testing",
+        "agent": "gap_finder",
+        "claim": "This plan has no testing tickets, and 78% of past epics planned without them had to add them later.",
+        "evidence": [
+          "demo:PAY-70",
+          "demo:PAY-75",
+          "demo:PAY-81",
+          "demo:PAY-87",
+          "demo:PAY-93",
+          "demo:PAY-104"
+        ],
+        "confidence": "high",
+        "suggested_ticket": "Testing for Fraud rules"
+      }
+    ]
+  },
+  "trace": [
+    {
+      "seq": 124,
+      "sim_at": "2023-10-04T11:08:10.105835Z",
+      "agent": "historian",
+      "kind": "patterns",
+      "message": "8 patterns from history up to 2023-10-04"
+    },
+    {
+      "seq": 125,
+      "sim_at": "2023-10-04T11:08:10.105835Z",
+      "agent": "planner",
+      "kind": "plan",
+      "message": "PAY-111 'Fraud rules': 3 tickets known on day one"
+    },
+    {
+      "seq": 127,
+      "sim_at": "2023-10-04T11:08:10.105835Z",
+      "agent": "estimator",
+      "kind": "warning",
+      "message": "1 planned 'database' tickets (8 points) match a pattern of overruns: past 'database' work took 1.92x the usual time per point."
+    },
+    {
+      "seq": 129,
+      "sim_at": "2023-10-04T11:08:10.105835Z",
+      "agent": "gap_finder",
+      "kind": "warning",
+      "message": "This plan has no documentation tickets, and 78% of past epics planned without them had to add them later."
+    },
+    {
+      "seq": 131,
+      "sim_at": "2023-10-04T11:08:10.105835Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "estimator: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 135,
+      "sim_at": "2023-10-04T11:08:10.105835Z",
+      "agent": "writer",
+      "kind": "review",
+      "message": "3 warnings for PAY-111; expect 15.4 days (P50) to 20.2 days (P90). Consider adding: Documentation for Fraud rules; Testing for Fraud rules."
+    }
+  ],
+  "scores": [
+    {
+      "agent": "estimator",
+      "hit": 1,
+      "detail": "1/1 finished tickets overran"
+    },
+    {
+      "agent": "gap_finder",
+      "hit": 0,
+      "detail": "0 documentation tickets added after the review"
+    },
+    {
+      "agent": "gap_finder",
+      "hit": 1,
+      "detail": "1 testing tickets added after the review"
+    }
+  ],
+  "resume": {
+    "seq": 52,
+    "sim_at": null,
+    "agent": "replay",
+    "kind": "resume",
+    "message": "resuming at step 10 of 20"
+  },
+  "all_logs": [
+    {
+      "seq": 1,
+      "sim_at": null,
+      "agent": "replay",
+      "kind": "start",
+      "message": "20 steps for tenant demo, scopes ['payments', 'platform']"
+    },
+    {
+      "seq": 2,
+      "sim_at": "2023-01-05T04:03:25.676679Z",
+      "agent": "planner",
+      "kind": "plan",
+      "message": "PAY-61 'Refunds': 3 tickets known on day one"
+    },
+    {
+      "seq": 3,
+      "sim_at": "2023-01-05T04:03:25.676679Z",
+      "agent": "data_quality",
+      "kind": "profile",
+      "message": "1 finished tickets, 100% estimated, 100% with a start date"
+    },
+    {
+      "seq": 4,
+      "sim_at": "2023-01-05T04:03:25.676679Z",
+      "agent": "estimator",
+      "kind": "clear",
+      "message": "no warnings"
+    },
+    {
+      "seq": 5,
+      "sim_at": "2023-01-05T04:03:25.676679Z",
+      "agent": "dependency_hunter",
+      "kind": "clear",
+      "message": "no warnings"
+    },
+    {
+      "seq": 6,
+      "sim_at": "2023-01-05T04:03:25.676679Z",
+      "agent": "gap_finder",
+      "kind": "clear",
+      "message": "no warnings"
+    },
+    {
+      "seq": 7,
+      "sim_at": "2023-01-05T04:03:25.676679Z",
+      "agent": "writer",
+      "kind": "review",
+      "message": "0 warnings for PAY-61."
+    },
+    {
+      "seq": 8,
+      "sim_at": "2023-02-04T04:48:53.962150Z",
+      "agent": "planner",
+      "kind": "plan",
+      "message": "PAY-66 'Payouts': 3 tickets known on day one"
+    },
+    {
+      "seq": 9,
+      "sim_at": "2023-02-04T04:48:53.962150Z",
+      "agent": "data_quality",
+      "kind": "profile",
+      "message": "9 finished tickets, 100% estimated, 100% with a start date"
+    },
+    {
+      "seq": 10,
+      "sim_at": "2023-02-04T04:48:53.962150Z",
+      "agent": "estimator",
+      "kind": "clear",
+      "message": "no warnings"
+    },
+    {
+      "seq": 11,
+      "sim_at": "2023-02-04T04:48:53.962150Z",
+      "agent": "dependency_hunter",
+      "kind": "clear",
+      "message": "no warnings"
+    },
+    {
+      "seq": 12,
+      "sim_at": "2023-02-04T04:48:53.962150Z",
+      "agent": "gap_finder",
+      "kind": "clear",
+      "message": "no warnings"
+    },
+    {
+      "seq": 13,
+      "sim_at": "2023-02-04T04:48:53.962150Z",
+      "agent": "writer",
+      "kind": "review",
+      "message": "0 warnings for PAY-66."
+    },
+    {
+      "seq": 14,
+      "sim_at": "2023-03-08T13:29:54.831694Z",
+      "agent": "historian",
+      "kind": "patterns",
+      "message": "4 patterns from history up to 2023-03-08"
+    },
+    {
+      "seq": 15,
+      "sim_at": "2023-03-08T13:29:54.831694Z",
+      "agent": "planner",
+      "kind": "plan",
+      "message": "PAY-71 'Invoices v2': 3 tickets known on day one"
+    },
+    {
+      "seq": 16,
+      "sim_at": "2023-03-08T13:29:54.831694Z",
+      "agent": "data_quality",
+      "kind": "profile",
+      "message": "19 finished tickets, 100% estimated, 100% with a start date"
+    },
+    {
+      "seq": 17,
+      "sim_at": "2023-03-08T13:29:54.831694Z",
+      "agent": "estimator",
+      "kind": "warning",
+      "message": "1 planned 'database' tickets (2 points) match a pattern of overruns: past 'database' work took 1.97x the usual time per point."
+    },
+    {
+      "seq": 18,
+      "sim_at": "2023-03-08T13:29:54.831694Z",
+      "agent": "dependency_hunter",
+      "kind": "clear",
+      "message": "no warnings"
+    },
+    {
+      "seq": 19,
+      "sim_at": "2023-03-08T13:29:54.831694Z",
+      "agent": "gap_finder",
+      "kind": "clear",
+      "message": "no warnings"
+    },
+    {
+      "seq": 20,
+      "sim_at": "2023-03-08T13:29:54.831694Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "estimator: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 21,
+      "sim_at": "2023-03-08T13:29:54.831694Z",
+      "agent": "writer",
+      "kind": "review",
+      "message": "1 warnings for PAY-71."
+    },
+    {
+      "seq": 22,
+      "sim_at": "2023-03-22T22:35:19.503192Z",
+      "agent": "scorekeeper",
+      "kind": "hit",
+      "message": "estimator: 1/1 finished tickets overran"
+    },
+    {
+      "seq": 23,
+      "sim_at": "2023-03-22T22:35:19.503192Z",
+      "agent": "replay",
+      "kind": "accuracy",
+      "message": "1/1 warnings confirmed so far (100%)"
+    },
+    {
+      "seq": 24,
+      "sim_at": "2023-04-03T18:32:00.941468Z",
+      "agent": "historian",
+      "kind": "patterns",
+      "message": "6 patterns from history up to 2023-04-03"
+    },
+    {
+      "seq": 25,
+      "sim_at": "2023-04-03T18:32:00.941468Z",
+      "agent": "planner",
+      "kind": "plan",
+      "message": "PAY-77 'Disputes': 3 tickets known on day one"
+    },
+    {
+      "seq": 26,
+      "sim_at": "2023-04-03T18:32:00.941468Z",
+      "agent": "data_quality",
+      "kind": "profile",
+      "message": "30 finished tickets, 100% estimated, 100% with a start date"
+    },
+    {
+      "seq": 27,
+      "sim_at": "2023-04-03T18:32:00.941468Z",
+      "agent": "estimator",
+      "kind": "warning",
+      "message": "1 planned 'database' tickets (5 points) match a pattern of overruns: past 'database' work took 2.33x the usual time per point."
+    },
+    {
+      "seq": 28,
+      "sim_at": "2023-04-03T18:32:00.941468Z",
+      "agent": "dependency_hunter",
+      "kind": "clear",
+      "message": "no warnings"
+    },
+    {
+      "seq": 29,
+      "sim_at": "2023-04-03T18:32:00.941468Z",
+      "agent": "gap_finder",
+      "kind": "warning",
+      "message": "This plan has no documentation tickets, and 67% of past epics planned without them had to add them later."
+    },
+    {
+      "seq": 30,
+      "sim_at": "2023-04-03T18:32:00.941468Z",
+      "agent": "gap_finder",
+      "kind": "warning",
+      "message": "This plan has no testing tickets, and 67% of past epics planned without them had to add them later."
+    },
+    {
+      "seq": 31,
+      "sim_at": "2023-04-03T18:32:00.941468Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "estimator: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 32,
+      "sim_at": "2023-04-03T18:32:00.941468Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "gap_finder: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 33,
+      "sim_at": "2023-04-03T18:32:00.941468Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "gap_finder: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 34,
+      "sim_at": "2023-04-03T18:32:00.941468Z",
+      "agent": "writer",
+      "kind": "review",
+      "message": "3 warnings for PAY-77; expect 14.8 days (P50) to 15.3 days (P90). Consider adding: Documentation for Disputes; Testing for Disputes."
+    },
+    {
+      "seq": 35,
+      "sim_at": "2023-04-16T18:22:27.606999Z",
+      "agent": "scorekeeper",
+      "kind": "hit",
+      "message": "estimator: 1/1 finished tickets overran"
+    },
+    {
+      "seq": 36,
+      "sim_at": "2023-04-16T18:22:27.606999Z",
+      "agent": "scorekeeper",
+      "kind": "hit",
+      "message": "gap_finder: 1 documentation tickets added after the review"
+    },
+    {
+      "seq": 37,
+      "sim_at": "2023-04-16T18:22:27.606999Z",
+      "agent": "scorekeeper",
+      "kind": "hit",
+      "message": "gap_finder: 1 testing tickets added after the review"
+    },
+    {
+      "seq": 38,
+      "sim_at": "2023-04-16T18:22:27.606999Z",
+      "agent": "scorekeeper",
+      "kind": "forecast",
+      "message": "took 14.0 days; forecast P50 14.8, P90 15.3"
+    },
+    {
+      "seq": 39,
+      "sim_at": "2023-04-16T18:22:27.606999Z",
+      "agent": "replay",
+      "kind": "accuracy",
+      "message": "4/4 warnings confirmed so far (100%)"
+    },
+    {
+      "seq": 40,
+      "sim_at": "2023-05-05T14:05:31.426054Z",
+      "agent": "historian",
+      "kind": "patterns",
+      "message": "7 patterns from history up to 2023-05-05"
+    },
+    {
+      "seq": 41,
+      "sim_at": "2023-05-05T14:05:31.426054Z",
+      "agent": "planner",
+      "kind": "plan",
+      "message": "PAY-83 'Subscriptions': 3 tickets known on day one"
+    },
+    {
+      "seq": 42,
+      "sim_at": "2023-05-05T14:05:31.426054Z",
+      "agent": "data_quality",
+      "kind": "profile",
+      "message": "41 finished tickets, 100% estimated, 100% with a start date"
+    },
+    {
+      "seq": 43,
+      "sim_at": "2023-05-05T14:05:31.426054Z",
+      "agent": "estimator",
+      "kind": "warning",
+      "message": "1 planned 'database' tickets (1 points) match a pattern of overruns: past 'database' work took 2.31x the usual time per point."
+    },
+    {
+      "seq": 44,
+      "sim_at": "2023-05-05T14:05:31.426054Z",
+      "agent": "dependency_hunter",
+      "kind": "clear",
+      "message": "no warnings"
+    },
+    {
+      "seq": 45,
+      "sim_at": "2023-05-05T14:05:31.426054Z",
+      "agent": "gap_finder",
+      "kind": "warning",
+      "message": "This plan has no documentation tickets, and 75% of past epics planned without them had to add them later."
+    },
+    {
+      "seq": 46,
+      "sim_at": "2023-05-05T14:05:31.426054Z",
+      "agent": "gap_finder",
+      "kind": "warning",
+      "message": "This plan has no testing tickets, and 75% of past epics planned without them had to add them later."
+    },
+    {
+      "seq": 47,
+      "sim_at": "2023-05-05T14:05:31.426054Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "estimator: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 48,
+      "sim_at": "2023-05-05T14:05:31.426054Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "gap_finder: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 49,
+      "sim_at": "2023-05-05T14:05:31.426054Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "gap_finder: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 50,
+      "sim_at": "2023-05-05T14:05:31.426054Z",
+      "agent": "writer",
+      "kind": "review",
+      "message": "3 warnings for PAY-83; expect 14.4 days (P50) to 15.2 days (P90). Consider adding: Documentation for Subscriptions; Testing for Subscriptions."
+    },
+    {
+      "seq": 51,
+      "sim_at": "2023-05-05T14:05:31.426054Z",
+      "agent": "replay",
+      "kind": "paused",
+      "message": "stopped after 9 steps (checkpoint at step 10)"
+    },
+    {
+      "seq": 52,
+      "sim_at": null,
+      "agent": "replay",
+      "kind": "resume",
+      "message": "resuming at step 10 of 20"
+    },
+    {
+      "seq": 53,
+      "sim_at": "2023-05-21T02:08:44.482532Z",
+      "agent": "scorekeeper",
+      "kind": "hit",
+      "message": "estimator: 1/1 finished tickets overran"
+    },
+    {
+      "seq": 54,
+      "sim_at": "2023-05-21T02:08:44.482532Z",
+      "agent": "scorekeeper",
+      "kind": "hit",
+      "message": "gap_finder: 1 documentation tickets added after the review"
+    },
+    {
+      "seq": 55,
+      "sim_at": "2023-05-21T02:08:44.482532Z",
+      "agent": "scorekeeper",
+      "kind": "hit",
+      "message": "gap_finder: 1 testing tickets added after the review"
+    },
+    {
+      "seq": 56,
+      "sim_at": "2023-05-21T02:08:44.482532Z",
+      "agent": "scorekeeper",
+      "kind": "forecast",
+      "message": "took 16.5 days; forecast P50 14.4, P90 15.2"
+    },
+    {
+      "seq": 57,
+      "sim_at": "2023-05-21T02:08:44.482532Z",
+      "agent": "replay",
+      "kind": "accuracy",
+      "message": "7/7 warnings confirmed so far (100%)"
+    },
+    {
+      "seq": 58,
+      "sim_at": "2023-06-02T10:02:56.771333Z",
+      "agent": "historian",
+      "kind": "patterns",
+      "message": "7 patterns from history up to 2023-06-02"
+    },
+    {
+      "seq": 59,
+      "sim_at": "2023-06-02T10:02:56.771333Z",
+      "agent": "planner",
+      "kind": "plan",
+      "message": "PAY-89 'Multi currency v2': 3 tickets known on day one"
+    },
+    {
+      "seq": 60,
+      "sim_at": "2023-06-02T10:02:56.771333Z",
+      "agent": "data_quality",
+      "kind": "profile",
+      "message": "49 finished tickets, 100% estimated, 100% with a start date"
+    },
+    {
+      "seq": 61,
+      "sim_at": "2023-06-02T10:02:56.771333Z",
+      "agent": "estimator",
+      "kind": "warning",
+      "message": "1 planned 'database' tickets (8 points) match a pattern of overruns: past 'database' work took 2.29x the usual time per point."
+    },
+    {
+      "seq": 62,
+      "sim_at": "2023-06-02T10:02:56.771333Z",
+      "agent": "dependency_hunter",
+      "kind": "clear",
+      "message": "no warnings"
+    },
+    {
+      "seq": 63,
+      "sim_at": "2023-06-02T10:02:56.771333Z",
+      "agent": "gap_finder",
+      "kind": "warning",
+      "message": "This plan has no documentation tickets, and 80% of past epics planned without them had to add them later."
+    },
+    {
+      "seq": 64,
+      "sim_at": "2023-06-02T10:02:56.771333Z",
+      "agent": "gap_finder",
+      "kind": "warning",
+      "message": "This plan has no testing tickets, and 80% of past epics planned without them had to add them later."
+    },
+    {
+      "seq": 65,
+      "sim_at": "2023-06-02T10:02:56.771333Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "estimator: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 66,
+      "sim_at": "2023-06-02T10:02:56.771333Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "gap_finder: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 67,
+      "sim_at": "2023-06-02T10:02:56.771333Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "gap_finder: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 68,
+      "sim_at": "2023-06-02T10:02:56.771333Z",
+      "agent": "writer",
+      "kind": "review",
+      "message": "3 warnings for PAY-89; expect 14.8 days (P50) to 16.1 days (P90). Consider adding: Documentation for Multi currency v2; Testing for Multi currency v2."
+    },
+    {
+      "seq": 69,
+      "sim_at": "2023-06-21T12:07:22.714537Z",
+      "agent": "scorekeeper",
+      "kind": "hit",
+      "message": "estimator: 1/1 finished tickets overran"
+    },
+    {
+      "seq": 70,
+      "sim_at": "2023-06-21T12:07:22.714537Z",
+      "agent": "scorekeeper",
+      "kind": "hit",
+      "message": "gap_finder: 1 documentation tickets added after the review"
+    },
+    {
+      "seq": 71,
+      "sim_at": "2023-06-21T12:07:22.714537Z",
+      "agent": "scorekeeper",
+      "kind": "hit",
+      "message": "gap_finder: 1 testing tickets added after the review"
+    },
+    {
+      "seq": 72,
+      "sim_at": "2023-06-21T12:07:22.714537Z",
+      "agent": "scorekeeper",
+      "kind": "forecast",
+      "message": "took 20.1 days; forecast P50 14.8, P90 16.1"
+    },
+    {
+      "seq": 73,
+      "sim_at": "2023-06-21T12:07:22.714537Z",
+      "agent": "replay",
+      "kind": "accuracy",
+      "message": "10/10 warnings confirmed so far (100%)"
+    },
+    {
+      "seq": 74,
+      "sim_at": "2023-07-06T00:26:29.304172Z",
+      "agent": "historian",
+      "kind": "patterns",
+      "message": "8 patterns from history up to 2023-07-06"
+    },
+    {
+      "seq": 75,
+      "sim_at": "2023-07-06T00:26:29.304172Z",
+      "agent": "planner",
+      "kind": "plan",
+      "message": "PAY-95 'Chargebacks': 3 tickets known on day one"
+    },
+    {
+      "seq": 76,
+      "sim_at": "2023-07-06T00:26:29.304172Z",
+      "agent": "data_quality",
+      "kind": "profile",
+      "message": "59 finished tickets, 100% estimated, 100% with a start date"
+    },
+    {
+      "seq": 77,
+      "sim_at": "2023-07-06T00:26:29.304172Z",
+      "agent": "estimator",
+      "kind": "warning",
+      "message": "1 planned 'database' tickets (8 points) match a pattern of overruns: past 'database' work took 1.87x the usual time per point."
+    },
+    {
+      "seq": 78,
+      "sim_at": "2023-07-06T00:26:29.304172Z",
+      "agent": "dependency_hunter",
+      "kind": "warning",
+      "message": "Similar past work was blocked by 'auth' work, and this plan has no 'auth' ticket."
+    },
+    {
+      "seq": 79,
+      "sim_at": "2023-07-06T00:26:29.304172Z",
+      "agent": "gap_finder",
+      "kind": "warning",
+      "message": "This plan has no documentation tickets, and 83% of past epics planned without them had to add them later."
+    },
+    {
+      "seq": 80,
+      "sim_at": "2023-07-06T00:26:29.304172Z",
+      "agent": "gap_finder",
+      "kind": "warning",
+      "message": "This plan has no testing tickets, and 83% of past epics planned without them had to add them later."
+    },
+    {
+      "seq": 81,
+      "sim_at": "2023-07-06T00:26:29.304172Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "estimator: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 82,
+      "sim_at": "2023-07-06T00:26:29.304172Z",
+      "agent": "critic",
+      "kind": "suppressed",
+      "message": "dependency_hunter: evidence demo:PLA-39 is outside the reader's scope"
+    },
+    {
+      "seq": 83,
+      "sim_at": "2023-07-06T00:26:29.304172Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "gap_finder: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 84,
+      "sim_at": "2023-07-06T00:26:29.304172Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "gap_finder: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 85,
+      "sim_at": "2023-07-06T00:26:29.304172Z",
+      "agent": "writer",
+      "kind": "review",
+      "message": "3 warnings for PAY-95; expect 15.1 days (P50) to 18.3 days (P90). Consider adding: Documentation for Chargebacks; Testing for Chargebacks."
+    },
+    {
+      "seq": 86,
+      "sim_at": "2023-07-25T12:14:02.725156Z",
+      "agent": "scorekeeper",
+      "kind": "hit",
+      "message": "estimator: 1/1 finished tickets overran"
+    },
+    {
+      "seq": 87,
+      "sim_at": "2023-07-25T12:14:02.725156Z",
+      "agent": "scorekeeper",
+      "kind": "hit",
+      "message": "gap_finder: 1 documentation tickets added after the review"
+    },
+    {
+      "seq": 88,
+      "sim_at": "2023-07-25T12:14:02.725156Z",
+      "agent": "scorekeeper",
+      "kind": "miss",
+      "message": "gap_finder: 0 testing tickets added after the review"
+    },
+    {
+      "seq": 89,
+      "sim_at": "2023-07-25T12:14:02.725156Z",
+      "agent": "scorekeeper",
+      "kind": "forecast",
+      "message": "took 20.5 days; forecast P50 15.1, P90 18.3"
+    },
+    {
+      "seq": 90,
+      "sim_at": "2023-07-25T12:14:02.725156Z",
+      "agent": "replay",
+      "kind": "accuracy",
+      "message": "12/13 warnings confirmed so far (92%)"
+    },
+    {
+      "seq": 91,
+      "sim_at": "2023-08-03T00:33:49.410161Z",
+      "agent": "historian",
+      "kind": "patterns",
+      "message": "8 patterns from history up to 2023-08-03"
+    },
+    {
+      "seq": 92,
+      "sim_at": "2023-08-03T00:33:49.410161Z",
+      "agent": "planner",
+      "kind": "plan",
+      "message": "PAY-100 'Receipts': 3 tickets known on day one"
+    },
+    {
+      "seq": 93,
+      "sim_at": "2023-08-03T00:33:49.410161Z",
+      "agent": "data_quality",
+      "kind": "profile",
+      "message": "68 finished tickets, 100% estimated, 100% with a start date"
+    },
+    {
+      "seq": 94,
+      "sim_at": "2023-08-03T00:33:49.410161Z",
+      "agent": "estimator",
+      "kind": "warning",
+      "message": "1 planned 'database' tickets (3 points) match a pattern of overruns: past 'database' work took 1.87x the usual time per point."
+    },
+    {
+      "seq": 95,
+      "sim_at": "2023-08-03T00:33:49.410161Z",
+      "agent": "dependency_hunter",
+      "kind": "clear",
+      "message": "no warnings"
+    },
+    {
+      "seq": 96,
+      "sim_at": "2023-08-03T00:33:49.410161Z",
+      "agent": "gap_finder",
+      "kind": "warning",
+      "message": "This plan has no documentation tickets, and 86% of past epics planned without them had to add them later."
+    },
+    {
+      "seq": 97,
+      "sim_at": "2023-08-03T00:33:49.410161Z",
+      "agent": "gap_finder",
+      "kind": "warning",
+      "message": "This plan has no testing tickets, and 71% of past epics planned without them had to add them later."
+    },
+    {
+      "seq": 98,
+      "sim_at": "2023-08-03T00:33:49.410161Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "estimator: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 99,
+      "sim_at": "2023-08-03T00:33:49.410161Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "gap_finder: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 100,
+      "sim_at": "2023-08-03T00:33:49.410161Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "gap_finder: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 101,
+      "sim_at": "2023-08-03T00:33:49.410161Z",
+      "agent": "writer",
+      "kind": "review",
+      "message": "3 warnings for PAY-100; expect 15.4 days (P50) to 20.2 days (P90). Consider adding: Documentation for Receipts; Testing for Receipts."
+    },
+    {
+      "seq": 102,
+      "sim_at": "2023-08-11T10:21:09.491926Z",
+      "agent": "scorekeeper",
+      "kind": "hit",
+      "message": "estimator: 1/1 finished tickets overran"
+    },
+    {
+      "seq": 103,
+      "sim_at": "2023-08-11T10:21:09.491926Z",
+      "agent": "scorekeeper",
+      "kind": "miss",
+      "message": "gap_finder: 0 documentation tickets added after the review"
+    },
+    {
+      "seq": 104,
+      "sim_at": "2023-08-11T10:21:09.491926Z",
+      "agent": "scorekeeper",
+      "kind": "hit",
+      "message": "gap_finder: 1 testing tickets added after the review"
+    },
+    {
+      "seq": 105,
+      "sim_at": "2023-08-11T10:21:09.491926Z",
+      "agent": "scorekeeper",
+      "kind": "forecast",
+      "message": "took 9.4 days; forecast P50 15.4, P90 20.2"
+    },
+    {
+      "seq": 106,
+      "sim_at": "2023-08-11T10:21:09.491926Z",
+      "agent": "replay",
+      "kind": "accuracy",
+      "message": "14/16 warnings confirmed so far (88%)"
+    },
+    {
+      "seq": 107,
+      "sim_at": "2023-09-01T14:49:26.642404Z",
+      "agent": "historian",
+      "kind": "patterns",
+      "message": "8 patterns from history up to 2023-09-01"
+    },
+    {
+      "seq": 108,
+      "sim_at": "2023-09-01T14:49:26.642404Z",
+      "agent": "planner",
+      "kind": "plan",
+      "message": "PAY-105 'Settlements v2': 3 tickets known on day one"
+    },
+    {
+      "seq": 109,
+      "sim_at": "2023-09-01T14:49:26.642404Z",
+      "agent": "data_quality",
+      "kind": "profile",
+      "message": "75 finished tickets, 100% estimated, 100% with a start date"
+    },
+    {
+      "seq": 110,
+      "sim_at": "2023-09-01T14:49:26.642404Z",
+      "agent": "estimator",
+      "kind": "warning",
+      "message": "1 planned 'database' tickets (1 points) match a pattern of overruns: past 'database' work took 1.97x the usual time per point."
+    },
+    {
+      "seq": 111,
+      "sim_at": "2023-09-01T14:49:26.642404Z",
+      "agent": "dependency_hunter",
+      "kind": "warning",
+      "message": "Similar past work was blocked by 'auth' work, and this plan has no 'auth' ticket."
+    },
+    {
+      "seq": 112,
+      "sim_at": "2023-09-01T14:49:26.642404Z",
+      "agent": "gap_finder",
+      "kind": "warning",
+      "message": "This plan has no documentation tickets, and 75% of past epics planned without them had to add them later."
+    },
+    {
+      "seq": 113,
+      "sim_at": "2023-09-01T14:49:26.642404Z",
+      "agent": "gap_finder",
+      "kind": "warning",
+      "message": "This plan has no testing tickets, and 75% of past epics planned without them had to add them later."
+    },
+    {
+      "seq": 114,
+      "sim_at": "2023-09-01T14:49:26.642404Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "estimator: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 115,
+      "sim_at": "2023-09-01T14:49:26.642404Z",
+      "agent": "critic",
+      "kind": "suppressed",
+      "message": "dependency_hunter: evidence demo:PLA-39 is outside the reader's scope"
+    },
+    {
+      "seq": 116,
+      "sim_at": "2023-09-01T14:49:26.642404Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "gap_finder: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 117,
+      "sim_at": "2023-09-01T14:49:26.642404Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "gap_finder: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 118,
+      "sim_at": "2023-09-01T14:49:26.642404Z",
+      "agent": "writer",
+      "kind": "review",
+      "message": "3 warnings for PAY-105; expect 15.1 days (P50) to 20.2 days (P90). Consider adding: Documentation for Settlements v2; Testing for Settlements v2."
+    },
+    {
+      "seq": 119,
+      "sim_at": "2023-09-16T09:07:54.494285Z",
+      "agent": "scorekeeper",
+      "kind": "hit",
+      "message": "estimator: 1/1 finished tickets overran"
+    },
+    {
+      "seq": 120,
+      "sim_at": "2023-09-16T09:07:54.494285Z",
+      "agent": "scorekeeper",
+      "kind": "hit",
+      "message": "gap_finder: 1 documentation tickets added after the review"
+    },
+    {
+      "seq": 121,
+      "sim_at": "2023-09-16T09:07:54.494285Z",
+      "agent": "scorekeeper",
+      "kind": "hit",
+      "message": "gap_finder: 1 testing tickets added after the review"
+    },
+    {
+      "seq": 122,
+      "sim_at": "2023-09-16T09:07:54.494285Z",
+      "agent": "scorekeeper",
+      "kind": "forecast",
+      "message": "took 15.8 days; forecast P50 15.1, P90 20.2"
+    },
+    {
+      "seq": 123,
+      "sim_at": "2023-09-16T09:07:54.494285Z",
+      "agent": "replay",
+      "kind": "accuracy",
+      "message": "17/19 warnings confirmed so far (89%)"
+    },
+    {
+      "seq": 124,
+      "sim_at": "2023-10-04T11:08:10.105835Z",
+      "agent": "historian",
+      "kind": "patterns",
+      "message": "8 patterns from history up to 2023-10-04"
+    },
+    {
+      "seq": 125,
+      "sim_at": "2023-10-04T11:08:10.105835Z",
+      "agent": "planner",
+      "kind": "plan",
+      "message": "PAY-111 'Fraud rules': 3 tickets known on day one"
+    },
+    {
+      "seq": 126,
+      "sim_at": "2023-10-04T11:08:10.105835Z",
+      "agent": "data_quality",
+      "kind": "profile",
+      "message": "86 finished tickets, 100% estimated, 100% with a start date"
+    },
+    {
+      "seq": 127,
+      "sim_at": "2023-10-04T11:08:10.105835Z",
+      "agent": "estimator",
+      "kind": "warning",
+      "message": "1 planned 'database' tickets (8 points) match a pattern of overruns: past 'database' work took 1.92x the usual time per point."
+    },
+    {
+      "seq": 128,
+      "sim_at": "2023-10-04T11:08:10.105835Z",
+      "agent": "dependency_hunter",
+      "kind": "warning",
+      "message": "Similar past work was blocked by 'auth' work, and this plan has no 'auth' ticket."
+    },
+    {
+      "seq": 129,
+      "sim_at": "2023-10-04T11:08:10.105835Z",
+      "agent": "gap_finder",
+      "kind": "warning",
+      "message": "This plan has no documentation tickets, and 78% of past epics planned without them had to add them later."
+    },
+    {
+      "seq": 130,
+      "sim_at": "2023-10-04T11:08:10.105835Z",
+      "agent": "gap_finder",
+      "kind": "warning",
+      "message": "This plan has no testing tickets, and 78% of past epics planned without them had to add them later."
+    },
+    {
+      "seq": 131,
+      "sim_at": "2023-10-04T11:08:10.105835Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "estimator: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 132,
+      "sim_at": "2023-10-04T11:08:10.105835Z",
+      "agent": "critic",
+      "kind": "suppressed",
+      "message": "dependency_hunter: evidence demo:PLA-33 is outside the reader's scope"
+    },
+    {
+      "seq": 133,
+      "sim_at": "2023-10-04T11:08:10.105835Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "gap_finder: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 134,
+      "sim_at": "2023-10-04T11:08:10.105835Z",
+      "agent": "critic",
+      "kind": "accept",
+      "message": "gap_finder: evidence and data quality are sufficient"
+    },
+    {
+      "seq": 135,
+      "sim_at": "2023-10-04T11:08:10.105835Z",
+      "agent": "writer",
+      "kind": "review",
+      "message": "3 warnings for PAY-111; expect 15.4 days (P50) to 20.2 days (P90). Consider adding: Documentation for Fraud rules; Testing for Fraud rules."
+    },
+    {
+      "seq": 136,
+      "sim_at": "2023-10-25T06:48:38.692277Z",
+      "agent": "scorekeeper",
+      "kind": "hit",
+      "message": "estimator: 1/1 finished tickets overran"
+    },
+    {
+      "seq": 137,
+      "sim_at": "2023-10-25T06:48:38.692277Z",
+      "agent": "scorekeeper",
+      "kind": "miss",
+      "message": "gap_finder: 0 documentation tickets added after the review"
+    },
+    {
+      "seq": 138,
+      "sim_at": "2023-10-25T06:48:38.692277Z",
+      "agent": "scorekeeper",
+      "kind": "hit",
+      "message": "gap_finder: 1 testing tickets added after the review"
+    },
+    {
+      "seq": 139,
+      "sim_at": "2023-10-25T06:48:38.692277Z",
+      "agent": "scorekeeper",
+      "kind": "forecast",
+      "message": "took 21.8 days; forecast P50 15.4, P90 20.2"
+    },
+    {
+      "seq": 140,
+      "sim_at": "2023-10-25T06:48:38.692277Z",
+      "agent": "replay",
+      "kind": "accuracy",
+      "message": "19/22 warnings confirmed so far (86%)"
+    },
+    {
+      "seq": 141,
+      "sim_at": "2023-10-25T06:48:38.692277Z",
+      "agent": "replay",
+      "kind": "finished",
+      "message": "10 epics reviewed, 19 hits, 3 misses, 0 Claude calls"
+    }
+  ]
+}
