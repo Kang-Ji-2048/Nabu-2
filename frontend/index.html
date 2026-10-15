@@ -102,7 +102,8 @@ main { display: grid; align-items: start; grid-template-columns: minmax(0, 5fr) 
 <body>
 <header>
   <h1>Nabu <small>delivery risk replay</small></h1>
-  <div><span class="label">Run</span> <select id="run"></select> <span id="status" class="pill">loading</span></div>
+  <div><span class="label">Run</span> <select id="run"></select> <span id="status" class="pill">loading</span>
+    <button id="reveal" hidden style="font: inherit; font-size: 13px; background: var(--accent); color: #fff; border: 0; border-radius: 6px; padding: 5px 12px; cursor: pointer; margin-left: 8px">Reveal what happened &rarr;</button></div>
   <div class="clock"><span class="label">Replay clock</span><b id="clock">-</b></div>
   <div class="tiles">
     <div class="tile"><span class="label">Epics reviewed</span><b id="t-reviews">0</b></div>
@@ -201,7 +202,7 @@ $("plan-form").onsubmit = async ev => {
 };
 
 // Static mode: with no server (e.g. on Vercel) the page replays a run exported to runs/<id>.json.
-let recorded = null, shown = 0;
+let recorded = null, shown = 0, pauseAt = null;
 async function listRuns() {
   try {
     const res = await fetch(`${API}/api/runs`);
@@ -220,7 +221,11 @@ async function init() {
   $("run").onchange = () => { params.set("run", $("run").value); location.search = params.toString(); };
   $("agent-filter").onchange = applyFilter;
   if (recorded) {
+    // A recorded run can pause at a cutoff: the open risks show first, then "Reveal" plays the rest.
+    pauseAt = (runs.find(r => r.id === run) || {}).pause_at || null;
+    document.querySelector("#plan-form").closest("section").hidden = true;  // needs the live API
     recorded = await (await fetch(`runs/${encodeURIComponent(run)}.json`)).json();
+    $("reveal").onclick = () => { pauseAt = null; $("reveal").hidden = true; tick(); };
     tick();
   } else poll();
 }
@@ -229,11 +234,12 @@ async function init() {
 function tick() {
   const full = recorded, log = full.log;
   let end = shown;
-  if (end < log.length) { const at = log[end].sim_at; while (end < log.length && log[end].sim_at === at) end++; }
+  if (pauseAt) { while (end < log.length && (log[end].sim_at || "") <= pauseAt) end++; }
+  else if (end < log.length) { const at = log[end].sim_at; while (end < log.length && log[end].sim_at === at) end++; }
   const clock = end ? log[end - 1].sim_at : null, done = end >= log.length;
   const upTo = t => clock && t && t <= clock;
   render({
-    run: { ...full.run, clock, status: done ? "finished" : "replaying recording",
+    run: { ...full.run, clock, status: done ? "finished" : pauseAt ? "paused at cutoff" : "replaying recording",
            stats: { ...full.run.stats, accuracy: (full.run.stats.accuracy || []).filter(p => upTo(p[0])) } },
     log: log.slice(shown, end),
     reviews: full.reviews.filter(v => upTo(v.as_of)),
@@ -241,7 +247,8 @@ function tick() {
     items: full.items,
   });
   shown = end;
-  if (!done) timer = setTimeout(tick, 1500);
+  if (pauseAt) { $("reveal").hidden = false; return; }
+  if (!done) timer = setTimeout(tick, 700);
 }
 
 async function poll() {
