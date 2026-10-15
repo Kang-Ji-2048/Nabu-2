@@ -1,0 +1,19 @@
+[project]
+name = "nabu"
+version = "0.1.0"
+description = "Delivery risk reviewer: agents that check new plans against a team's tracker history"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+live = ["anthropic>=1.14"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["nabu*"]
+
+[tool.setuptools.package-data]
+"nabu.adapters" = ["mappings.json"]

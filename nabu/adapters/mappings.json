@@ -1,0 +1,23 @@
+{
+  "statuses": {
+    "open": "todo", "new": "todo", "to do": "todo", "backlog": "todo",
+    "in progress": "in_progress", "reopened": "in_progress", "in pr": "in_progress",
+    "resolved": "done", "closed": "done", "done": "done",
+    "cancelled": "cancelled", "canceled": "cancelled"
+  },
+  "types": {
+    "epic": "epic", "story": "story", "task": "task",
+    "sub-task": "task", "subtask": "task", "technical task": "task",
+    "bug": "bug", "improvement": "improvement"
+  },
+  "link_descriptions": {
+    "blocks": {"kind": "blocks", "reverse": false},
+    "is blocked by": {"kind": "blocks", "reverse": true},
+    "duplicates": {"kind": "duplicates", "reverse": false},
+    "is duplicated by": {"kind": "duplicates", "reverse": true},
+    "relates to": {"kind": "relates", "reverse": false},
+    "is related to": {"kind": "relates", "reverse": false},
+    "depends on": {"kind": "blocks", "reverse": true},
+    "is depended on by": {"kind": "blocks", "reverse": false}
+  }
+}
