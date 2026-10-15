@@ -1,0 +1,73 @@
+{
+  "epic": "PAY-111",
+  "title": "Fraud rules",
+  "as_of": "2023-10-04T11:08:10.105835Z",
+  "summary": "3 warnings for PAY-111; expect 15.4 days (P50) to 20.2 days (P90). Consider adding: Documentation for Fraud rules; Testing for Fraud rules.",
+  "forecast": {
+    "p50_days": 15.4,
+    "p90_days": 20.2,
+    "basis": [
+      "demo:PAY-61",
+      "demo:PAY-66",
+      "demo:PAY-71",
+      "demo:PAY-77",
+      "demo:PAY-83",
+      "demo:PAY-89",
+      "demo:PAY-95",
+      "demo:PAY-100",
+      "demo:PAY-105"
+    ]
+  },
+  "missing_tickets": [
+    "Documentation for Fraud rules",
+    "Testing for Fraud rules"
+  ],
+  "suppressed_by_ring_fence": 1,
+  "warnings": [
+    {
+      "id": "demo:PAY-111:payments:estimate:database",
+      "agent": "estimator",
+      "claim": "1 planned 'database' tickets (8 points) match a pattern of overruns: past 'database' work took 1.92x the usual time per point.",
+      "evidence": [
+        "demo:PAY-62",
+        "demo:PAY-67",
+        "demo:PAY-74",
+        "demo:PAY-78",
+        "demo:PAY-84",
+        "demo:PAY-91"
+      ],
+      "confidence": "high",
+      "suggested_ticket": null
+    },
+    {
+      "id": "demo:PAY-111:payments:gap:documentation",
+      "agent": "gap_finder",
+      "claim": "This plan has no documentation tickets, and 78% of past epics planned without them had to add them later.",
+      "evidence": [
+        "demo:PAY-65",
+        "demo:PAY-76",
+        "demo:PAY-82",
+        "demo:PAY-88",
+        "demo:PAY-94",
+        "demo:PAY-99"
+      ],
+      "confidence": "high",
+      "suggested_ticket": "Documentation for Fraud rules"
+    },
+    {
+      "id": "demo:PAY-111:payments:gap:testing",
+      "agent": "gap_finder",
+      "claim": "This plan has no testing tickets, and 78% of past epics planned without them had to add them later.",
+      "evidence": [
+        "demo:PAY-70",
+        "demo:PAY-75",
+        "demo:PAY-81",
+        "demo:PAY-87",
+        "demo:PAY-93",
+        "demo:PAY-104"
+      ],
+      "confidence": "high",
+      "suggested_ticket": "Testing for Fraud rules"
+    }
+  ]
+}
