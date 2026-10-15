@@ -185,6 +185,8 @@ td code { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
 .how{max-width:1160px}.how>.step,.how>.note{max-width:820px}.workflow-reference{padding:20px;min-width:0}.workflow-heading{display:flex;justify-content:space-between;align-items:start;gap:20px}.workflow-heading p{color:var(--ink-2);margin:5px 0 0;font-size:13px}.workflow-download{font-size:12px;color:var(--accent);white-space:nowrap;padding:6px 0}.workflow-tools{display:flex;align-items:center;gap:7px;margin:18px 0 10px;flex-wrap:wrap}.workflow-tools>span{color:var(--ink-2);font-size:12px;margin-right:auto}.workflow-tools button{border:1px solid var(--border);background:var(--surface);color:var(--ink);border-radius:5px;padding:6px 10px;min-width:32px;min-height:32px;font:inherit;font-size:12px;cursor:pointer}.workflow-tools button:hover{background:var(--accent-tint)}.workflow-tools button:disabled{opacity:.4;cursor:default}.workflow-tools button:focus-visible,.workflow-download:focus-visible{outline:2px solid var(--accent);outline-offset:3px}#workflow-zoom{font:11px var(--mono);min-width:40px;text-align:center;color:var(--ink-2)}.workflow-viewport{background:#1d231c;border-radius:8px;overflow:auto;max-height:530px;overscroll-behavior:contain;scrollbar-color:#617052 #22291e}.workflow-viewport:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.workflow-svg{display:block;width:100%;height:auto;max-width:none;touch-action:pan-x pan-y}.workflow-inspector{display:grid;grid-template-columns:155px 1fr;gap:16px;margin-top:12px;padding:14px;background:var(--accent-tint);border-radius:5px;align-items:baseline}.workflow-inspector strong{font-size:13px;color:var(--ink)}.workflow-inspector p{font-size:12px;color:var(--ink-2);margin:0;line-height:1.6}.workflow-reference figcaption{font-size:11px;margin-top:11px;color:var(--ink-3)}
 @media(max-width:760px){.workflow-reference{padding:14px}.workflow-heading{display:block}.workflow-download{display:inline-block;margin-top:6px}.workflow-tools{gap:6px}.workflow-tools>span{flex-basis:100%;margin-bottom:6px}.workflow-tools button{min-height:40px;min-width:40px}.workflow-viewport{max-height:440px}.workflow-inspector{grid-template-columns:1fr;gap:5px}}
 
+/* Fill the risk column to the bottom of the adjacent dashboard panels. */
+.g2{align-items:stretch}.risk-panel{display:flex;flex-direction:column;min-height:0}.risk-panel .tabs{flex-shrink:0}.risk-panel #risks{flex:1 1 0;height:0;min-height:0;max-height:none;overflow:auto}.kpis .kpi{align-items:center}.kpi.acc span{display:block}@media(max-width:860px){.risk-panel{display:block}.risk-panel #risks{height:auto;max-height:760px}}
 </style>
 </head>
 <body>
@@ -342,7 +344,7 @@ Kafka source and sink stream modules | 5 | Stream Module</textarea></label>
       <div class="kpi open"><div class="ic">!</div><div><b id="t-open">0</b><span>Open risks</span></div></div>
       <div class="kpi hit"><div class="ic">&#10003;</div><div><b id="t-hit">0</b><span>Came true</span></div></div>
       <div class="kpi miss"><div class="ic">&#10007;</div><div><b id="t-miss">0</b><span>Didn't happen</span></div></div>
-      <div class="kpi acc"><div class="ic">%</div><div><b id="t-acc">-</b><span>Overrun hit rate <em id="t-acc-all"></em></span></div></div>
+      <div class="kpi acc"><div class="ic">%</div><div><b id="t-acc">-</b><span>Overrun hit rate</span></div></div>
       <div class="kpi epics"><div class="ic">#</div><div><b id="t-epics">0</b><span>Epics reviewed</span></div></div>
     </div>
 
@@ -354,7 +356,7 @@ Kafka source and sink stream modules | 5 | Stream Module</textarea></label>
     </div>
 
     <div class="grid g2">
-      <section class="card">
+      <section class="card risk-panel">
         <div class="tabs" role="tablist">
           <button class="tab" role="tab" data-tab="open" aria-selected="true">Open risks<span class="n" id="n-open">0</span></button>
           <button class="tab" role="tab" data-tab="graded" aria-selected="false">Checked risks<span class="n" id="n-graded">0</span></button>
@@ -496,7 +498,6 @@ function render(s) {
   const est = graded.filter(r => r.agent === "estimator"), estHits = est.filter(r => r.score.hit).length;
   $("t-acc").textContent = est.length ? `${Math.round(100 * estHits / est.length)}%` : "-";
   $("t-acc").title = `${estHits} of ${est.length} checked overrun risks`;
-  $("t-acc-all").textContent = graded.length ? `${estHits} of ${est.length} · all types ${Math.round(100 * hits / graded.length)}%` : "";
   $("n-open").textContent = all.length - graded.length;
   $("n-graded").textContent = graded.length;
   $("t-epics").textContent = s.reviews.length;
@@ -636,6 +637,7 @@ function renderRisks() {
   if (!data) return;
   const expanded = new Set([...$("risks").querySelectorAll('details[open][data-risk]')].map(n => n.dataset.risk));
   const all = risksOf(data), list = all.filter(r => tab === "open" ? !r.score : r.score);
+  if (tab === "graded") list.sort((a, b) => Number(!!a.score.hit) - Number(!!b.score.hit));
   if (!list.length) {
     $("risks").innerHTML = `<p class="empty">${tab === "open" ? "No open risks right now." : "No risks have reached their outcome yet."}</p>`;
     return;
