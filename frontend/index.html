@@ -3,183 +3,161 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Nabu — Delivery Intelligence</title>
+<link rel="icon" href="assets/nabu-bird.svg">
+<title>Nabu Risk Review</title>
 <style>
-:root{--bg:#e9eae4;--surface:#fafbf5;--border:#e5e7dc;--grid:#eef0e6;--ink:#252821;--ink-2:#72776a;--ink-3:#919588;--accent:#789039;--accent-tint:#edf3d8;--good:#55742b;--good-tint:#e9f1d6;--bad:#a45b44;--bad-tint:#f6e7df;--warn:#887329;--warn-tint:#f4f0d9;--mono:ui-monospace,SFMono-Regular,Menlo,monospace;--lime:#DDEC95}
-*{box-sizing:border-box}body{margin:0;padding:32px;background:#bfc3ba;color:var(--ink);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,select{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #789039;outline-offset:3px}.app{max-width:1540px;margin:auto;padding:24px;border-radius:34px;background:radial-gradient(ellipse at 100% 0%,#e7edbd 0,transparent 45%),linear-gradient(130deg,#f0f1ec,#e7ebd9);box-shadow:0 30px 65px #343b2929;min-height:calc(100vh - 64px)}.topbar{display:flex;align-items:center;gap:24px}.brand{font-size:25px;letter-spacing:-1.5px;border:1px solid #939987;border-radius:24px;padding:1px 16px}.brand span{color:#788d41}nav{display:flex;gap:5px;margin:auto}nav a{color:var(--ink);text-decoration:none;padding:10px 17px;border-radius:24px;font-size:12px}nav a.active{background:#282b24;color:#fff}.utilities{display:flex;gap:8px;align-items:center}.workspace{background:#ffffff85;border-radius:30px;padding:9px 14px;font-size:12px}.avatar{width:34px;height:34px;background:var(--lime);border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:600}.hero{display:flex;align-items:end;justify-content:space-between;gap:24px;padding:32px 4px 26px}.eyebrow{text-transform:uppercase;letter-spacing:1.8px;font-size:10px;color:var(--ink-2)}h1{font-size:36px;letter-spacing:-1.7px;font-weight:400;margin:4px 0 7px}.subtitle{color:var(--ink-2);margin:0;font-size:13px}.run-controls{display:flex;align-items:center;gap:8px;margin-top:20px}select{max-width:190px;border:1px solid #dce0cf;border-radius:20px;padding:7px 12px;background:#ffffffa0;color:var(--ink);font-size:11px}.pill{font-size:10px;padding:5px 9px;border-radius:20px;background:var(--lime);color:#435226}.pill.finished{background:#e1e9ca}.replay-button{border:0;border-radius:20px;background:#282b24;color:white;padding:8px 14px;font-size:11px}.tiles{display:flex;gap:34px}.tile b{display:block;font-size:37px;font-weight:400;line-height:1.2;letter-spacing:-1.8px;font-variant-numeric:tabular-nums}.tile .label{font-size:10px}.label{color:var(--ink-2);font-size:11px}.dashboard{display:grid;grid-template-columns:255px minmax(0,1fr) 275px;grid-template-areas:"plan plan plan" "agents reviews insights" "log log log";gap:12px;align-items:start}.panel{min-width:0;background:#fafbf4d9;border:1px solid #ffffff70;border-radius:24px;overflow:hidden}.panel>h2{font-size:15px;font-weight:500;letter-spacing:-.3px;margin:0;padding:19px 20px 14px;display:flex;gap:8px;align-items:center}.spacer{flex:1}.agent-panel{grid-area:agents}.review-panel{grid-area:reviews}.insights{grid-area:insights;display:grid;gap:12px;min-width:0}.score-panel{background:#292c25;color:#f5f7ed}.chart-panel{min-width:0}.log-panel{grid-area:log}.section-arrow{margin-left:auto;font-size:17px;font-weight:400}.agent-panel>h2{padding-bottom:8px}.agent-caption{padding:0 20px;color:var(--ink-2);font-size:10px;margin-bottom:12px}#team{padding:0 14px 8px;display:flex;flex-direction:column;gap:7px}#team .col{display:contents}#team .arrow{display:none}.agent{position:relative;padding:9px 10px 9px 32px;border-radius:13px;border:1px solid transparent;background:#ffffff6b;font-size:11px;transition:background .3s}.agent:before{content:"";position:absolute;left:13px;top:15px;width:7px;height:7px;border-radius:50%;background:#cbd2bd}.agent b{font-size:11px;font-weight:600;display:block}.agent .role{color:var(--ink-2);font-size:10px}.agent .last{display:none}.agent.active{background:var(--lime)}.agent.active:before{background:#657e2c}.loop{margin:4px 18px 16px;font-size:10px;color:var(--ink-2);line-height:1.7;border-top:1px solid var(--border);padding-top:12px}#epics{display:flex;gap:6px;padding:0 20px 14px;overflow:auto;border-bottom:1px solid var(--border)}.epic{flex-shrink:0;border:0;background:#eef0e6;color:var(--ink-2);border-radius:20px;padding:7px 11px;font-size:10px}.epic[aria-pressed="true"]{background:var(--lime);color:var(--ink)}.epic .n{margin-left:5px;opacity:.65}#review{padding:18px 20px;max-height:645px;overflow:auto}#review h3{font-size:23px;font-weight:400;letter-spacing:-.8px;margin:0 0 5px}.summary{font-size:11px;color:var(--ink-2);margin:0 0 20px}.forecast{display:flex;gap:12px;margin-bottom:18px}.forecast>div{flex:1;padding:12px 16px;border-radius:15px;background:#edf0e4}.forecast>div:first-child{background:var(--lime)}.forecast b{font-size:25px;font-weight:400;display:block;letter-spacing:-.7px}.warning{border:1px solid var(--border);background:#ffffff80;border-radius:16px;padding:15px;margin-bottom:10px;font-size:12px}.meta{display:flex;gap:7px;align-items:center;font-size:10px;color:var(--ink-2);margin-bottom:8px;flex-wrap:wrap}.meta b{color:var(--ink);font-weight:500}.outcome{margin-left:auto;padding:3px 7px;border-radius:20px;font-size:9px}.outcome.hit{background:var(--good-tint);color:var(--good)}.outcome.miss{background:var(--bad-tint);color:var(--bad)}.outcome.pending{background:var(--grid)}details{margin-top:10px}details summary{font-size:10px;color:#667c36;cursor:pointer}details[open] summary{margin-bottom:6px}.cites{margin:10px 0 0;padding:9px 0 0;border-top:1px dashed var(--border);list-style:none;color:var(--ink-2);font-size:10px}.cites li{padding:2px 0}.cites code{color:#667c36;font:10px var(--mono)}.fence{border-radius:12px;background:var(--warn-tint);padding:10px;margin-bottom:12px;font-size:11px}.missing{padding-left:18px;font-size:11px;color:var(--ink-2);line-height:1.7}.empty{color:var(--ink-3);padding:20px;font-size:12px}.score-body{padding:0 20px 20px}.score-value{font-size:53px;line-height:1.15;font-weight:300;letter-spacing:-2.5px}.score-value small{font-size:18px;color:var(--lime);letter-spacing:0}.score-caption{font-size:10px;color:#aeb6a0}.dot-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:7px;margin:23px 0 17px}.dot-grid i{aspect-ratio:1;border-radius:50%;background:#494e41}.dot-grid i.lit{background:var(--lime)}.score-footer{display:flex;justify-content:space-between;border-top:1px solid #4a4e41;padding-top:12px;font-size:10px;color:#b9c0ae}.score-footer b{font-weight:400;color:#f5f7ed}.chart-panel>h2{font-size:14px}#chart{padding:0 13px 15px;position:relative}#chart svg{width:100%;height:auto;display:block}#chart .axis{stroke:var(--border)}#chart .gridline{stroke:var(--grid)}#chart text{fill:var(--ink-2);font-size:11px}#tip{display:none;position:absolute;pointer-events:none;background:var(--ink);color:white;border-radius:6px;font-size:10px;padding:6px}.clock{padding:0 20px 17px;font-size:10px;color:var(--ink-2)}.clock b{color:var(--ink);font-weight:500;margin-left:6px}#log{height:230px;overflow:auto;padding:0 8px 10px}.row{display:grid;grid-template-columns:85px 130px 1fr;gap:15px;padding:10px 12px;border-top:1px solid var(--grid);font-size:11px}.row[hidden]{display:none}.row .when{color:var(--ink-3);font:10px var(--mono)}.row .who{font-weight:500}.row .kind{color:var(--good);margin-right:8px}.row.k-miss .kind{color:var(--bad)}.row.new{animation:flash 1s ease-out}@keyframes flash{from{background:var(--lime)}to{background:transparent}}.mock{background:var(--warn-tint);color:var(--warn)}footer{padding:18px 5px 0;display:flex;justify-content:space-between;font-size:10px;color:var(--ink-2)}html{scroll-behavior:smooth}
-@media(min-width:1600px){.dashboard{grid-template-columns:270px minmax(0,1fr) 310px}}@media(max-width:1100px){body{padding:16px}.app{padding:18px}.dashboard{grid-template-columns:215px minmax(0,1fr);grid-template-areas:"plan plan" "agents reviews" "insights reviews" "log log"}.hero{align-items:start}.tiles{gap:18px}.tile b{font-size:29px}.utilities .workspace{display:none}.chart-panel #chart{max-width:650px;margin:auto}.score-panel{align-self:start}nav a{padding:8px 11px}}@media(max-width:720px){body{padding:0}.app{border-radius:0;padding:16px}.topbar{flex-wrap:wrap;gap:12px}nav{order:3;overflow:auto;width:100%;margin:0}.utilities{margin-left:auto}.hero{display:block;padding:24px 0}.tiles{margin-top:24px;justify-content:space-between;gap:8px}.tile b{font-size:27px}.tile .label{font-size:9px}h1{font-size:30px}.dashboard{grid-template-columns:1fr;grid-template-areas:"plan" "insights" "reviews" "agents" "log"}#team{display:grid;grid-template-columns:1fr 1fr}.row{grid-template-columns:75px 1fr;gap:5px}.row>span:last-child{grid-column:1/-1}.log-panel>h2{flex-wrap:wrap}#review{max-height:none}.dot-grid{max-width:300px;margin:16px 0}.score-body{position:relative}.score-panel .score-value{font-size:42px}footer{gap:15px}}
-
-/* Dark workspace theme */
-:root{color-scheme:dark;--bg:#171a16;--surface:#22261f;--border:#373d31;--grid:#2c3228;--ink:#eff1e9;--ink-2:#b2b9a6;--ink-3:#8b957f;--accent:#DDEC95;--accent-tint:#343f27;--good:#DDEC95;--good-tint:#344129;--bad:#e8ad99;--bad-tint:#452e27;--warn:#d6c887;--warn-tint:#363523}
-body{background:#0e110e}.app{background:radial-gradient(ellipse at 100% 0%,#30392280,transparent 45%),#191d18;box-shadow:0 30px 65px #0005}.brand{border-color:#59614f}.brand span{color:var(--lime)}.workspace{background:#2b3126}.avatar{color:#252b1b}nav a.active{background:var(--lime);color:#252b1b}select{border-color:var(--border);background:#252b22}.pill,.pill.finished{background:#344129;color:var(--lime)}.replay-button{background:var(--lime);color:#252b1b}.panel{background:#22271ff0;border-color:#363d2f}.agent{background:#292f24}.agent:before{background:#68745c}.agent.active{background:#39462c;border-color:#91a658}.agent.active:before{background:var(--lime)}.epic{background:#30372a;color:var(--ink-2)}.epic[aria-pressed="true"]{color:#252b1b}.forecast>div{background:#30372a}.forecast>div:first-child{background:var(--lime);color:#252b1b}.forecast>div:first-child .label{color:#526237}.warning{background:#282e24}details summary,.cites code{color:var(--lime)}#tip{background:var(--lime);color:#252b1b}button:focus-visible,a:focus-visible,select:focus-visible{outline-color:var(--lime)}*{scrollbar-color:#566147 #22271f}
-
-.flow-badge{font-size:10px;color:var(--lime);background:#333e29;border-radius:20px;padding:4px 9px;font-weight:400;letter-spacing:0}.flow-reset{background:#30372b;border:1px solid #46513b;color:#c2ccb5;border-radius:20px;padding:6px 12px;font-size:10px}.flow-subtitle{padding:0 20px 17px;font-size:11px;color:var(--ink-2)}.flow-scroll{overflow:auto;background:#1c201e;background-image:radial-gradient(#454c3c66 1px,transparent 1px);background-size:19px 19px;border-block:1px solid #363d31}.flow-canvas{width:1335px;height:530px;position:relative}#flow-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.flow-path{fill:none;stroke-width:1.5;opacity:.75}.flow-path.selected{stroke:var(--lime);stroke-width:2.5;opacity:1}.flow-node{position:absolute;width:170px;min-height:100px;border:1px solid #4b5348;border-radius:10px;background:linear-gradient(135deg,#303631,#252b26);text-align:left;padding:0;color:var(--ink);box-shadow:0 8px 20px #0003;transition:box-shadow .2s,border-color .2s}.flow-node:before,.flow-node:after{content:"";position:absolute;width:5px;height:5px;background:#abb59f;border:2px solid #1c201e;border-radius:50%;top:21px;box-sizing:content-box}.flow-node:before{left:-5px}.flow-node:after{right:-5px}.flow-node-head{display:flex;align-items:center;gap:7px;padding:9px 10px;border-bottom:1px solid #465043;font-size:11px;font-weight:500}.flow-node-head i{width:6px;height:6px;border-radius:50%;background:var(--node-color);box-shadow:0 0 8px #ddec9522}.flow-step{margin-left:auto;color:#85917e;font:9px var(--mono)}.flow-node-body{padding:8px 10px;font-size:10px;color:#b5c0af;display:block}.flow-event{font-size:9px;color:#8d9b86;display:block;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:148px}.flow-node:hover,.flow-node[aria-pressed="true"]{border-color:var(--lime);box-shadow:0 0 0 2px #ddec951c,0 8px 24px #0004}.flow-node.running{border-color:var(--lime);box-shadow:0 0 20px #ddec9525}.flow-node.running .flow-node-head i{background:var(--lime)}.flow-lane{position:absolute;top:12px;font-size:9px;letter-spacing:1.8px;color:#83917b}.flow-detail{padding:16px 20px;display:grid;grid-template-columns:150px 180px 1fr;gap:16px;align-items:start;background:#262d22}.flow-detail-label{font-size:9px;color:#87997a;letter-spacing:1px;padding-top:3px}.flow-detail>b{font-size:12px;font-weight:500;color:var(--lime)}.flow-detail p{font-size:11px;color:#b8c3ac;margin:0}.raw-log{margin:0;padding:12px 20px}.raw-log>summary{font-size:10px;color:#a5b697}.log-tools{display:flex;justify-content:flex-end;gap:12px;padding:10px 0}.raw-log #log{margin-top:5px}.flow-note{position:absolute;left:930px;top:480px;font-size:10px;color:#91a87c}.flow-legend{position:absolute;left:25px;top:490px;color:#7e8c75;font-size:10px}@media(max-width:720px){.flow-badge{display:none}.flow-detail{grid-template-columns:1fr;gap:7px}.flow-subtitle{max-width:100%;font-size:10px}}
-.flow-controls{display:flex;gap:5px;align-items:center}.flow-controls>span{font:10px var(--mono);color:var(--ink-2);width:36px;text-align:center}#flow-canvas{transform-origin:top left}.flow-controls .flow-reset{padding:5px 10px}.flow-controls #flow-reset{margin-left:6px}@media(max-width:720px){.log-panel>h2{gap:12px}.flow-controls{width:100%;justify-content:flex-end}}
-#plan-form { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) auto; gap: 10px 12px; padding: 12px 16px; align-items: start; }
+:root {
+  --bg: #f5f5f2; --surface: #ffffff; --border: #e2e1dc; --ink: #1d1d1b; --ink-2: #5c5a55; --ink-3: #8b8881;
+  --accent: #4f6b1f; --accent-tint: #eef3e0; --good: #1f8a4c; --good-tint: #e4f3e9;
+  --bad: #c2412d; --bad-tint: #fbe8e4; --wait: #8a6d1a; --wait-tint: #f8f0da;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141513; --surface: #1d1f1b; --border: #32352f; --ink: #ecede8; --ink-2: #b3b5ab; --ink-3: #868a7f;
+    --accent: #c5dc7a; --accent-tint: #2a3320; --good: #5cc98a; --good-tint: #17301f;
+    --bad: #ef7d68; --bad-tint: #3a1f19; --wait: #e2bf5c; --wait-tint: #352c14;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.wrap { max-width: 1080px; margin: 0 auto; padding: 24px 16px 48px; }
+header { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+.brand { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 600; letter-spacing: -0.02em; }
+.brand img { width: 34px; height: 34px; }
+.brand small { font-size: 13px; font-weight: 400; color: var(--ink-2); }
+.controls { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+select, button { font: inherit; font-size: 13px; }
+select { color: var(--ink); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; }
+.btn { background: var(--accent); color: var(--surface); border: 0; border-radius: 8px; padding: 7px 14px; cursor: pointer; font-weight: 500; }
+.btn.ghost { background: transparent; color: var(--ink-2); border: 1px solid var(--border); }
+.btn:disabled { opacity: .6; cursor: default; }
+.pill { font-size: 12px; padding: 3px 10px; border-radius: 999px; background: var(--accent-tint); color: var(--accent); }
+.asof { margin: 20px 0 4px; color: var(--ink-2); }
+.asof b { color: var(--ink); font-size: 18px; font-variant-numeric: tabular-nums; }
+.tiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 16px 0 20px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+.tile b { display: block; font-size: 28px; font-weight: 600; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.tile span { color: var(--ink-2); font-size: 12px; }
+.tile.open b { color: var(--wait); } .tile.hit b { color: var(--good); } .tile.miss b { color: var(--bad); }
+#team { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; align-items: center; }
+#team .lbl { color: var(--ink-3); font-size: 12px; margin-right: 4px; }
+.agent { font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); color: var(--ink-2); background: var(--surface); transition: background .3s, color .3s, border-color .3s; }
+.agent.active { background: var(--accent); color: var(--surface); border-color: var(--accent); }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+.tab { background: none; border: 0; border-bottom: 2px solid transparent; padding: 8px 12px; color: var(--ink-2); cursor: pointer; }
+.tab[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); font-weight: 500; }
+.tab .n { color: var(--ink-3); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.risk { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; }
+.risk.flash { animation: flash 1.5s ease-out; }
+@keyframes flash { from { box-shadow: 0 0 0 3px var(--accent); } to { box-shadow: 0 0 0 0 transparent; } }
+.risk .top { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; margin-bottom: 4px; }
+.risk .epic { font-weight: 600; }
+.risk .epic code { font-family: var(--mono); font-size: 12px; color: var(--ink-2); font-weight: 400; margin-right: 6px; }
+.risk .meta { color: var(--ink-3); font-size: 12px; }
+.badge { margin-left: auto; font-size: 12px; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
+.badge.wait { background: var(--wait-tint); color: var(--wait); }
+.badge.hit { background: var(--good-tint); color: var(--good); }
+.badge.miss { background: var(--bad-tint); color: var(--bad); }
+.risk .claim { margin: 2px 0 0; }
+.risk .detail { color: var(--ink-2); font-size: 12px; margin-top: 4px; }
+details { margin-top: 6px; font-size: 12px; color: var(--ink-2); }
+details summary { cursor: pointer; color: var(--accent); }
+details ul { margin: 6px 0 0; padding-left: 18px; }
+details code { font-family: var(--mono); font-size: 11.5px; color: var(--ink); }
+.empty { color: var(--ink-3); padding: 24px 4px; }
+.panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 20px; }
+.panel h2 { font-size: 14px; margin: 0 0 10px; }
+#plan-form { display: grid; gap: 10px; }
 #plan-form label { display: grid; gap: 4px; font-size: 12px; color: var(--ink-2); }
-#plan-form input, #plan-form textarea { font: inherit; font-size: 13px; color: var(--ink); background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; width: 100%; }
-#plan-form textarea { font-family: var(--mono); font-size: 12px; min-height: 76px; resize: vertical; }
-#plan-form button { font: inherit; background: var(--accent); color: #fff; border: 0; border-radius: 6px; padding: 8px 14px; cursor: pointer; align-self: end; }
-#plan-form button:disabled { opacity: .6; cursor: default; }
-#plan-msg { padding: 0 16px 12px; font-size: 12px; color: var(--ink-2); }
-
-.plan-panel{grid-area:plan}#plan-form button{color:#252b1b}#plan-form input,#plan-form textarea{border-radius:12px}#plan-form{padding:0 20px 16px}@media(max-width:900px){#plan-form{grid-template-columns:1fr}}
-
-/* Screenshot-aligned brand and review labels. */
-body{-webkit-font-smoothing:antialiased}
-.brand-lockup{display:flex;align-items:center;gap:12px;flex-shrink:0}.brand-bird{width:46px;height:46px;object-fit:contain;display:block}.brand{font-weight:200;font-size:27px;letter-spacing:-2px;line-height:38px;padding:0 15px}.brand span{font-weight:400;font-size:22px;vertical-align:top;line-height:30px}.hero{padding-top:32px}.epic{padding-inline:16px;max-width:210px;overflow:hidden;text-overflow:ellipsis}.epic .n{margin-left:0}#review{max-height:none;padding-bottom:3px}.flow-scroll{background-image:none}.new-review-toggle{border:0;background:none;color:var(--ink-2);font-size:10px;padding:0;cursor:pointer}.new-review-toggle:hover{color:var(--lime)}.plan-panel[hidden]{display:none}.suggested-work{margin:0 0 15px}.suggested-work summary{font-size:10px}.dashboard{grid-template-areas:"agents reviews insights" "log log log"}.dashboard:has(.plan-panel:not([hidden])){grid-template-areas:"plan plan plan" "agents reviews insights" "log log log"}@media(max-width:1100px){.dashboard{grid-template-areas:"agents reviews" "insights reviews" "log log"}.dashboard:has(.plan-panel:not([hidden])){grid-template-areas:"plan plan" "agents reviews" "insights reviews" "log log"}}@media(max-width:720px){.brand-bird{width:37px;height:37px}.brand-lockup{gap:9px}.brand{font-size:25px;line-height:34px}.dashboard{grid-template-areas:"insights" "reviews" "agents" "log"}.dashboard:has(.plan-panel:not([hidden])){grid-template-areas:"plan" "insights" "reviews" "agents" "log"}footer{flex-wrap:wrap}.new-review-toggle{order:3}}
+#plan-form input, #plan-form textarea { font: inherit; font-size: 13px; color: var(--ink); background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 7px 9px; width: 100%; }
+#plan-form textarea { font-family: var(--mono); font-size: 12px; min-height: 80px; resize: vertical; }
+#plan-msg { font-size: 12px; color: var(--ink-2); }
+.activity summary { color: var(--ink-2); font-size: 13px; }
+#log { max-height: 320px; overflow: auto; margin-top: 8px; font-size: 12px; }
+.row { display: grid; grid-template-columns: 84px 130px 1fr; gap: 8px; padding: 4px 0; border-top: 1px solid var(--border); }
+.row .when { font-family: var(--mono); font-size: 11px; color: var(--ink-3); }
+.row .who { color: var(--ink-2); font-weight: 500; }
+footer { margin-top: 28px; color: var(--ink-3); font-size: 12px; }
+@media (max-width: 700px) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } .controls { margin-left: 0; } .row { grid-template-columns: 84px 1fr; } .row > span:last-child { grid-column: 1 / -1; } }
 </style>
 </head>
 <body>
-<div class="app">
-<header class="topbar"><div class="brand-lockup"><img class="brand-bird" src="assets/nabu-bird.svg" alt="" width="46" height="46"><div class="brand" aria-label="Nabu">nabu<span>°</span></div></div><nav aria-label="Main navigation"><a class="active" href="#" data-nav>Overview</a><a href="#reviews-panel" data-nav>Risk reviews</a><a href="#agents-panel" data-nav>Agents</a><a href="#activity-panel" data-nav>Activity</a></nav><div class="utilities"><span class="workspace">◉ &nbsp; Payments workspace</span><span class="avatar" aria-label="Workspace profile">P</span></div></header>
-<section class="hero"><div><div class="eyebrow">Your delivery intelligence workspace</div><h1>A clearer view of what’s ahead.</h1><p class="subtitle">Spot the risks. Follow the evidence. Plan with confidence.</p><div class="run-controls"><select id="run" aria-label="Select recorded run"></select><span id="status" class="pill">Loading</span><button class="replay-button" id="replay">↻ Replay run</button><button class="replay-button" id="reveal" hidden>Reveal what happened →</button></div></div><div class="tiles"><div class="tile"><b id="t-reviews">0</b><span class="label">Epics reviewed</span></div><div class="tile"><b id="t-warnings">0</b><span class="label">Risks identified</span></div><div class="tile"><b id="t-fence">0</b><span class="label">Warnings withheld</span></div></div></section>
-<div class="dashboard">
-<section class="panel plan-panel" id="new-review-panel" hidden>
-  <h2>Review a new epic <span class="spacer"></span><span class="label">As if just created in the tracker; checked against the whole history</span></h2>
-  <form id="plan-form">
-    <label>Epic title<input id="plan-title" required value="Support Kafka as a message bus transport"></label>
-    <label>Tickets, one per line: title | points | component
-      <textarea id="plan-tickets" required>Kafka message bus implementation | 8 | Runtime
+<div class="wrap">
+  <header>
+    <div class="brand"><img src="assets/nabu-bird.svg" alt=""> Nabu <small>delivery risk review</small></div>
+    <div class="controls">
+      <select id="run" aria-label="Project run"></select>
+      <span id="status" class="pill">loading</span>
+      <button class="btn" id="reveal" hidden>Reveal what happened &rarr;</button>
+      <button class="btn ghost" id="new-toggle" hidden>Review a new epic</button>
+    </div>
+  </header>
+
+  <p class="asof">Risks found using only what was known on <b id="clock">-</b></p>
+
+  <section class="panel" id="new-panel" hidden>
+    <h2>Review a new epic against the project's history</h2>
+    <form id="plan-form">
+      <label>Epic title<input id="plan-title" required value="Support Kafka as a message bus transport"></label>
+      <label>Tickets, one per line: title | points | component
+        <textarea id="plan-tickets" required>Kafka message bus implementation | 8 | Runtime
 Configure Kafka connection properties | 3 | Configuration
 Kafka source and sink stream modules | 5 | Stream Module</textarea></label>
-    <button type="submit" id="plan-go">Review it</button>
-  </form>
-  <div id="plan-msg"></div>
-</section>
-<section class="panel agent-panel" id="agents-panel">
-  <h2>Your agent team <span class="section-arrow">↗</span></h2><div class="agent-caption">10 specialists. One shared goal.</div>
-  <div id="team">
-    <div class="col"><div class="agent store" data-agent="replay"><b>Replay clock</b><span class="role">Ring-fenced store, cut off at the sim date</span><span class="last"></span></div></div>
-    <span class="arrow">&rarr;</span>
-    <div class="col"><div class="agent" data-agent="historian"><b>Historian</b><span class="role">Mines past patterns</span><span class="last"></span></div></div>
-    <span class="arrow">&rarr;</span>
-    <div class="col"><div class="agent" data-agent="planner"><b>Planner</b><span class="role">Routes the new epic</span><span class="last"></span></div></div>
-    <span class="arrow">&rarr;</span>
-    <div class="col">
-      <div class="agent" data-agent="estimator"><b>Estimator</b><span class="role">Overrun risk</span><span class="last"></span></div>
-      <div class="agent" data-agent="dependency_hunter"><b>Dependency hunter</b><span class="role">Blockers</span><span class="last"></span></div>
-      <div class="agent" data-agent="gap_finder"><b>Gap finder</b><span class="role">Missing tickets</span><span class="last"></span></div>
-    </div>
-    <span class="arrow">&rarr;</span>
-    <div class="col">
-      <div class="agent" data-agent="data_quality"><b>Data quality</b><span class="role">Confidence</span><span class="last"></span></div>
-      <div class="agent" data-agent="critic"><b>Critic</b><span class="role">Citations, ring-fence, revise</span><span class="last"></span></div>
-    </div>
-    <span class="arrow">&rarr;</span>
-    <div class="col"><div class="agent" data-agent="writer"><b>Writer</b><span class="role">Review + P50/P90</span><span class="last"></span></div></div>
-    <span class="arrow">&rarr;</span>
-    <div class="col"><div class="agent" data-agent="scorekeeper"><b>Scorekeeper</b><span class="role">Grades warnings when the epic ends</span><span class="last"></span></div></div>
-  </div>
-  <div class="loop">&#8634; Learning loop: each hit adds 0.2 to the pattern's weight and each miss takes off 0.3; the specialists ignore patterns below 0.5.</div>
-</section>
-
-  <section class="panel log-panel" id="activity-panel">
-    <h2>Agent workflow <span class="flow-badge">● Connected agents</span><span class="spacer"></span><div class="flow-controls"><button class="flow-reset" id="flow-zoom-out" aria-label="Zoom out workflow">−</button><span id="flow-zoom-label">100%</span><button class="flow-reset" id="flow-zoom-in" aria-label="Zoom in workflow">+</button><button class="flow-reset" id="flow-fit">Fit view</button><button class="flow-reset" id="flow-reset">Reset selection</button></div></h2>
-    <div class="flow-subtitle">From historical evidence to a reviewed risk report. Select an agent to inspect its latest event.</div>
-    <div class="flow-scroll" tabindex="0" aria-label="Agent workflow canvas, scroll horizontally to explore"><div id="flow-stage"><div class="flow-canvas" id="flow-canvas"><svg id="flow-lines" viewBox="0 0 1335 530" aria-hidden="true"></svg><div id="flow-nodes"></div></div></div></div>
-    <div class="flow-detail" id="flow-detail" aria-live="polite"><span class="flow-detail-label">WORKFLOW INSPECTOR</span><b>Select an agent</b><p>Explore the connected steps and the evidence behind each action.</p></div>
-    <details class="raw-log"><summary>View event history</summary><div class="log-tools"><select id="agent-filter" aria-label="Filter by agent"><option value="">All agents</option></select><label class="label"><input type="checkbox" id="follow" checked> Follow</label></div><div id="log" role="log" aria-live="polite"></div></details>
+      <div><button class="btn" type="submit" id="plan-go">Review it</button> <span id="plan-msg"></span></div>
+    </form>
   </section>
 
-    <section class="panel review-panel" id="reviews-panel">
-      <h2>Epic risk reviews <span class="spacer"></span><span class="label" id="viewer"></span></h2>
-      <div id="epics"></div>
-      <div id="review"><p class="empty">Reviews appear here as the replay reaches each new epic.</p></div>
-    </section>
-    <aside class="insights">
-    <section class="panel chart-panel"><h2>Accuracy over time <span class="section-arrow">↗</span></h2><div class="clock">Replay date <b id="clock">—</b></div>
-      <div id="chart"><p class="empty">The Scorekeeper's results appear here once the first reviewed epic finishes.</p><div id="tip"></div></div>
-    </section>
-</aside></div><footer><span>Nabu · Delivery intelligence, backed by evidence.</span><button class="new-review-toggle" id="new-review-toggle" aria-expanded="false" aria-controls="new-review-panel">Review a new epic ↗</button><span>Historical replay · Not a live prediction</span></footer></div>
+  <div class="tiles">
+    <div class="tile open"><b id="t-open">0</b><span>Open risks</span></div>
+    <div class="tile hit"><b id="t-hit">0</b><span>Came true</span></div>
+    <div class="tile miss"><b id="t-miss">0</b><span>Didn't happen</span></div>
+    <div class="tile"><b id="t-acc">-</b><span>Hit rate so far</span></div>
+  </div>
+
+  <div id="team"><span class="lbl">Agents</span></div>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" data-tab="open" aria-selected="true">Open risks<span class="n" id="n-open">0</span></button>
+    <button class="tab" role="tab" data-tab="graded" aria-selected="false">Checked against outcome<span class="n" id="n-graded">0</span></button>
+  </div>
+  <div id="risks"><p class="empty">Risks appear here as the agents find them.</p></div>
+
+  <details class="activity"><summary>Agent activity log</summary><div id="log" role="log"></div></details>
+
+  <footer>Historical replay of real tracker data: each epic is reviewed one day after it was created, using only what was known then.</footer>
+</div>
 <script src="config.js"></script>
 <script>
-const AGENT = { replay: "Replay clock", planner: "Planner", data_quality: "Data quality", estimator: "Estimator",
-  dependency_hunter: "Dependency hunter", gap_finder: "Gap finder", critic: "Critic", writer: "Writer",
-  scorekeeper: "Scorekeeper", historian: "Historian" };
+const AGENT = { replay: "Replay clock", historian: "Historian", planner: "Planner", estimator: "Estimator",
+  dependency_hunter: "Dependency hunter", gap_finder: "Gap finder", data_quality: "Data quality", critic: "Critic",
+  writer: "Writer", scorekeeper: "Scorekeeper" };
+const RISK = { estimator: "Overrun risk", dependency_hunter: "Blocker risk", gap_finder: "Missing work" };
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const day = iso => iso ? iso.slice(0, 10) : "";
-const FLOW = [
-  ['replay',25,195,'Evidence store','#a4c7dd'],['historian',245,195,'Learn historical patterns','#a4c7dd'],['planner',465,195,'Route the new epic','#a4c7dd'],
-  ['estimator',685,45,'Assess overrun risk','#d8d599'],['dependency_hunter',685,195,'Find hidden blockers','#a7c9ac'],['gap_finder',685,345,'Find missing work','#bea8d8'],
-  ['data_quality',905,45,'Check evidence quality','#d8d599'],['critic',905,195,'Validate claims & scope','#a7c9ac'],['writer',1125,195,'Produce the risk review','#DDEC95'],['scorekeeper',1125,345,'Compare actual outcomes','#bea8d8']
-];
-const FLOW_EDGES = [['replay','historian'],['historian','planner'],['planner','estimator'],['planner','dependency_hunter'],['planner','gap_finder'],['estimator','data_quality'],['data_quality','critic'],['dependency_hunter','critic'],['gap_finder','critic'],['critic','writer'],['writer','scorekeeper']];
-const flowEvents = {};
-let flowSelection = null;
-function buildFlow() {
-  $('flow-nodes').innerHTML = FLOW.map(([id,x,y,role,color],i) => `<button class="flow-node" data-flow="${id}" aria-pressed="false" style="left:${x}px;top:${y}px;--node-color:${color}" aria-label="Inspect ${AGENT[id]}"><span class="flow-node-head"><i></i>${AGENT[id]}<span class="flow-step">${String(i+1).padStart(2,'0')}</span></span><span class="flow-node-body">${role}<span class="flow-event">Waiting for activity</span></span></button>`).join('') + '<span class="flow-lane" style="left:25px">01 / CONTEXT</span><span class="flow-lane" style="left:465px">02 / ANALYSIS</span><span class="flow-lane" style="left:1125px">03 / OUTPUT</span><span class="flow-note">↶ Outcomes inform the next historical review</span><span class="flow-legend">● Select a node to inspect · Scroll to explore →</span>';
-  const paths = FLOW_EDGES.map(([from,to]) => {
-    const a=FLOW.find(n=>n[0]===from),b=FLOW.find(n=>n[0]===to),x=a[1]+170,y=a[2]+25,X=b[1],Y=b[2]+25;
-    const d = a[1]===b[1] ? `M ${a[1]+85} ${a[2]+100} C ${a[1]+85} ${a[2]+130},${b[1]+85} ${b[2]-30},${b[1]+85} ${b[2]}` : `M ${x} ${y} C ${x+65} ${y},${X-65} ${Y},${X} ${Y}`;
-    return `<path class="flow-path" data-from="${from}" data-to="${to}" d="${d}" stroke="${b[4]}"/>`;
-  }).join('');
-  $('flow-lines').innerHTML = paths + '<path class="flow-path" d="M1210 445 C1210 475,330 475,330 295" stroke="#819a68" stroke-dasharray="5 5"/>';
-  document.querySelectorAll('[data-flow]').forEach(node=>node.onclick=()=>selectFlow(node.dataset.flow));
-  $('flow-reset').onclick=()=>selectFlow(null);
-}
-function selectFlow(id) {
-  flowSelection=id;
-  document.querySelectorAll('[data-flow]').forEach(node=>node.setAttribute('aria-pressed',String(node.dataset.flow===id)));
-  document.querySelectorAll('.flow-path').forEach(path=>path.classList.toggle('selected',!!id&&(path.dataset.from===id||path.dataset.to===id)));
-  const e=flowEvents[id];
-  $('flow-detail').innerHTML = `<span class="flow-detail-label">${e?esc(day(e.sim_at)):'WORKFLOW INSPECTOR'}</span><b>${id?esc(AGENT[id]):'Select an agent'}</b><p>${e?`<span style="color:var(--lime)">${esc(e.kind)} · </span>${esc(e.message)}`:id?'Waiting for this agent to act.':'Explore the connected steps and the evidence behind each action.'}</p>`;
-}
-function updateFlow(e,flash) {
-  flowEvents[e.agent]=e;
-  const node=document.querySelector(`[data-flow="${e.agent}"]`);
-  if(!node)return;
-  node.querySelector('.flow-event').textContent=`${e.kind} · ${day(e.sim_at)}`;
-  if(flowSelection===e.agent)selectFlow(e.agent);
-  if(flash){node.classList.add('running');clearTimeout(pulseTimers['flow-'+e.agent]);pulseTimers['flow-'+e.agent]=setTimeout(()=>node.classList.remove('running'),1800);}
-}
-buildFlow();
-let flowZoom = 1, flowAutoFit = true;
-function zoomFlow(value) {
-  flowZoom = Math.max(.45, Math.min(1.5,value));
-  $('flow-canvas').style.transform=`scale(${flowZoom})`;
-  $('flow-stage').style.width=`${1335*flowZoom}px`;
-  $('flow-stage').style.height=`${530*flowZoom}px`;
-  $('flow-zoom-label').textContent=`${Math.round(flowZoom*100)}%`;
-}
-function fitFlow(){flowAutoFit=true;zoomFlow(Math.min(1,document.querySelector('.flow-scroll').clientWidth/1335));}
-$('flow-fit').onclick=fitFlow;
-$('flow-zoom-out').onclick=()=>{flowAutoFit=false;zoomFlow(flowZoom-.1);};
-$('flow-zoom-in').onclick=()=>{flowAutoFit=false;zoomFlow(flowZoom+.1);};
-new ResizeObserver(()=>{if(flowAutoFit)fitFlow();}).observe(document.querySelector('.flow-scroll'));
 const params = new URLSearchParams(location.search);
 // Where the live API is: ?api=https://... in the URL, else config.js, else the server that served this page.
 const API = (params.get("api") || window.NABU_API || "").replace(/\/$/, "");
-let run = params.get("run"), after = 0, data = null, selected = null, timer = null;
-const seenAgents = new Set();
+let run = params.get("run"), after = 0, data = null, tab = "open", seen = new Set(), firstRender = true;
 
-$("plan-form").onsubmit = async ev => {
-  ev.preventDefault();
-  const tickets = $("plan-tickets").value.split("\n").map(l => l.split("|").map(x => x.trim())).filter(p => p[0])
-    .map(([title, points, component]) => ({ title, estimate: points ? Number(points) : null, component: component || null }));
-  $("plan-go").disabled = true;
-  $("plan-msg").textContent = "Sent to the agents. Watch the team light up below.";
-  try {
-    const res = await fetch(`${API}/api/plan`, { method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: $("plan-title").value, tickets }) });
-    if (!res.ok) throw new Error(await res.text());
-    const { run: live } = await res.json();
-    if (run !== live) { params.set("run", live); location.search = params.toString(); return; }
-    selected = null;
-  } catch (e) { $("plan-msg").textContent = "Couldn't reach the agents: " + e.message; }
-  setTimeout(() => { $("plan-go").disabled = false; }, 4000);
+$("team").insertAdjacentHTML("beforeend", Object.entries(AGENT)
+  .map(([k, v]) => `<span class="agent" data-agent="${k}">${v}</span>`).join(""));
+for (const t of document.querySelectorAll(".tab")) t.onclick = () => {
+  tab = t.dataset.tab;
+  for (const x of document.querySelectorAll(".tab")) x.setAttribute("aria-selected", String(x === t));
+  renderRisks();
 };
 
 // Static mode: with no server (e.g. on Vercel) the page replays a run exported to runs/<id>.json.
-let recorded = null, shown = 0, replayMode = false, pauseAt = null;
+let recorded = null, shown = 0, pauseAt = null;
 async function listRuns() {
   try {
     const res = await fetch(`${API}/api/runs`);
     if (res.ok && (res.headers.get("content-type") || "").includes("json")) return await res.json();
   } catch (e) { /* no server */ }
   recorded = true;
-  const res = await fetch("runs/index.json", { cache: "no-store" });
+  const res = await fetch("runs/index.json");
   return res.ok ? await res.json() : [];
 }
 
@@ -187,19 +165,21 @@ async function init() {
   const runs = await listRuns();
   if (!runs.length) { $("status").textContent = "no runs yet"; return; }
   run = run || runs[0].id;
-  $("run").innerHTML = runs.map(r => `<option value="${esc(r.id)}" ${r.id === run ? "selected" : ""}>${esc(r.name || r.title || (r.id === "xd-demo" ? "Spring XD" : r.id === "demo" ? "Payments demo" : r.id))}</option>`).join("");
+  $("run").innerHTML = runs.map(r => `<option value="${esc(r.id)}" ${r.id === run ? "selected" : ""}>${esc(r.id === "xd-demo" ? "Spring XD" : r.id)}</option>`).join("");
   $("run").onchange = () => { params.set("run", $("run").value); location.search = params.toString(); };
-  $("agent-filter").onchange = applyFilter;
   if (recorded) {
+    // A recorded run can pause at a cutoff: the risks found by then show first, then "Reveal" plays the rest.
     pauseAt = (runs.find(r => r.id === run) || {}).pause_at || null;
-    $('new-review-panel').hidden = true;
-    $('new-review-toggle').hidden = true;
-    $('reveal').onclick = () => { pauseAt = null; $('reveal').hidden = true; replayMode = true; tick(); };
     recorded = await (await fetch(`runs/${encodeURIComponent(run)}.json`)).json();
-    $("replay").onclick = () => { clearTimeout(timer); pauseAt = null; $("reveal").hidden = true; shown = 0; data = null; selected = null; queue.length = 0; $("log").innerHTML = ""; replayMode = !replayMode; Object.keys(flowEvents).forEach(k=>delete flowEvents[k]); buildFlow(); selectFlow(null); $("epics").innerHTML = ""; $("review").innerHTML = '<p class="empty">Reviews appear as the replay reaches each epic.</p>'; $("chart").innerHTML = '<p class="empty">Waiting for scored outcomes.</p>'; tick(); };
+    $("reveal").onclick = () => { pauseAt = null; $("reveal").hidden = true; tab = "graded"; selectTab(); tick(); };
     tick();
-  } else { $("replay").hidden = true; poll(); }
+  } else {
+    $("new-toggle").hidden = false;
+    poll();
+  }
 }
+
+function selectTab() { for (const x of document.querySelectorAll(".tab")) x.setAttribute("aria-selected", String(x.dataset.tab === tab)); }
 
 // Reveal one replay step (the log rows sharing a sim time) at a time, as if the run were live.
 function tick() {
@@ -207,12 +187,10 @@ function tick() {
   let end = shown;
   if (pauseAt) { while (end < log.length && (log[end].sim_at || "") <= pauseAt) end++; }
   else if (end < log.length) { const at = log[end].sim_at; while (end < log.length && log[end].sim_at === at) end++; }
-  if (!replayMode && !pauseAt) end = log.length;
   const clock = end ? log[end - 1].sim_at : null, done = end >= log.length;
   const upTo = t => clock && t && t <= clock;
   render({
-    run: { ...full.run, clock, status: done ? "finished" : pauseAt ? "paused at cutoff" : "replaying recording",
-           stats: { ...full.run.stats, accuracy: (full.run.stats.accuracy || []).filter(p => upTo(p[0])) } },
+    run: { ...full.run, clock, status: done ? "finished" : pauseAt ? "paused at cutoff" : "replaying" },
     log: log.slice(shown, end),
     reviews: full.reviews.filter(v => upTo(v.as_of)),
     scores: Object.fromEntries(Object.entries(full.scores).filter(([, v]) => upTo(v.at))),
@@ -220,7 +198,7 @@ function tick() {
   });
   shown = end;
   if (pauseAt) { $("reveal").hidden = false; return; }
-  if (!done) timer = setTimeout(tick, 700);
+  if (!done) setTimeout(tick, 600);
 }
 
 async function poll() {
@@ -228,152 +206,95 @@ async function poll() {
     const res = await fetch(`${API}/api/state?run=${encodeURIComponent(run)}&after=${after}`);
     if (res.ok) render(await res.json());
   } catch (e) { /* server restarting; try again */ }
-  const done = data && data.run.status === "finished";
-  timer = setTimeout(poll, done ? 10000 : 1500);
+  setTimeout(poll, data && data.run.status === "finished" ? 10000 : 1500);
+}
+
+function risksOf(s) {
+  const out = [];
+  for (const v of s.reviews) for (const w of v.report.warnings)
+    out.push({ ...w, epic: v.report.epic, title: v.report.title, as_of: v.as_of, score: s.scores[w.id] });
+  return out.sort((a, b) => (b.as_of || "").localeCompare(a.as_of || ""));
 }
 
 function render(s) {
-  const first = data === null;
   data = s;
-  const r = s.run;
-  $("status").textContent = r.status === "finished" ? "Finished" : r.status;
-  $("replay").textContent = replayMode && r.status !== "finished" ? "View results ↗" : "↻ Replay run";
-  if (r.status === "finished") replayMode = false;
-  $("status").className = "pill " + (r.status === "finished" ? "finished" : "");
-  $("clock").textContent = day(r.clock) || "-";
-  $("viewer").textContent = `Reader sees: ${r.viewer_scopes.join(", ")}`;
-  appendLog(s.log, first);
-  if (s.log.length) after = s.log[s.log.length - 1].seq;
-  const published = s.reviews.reduce((n, v) => n + v.report.warnings.length, 0);
-  const fenced = s.reviews.reduce((n, v) => n + (v.report.suppressed_by_ring_fence || 0), 0);
-  $("t-reviews").textContent = s.reviews.length;
-  $("t-warnings").textContent = published;
-  $("t-fence").textContent = fenced;
-  renderEpics(s);
-  renderChart(r.stats.accuracy || []);
-}
-
-function appendLog(rows, first) {
-  const box = $("log");
-  const filter = $("agent-filter").value;
-  const frag = document.createDocumentFragment();
-  for (const e of rows) {
-    if (!seenAgents.has(e.agent)) {
-      seenAgents.add(e.agent);
-      $("agent-filter").insertAdjacentHTML("beforeend", `<option value="${esc(e.agent)}">${esc(AGENT[e.agent] || e.agent)}</option>`);
-    }
-    const div = document.createElement("div");
-    div.className = `row k-${e.kind}${first ? "" : " new"}`;
-    div.dataset.agent = e.agent;
-    if (filter && e.agent !== filter) div.hidden = true;
-    div.innerHTML = `<span class="when">${esc(day(e.sim_at))}</span><span class="who">${esc(AGENT[e.agent] || e.agent)}</span>` +
-      `<span><span class="kind">${esc(e.kind)}</span>${esc(e.message)}</span>`;
-    frag.appendChild(div);
-    if (first) pulse(e, false); else queue.push(e);
+  $("status").textContent = s.run.status;
+  $("clock").textContent = day(s.run.clock) || "-";
+  const log = $("log");
+  for (const e of s.log) {
+    log.insertAdjacentHTML("beforeend", `<div class="row"><span class="when">${esc(day(e.sim_at))}</span>` +
+      `<span class="who">${esc(AGENT[e.agent] || e.agent)}</span><span>${esc(e.message)}</span></div>`);
+    if (!firstRender) queue.push(e.agent);
   }
-  box.appendChild(frag);
-  if ($("follow").checked && rows.length) box.scrollTop = box.scrollHeight;
+  if (s.log.length) { after = s.log[s.log.length - 1].seq; log.scrollTop = log.scrollHeight; }
+  const all = risksOf(s), graded = all.filter(r => r.score), hits = graded.filter(r => r.score.hit).length;
+  $("t-open").textContent = all.length - graded.length;
+  $("t-hit").textContent = hits;
+  $("t-miss").textContent = graded.length - hits;
+  $("t-acc").textContent = graded.length ? `${Math.round(100 * hits / graded.length)}%` : "-";
+  $("n-open").textContent = all.length - graded.length;
+  $("n-graded").textContent = graded.length;
+  renderRisks();
+  firstRender = false;
 }
 
-// A step's log rows land together when it commits, so play them through the boxes one at a time.
-const queue = [], pulseTimers = {};
-setInterval(() => { if (queue.length > 40) queue.splice(0, queue.length - 40); if (queue.length) pulse(queue.shift(), true); }, 350);
-function pulse(e, flash) {
-  updateFlow(e, flash);
-  const box = document.querySelector(`.agent[data-agent="${e.agent}"]`);
-  if (!box) return;
-  box.querySelector(".last").textContent = `${e.kind}: ${e.message}`;
-  box.querySelector(".last").title = e.message;
-  if (!flash) return;
-  box.className = `agent${e.agent === "replay" ? " store" : ""} active k-${e.kind}`;
-  clearTimeout(pulseTimers[e.agent]);
-  pulseTimers[e.agent] = setTimeout(() => box.classList.remove("active"), 1800);
-}
-
-function applyFilter() {
-  const f = $("agent-filter").value;
-  for (const row of $("log").children) row.hidden = !!f && row.dataset.agent !== f;
-}
-
-function renderEpics(s) {
-  if (!s.reviews.length) return;
-  if (!selected || !s.reviews.some(v => v.epic_id === selected)) selected = s.reviews[s.reviews.length - 1].epic_id;
-  $("epics").innerHTML = s.reviews.map(v => {
-    const n = v.report.warnings.length;
-    return `<button class="epic" aria-pressed="${v.epic_id === selected}" data-id="${esc(v.epic_id)}" title="${esc(v.report.epic)} · ${esc(v.report.title)}" aria-label="${esc(v.report.title || v.report.epic)}, ${n} ${n === 1 ? "risk" : "risks"}">${esc(v.report.title || v.report.epic)}<span class="n"> · ${n}</span></button>`;
-  }).join("");
-  for (const b of $("epics").children) b.onclick = () => { selected = b.dataset.id; renderEpics(data); };
-  const tabs = $("epics"), active = tabs.querySelector('[aria-pressed="true"]');
-  if (active) {
-    const left = active.offsetLeft - tabs.firstElementChild.offsetLeft;
-    if (left < tabs.scrollLeft || left + active.offsetWidth > tabs.scrollLeft + tabs.clientWidth - 40)
-      tabs.scrollLeft = Math.max(0, left + active.offsetWidth - tabs.clientWidth + 40);
+function renderRisks() {
+  if (!data) return;
+  const all = risksOf(data), list = all.filter(r => tab === "open" ? !r.score : r.score);
+  if (!list.length) {
+    $("risks").innerHTML = `<p class="empty">${tab === "open" ? "No open risks right now." : "No risks have reached their outcome yet."}</p>`;
+    return;
   }
-  renderReview(s.reviews.find(v => v.epic_id === selected), s);
-}
-
-function renderReview(v, s) {
-  const r = v.report, f = r.forecast || {};
-  const fmt = d => d == null ? "-" : `${d} days`;
-  let html = `<h3>${esc(r.epic)} ${esc(r.title)}</h3><p class="summary">Reviewed as of ${esc(day(r.as_of))}, using only what was known then.</p>`;
-  html += `<div class="forecast"><div><span class="label">P50</span><b>${fmt(f.p50_days)}</b></div><div><span class="label">P90</span><b>${fmt(f.p90_days)}</b></div></div>`;
-  if (r.suppressed_by_ring_fence) {
-    html += `<div class="fence">${r.suppressed_by_ring_fence} warning${r.suppressed_by_ring_fence > 1 ? "s" : ""} withheld: the evidence is in a scope this reader can't see.</div>`;
-  }
-  if (!r.warnings.length) html += `<p class="empty">No warnings passed the critic for this epic.</p>`;
-  for (const w of r.warnings) {
-    const sc = s.scores[w.id];
-    const out = sc ? (sc.hit ? `<span class="outcome hit">&#10003; Came true</span>` : `<span class="outcome miss">&#10007; Didn't happen</span>`)
-                   : `<span class="outcome pending">Waiting for outcome</span>`;
-    const cites = w.evidence.map(id => {
-      const it = s.items[id];
+  $("risks").innerHTML = list.map(r => {
+    const badge = !r.score ? `<span class="badge wait">Waiting for outcome</span>`
+      : r.score.hit ? `<span class="badge hit">&#10003; Came true</span>` : `<span class="badge miss">&#10007; Didn't happen</span>`;
+    const cites = (r.evidence || []).map(id => {
+      const it = data.items[id];
       return `<li><code>${esc(it ? it.key : id)}</code> ${esc(it ? it.title : "")}</li>`;
     }).join("");
-    html += `<div class="warning"><div class="meta"><b>${esc(AGENT[w.agent] || w.agent)}</b><span>${esc(w.confidence || "")} confidence</span>${out}</div>` +
-      `<div>${esc(w.claim)}</div>${sc && sc.detail ? `<div class="label">${esc(sc.detail)}</div>` : ""}` +
-      `<details><summary>View evidence · ${w.evidence.length} tickets</summary><ul class="cites">${cites}</ul></details></div>`;
-  }
-  if (r.missing_tickets && r.missing_tickets.length) {
-    html += `<details class="suggested-work"><summary>Suggested missing tickets · ${r.missing_tickets.length}</summary><ul class="missing">${r.missing_tickets.map(t => `<li>${esc(t)}</li>`).join("")}</ul></details>`;
-  }
-  $("review").innerHTML = html;
+    const fresh = !firstRender && !seen.has(r.id + (r.score ? "s" : ""));
+    seen.add(r.id + (r.score ? "s" : ""));
+    return `<article class="risk${fresh ? " flash" : ""}"><div class="top"><span class="epic"><code>${esc(r.epic)}</code>${esc(r.title)}</span>` +
+      `<span class="meta">${esc(RISK[r.agent] || r.agent)} · ${esc(r.confidence || "")} confidence · found ${esc(day(r.as_of))}</span>${badge}</div>` +
+      `<p class="claim">${esc(r.claim)}</p>` +
+      (r.suggested_ticket ? `<div class="detail">Suggested ticket: ${esc(r.suggested_ticket)}</div>` : "") +
+      (r.score && r.score.detail ? `<div class="detail">Outcome: ${esc(r.score.detail)}</div>` : "") +
+      (cites ? `<details><summary>Evidence: ${r.evidence.length} past tickets</summary><ul>${cites}</ul></details>` : "") +
+      `</article>`;
+  }).join("");
+  if (firstRender) for (const r of all) seen.add(r.id + (r.score ? "s" : ""));
 }
 
-function renderChart(points) {
-  const box = $("chart");
-  if (!points.length) return;
-  const W = 640, H = 220, L = 44, R = 16, T = 12, B = 28;
-  const xs = points.map(p => Date.parse(p[0])), lo = Math.min(...xs), hi = Math.max(...xs, lo + 1);
-  const X = t => L + (t - lo) / (hi - lo) * (W - L - R), Y = v => T + (1 - v) * (H - T - B);
-  const grid = [0, 0.25, 0.5, 0.75, 1].map(v =>
-    `<line class="gridline" x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}"/><text x="${L - 6}" y="${Y(v) + 4}" text-anchor="end">${v * 100}%</text>`).join("");
-  const d = points.map((p, i) => `${i ? "L" : "M"}${X(xs[i]).toFixed(1)} ${Y(p[1]).toFixed(1)}`).join("");
-  const dots = points.map((p, i) => `<circle cx="${X(xs[i])}" cy="${Y(p[1])}" r="4" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>`).join("");
-  const hits = points.map((p, i) => `<rect x="${X(xs[i]) - 12}" y="${T}" width="24" height="${H - T - B}" fill="transparent" data-i="${i}"/>`).join("");
-  box.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Share of scored warnings that came true, over replay time">${grid}` +
-    `<line class="axis" x1="${L}" x2="${W - R}" y1="${Y(0)}" y2="${Y(0)}"/>` +
-    `<text x="${L}" y="${H - 8}">${day(points[0][0])}</text><text x="${W - R}" y="${H - 8}" text-anchor="end">${day(points[points.length - 1][0])}</text>` +
-    `<path d="${d}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round"/>${dots}${hits}</svg><div id="tip"></div>`;
-  const tip = $("tip");
-  for (const rect of box.querySelectorAll("rect[data-i]")) {
-    rect.onmouseenter = ev => {
-      const p = points[+rect.dataset.i];
-      tip.textContent = `${day(p[0])}: ${Math.round(p[1] * 100)}% came true so far`;
-      const bb = box.getBoundingClientRect(), rb = rect.getBoundingClientRect();
-      tip.style.left = `${Math.min(rb.left - bb.left, bb.width - 200)}px`; tip.style.top = "8px"; tip.style.display = "block";
-    };
-    rect.onmouseleave = () => { tip.style.display = "none"; };
-  }
-}
+// A step's log rows land together, so light the agents up one at a time.
+const queue = [];
+setInterval(() => {
+  if (queue.length > 30) queue.splice(0, queue.length - 30);
+  const agent = queue.shift();
+  if (!agent) return;
+  const el = document.querySelector(`.agent[data-agent="${agent}"]`);
+  if (!el) return;
+  el.classList.add("active");
+  clearTimeout(el._t);
+  el._t = setTimeout(() => el.classList.remove("active"), 900);
+}, 250);
 
-$('new-review-toggle').onclick = () => {
-  const panel=$('new-review-panel'); panel.hidden=!panel.hidden;
-  $('new-review-toggle').setAttribute('aria-expanded',String(!panel.hidden));
-  if(!panel.hidden){panel.scrollIntoView({behavior:'smooth',block:'start'});$('plan-title').focus({preventScroll:true});}
+$("new-toggle").onclick = () => { $("new-panel").hidden = !$("new-panel").hidden; };
+$("plan-form").onsubmit = async ev => {
+  ev.preventDefault();
+  const tickets = $("plan-tickets").value.split("\n").map(l => l.split("|").map(x => x.trim())).filter(p => p[0])
+    .map(([title, points, component]) => ({ title, estimate: points ? Number(points) : null, component: component || null }));
+  $("plan-go").disabled = true;
+  $("plan-msg").textContent = "Sent to the agents. Watch them light up.";
+  try {
+    const res = await fetch(`${API}/api/plan`, { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: $("plan-title").value, tickets }) });
+    if (!res.ok) throw new Error(await res.text());
+    const { run: live } = await res.json();
+    if (run !== live) { params.set("run", live); location.search = params.toString(); return; }
+  } catch (e) { $("plan-msg").textContent = "Couldn't reach the agents: " + e.message; }
+  setTimeout(() => { $("plan-go").disabled = false; }, 4000);
 };
-document.querySelectorAll("[data-nav]").forEach(link => link.onclick = () => {
-  document.querySelectorAll("[data-nav]").forEach(a => a.classList.remove("active")); link.classList.add("active");
-});
+
 init();
 </script>
 </body>
