@@ -1,0 +1,30 @@
+{
+  "source": "frontend/runs/xd-demo.json",
+  "source_sha256": "6175f2597de83891afa4e3189ba2d73ce65efac74715b6562f9d614bdeefb6b3",
+  "source_kind": "Previously recorded Spring XD backtest from public TAWOS project history",
+  "run": "xd-demo",
+  "cutoff": "2014-04-23T11:06:50Z",
+  "log_rows": 476,
+  "reviews": 50,
+  "scored_warnings": 30,
+  "by_agent": {
+    "estimator": {
+      "hits": 17,
+      "scored": 22
+    },
+    "gap_finder": {
+      "hits": 1,
+      "scored": 7
+    },
+    "dependency_hunter": {
+      "hits": 0,
+      "scored": 1
+    }
+  },
+  "limitations": [
+    "Export of an existing recording, not a newly executed live model session.",
+    "No API-call telemetry is included; no live model-use claim is made.",
+    "Figures describe this recorded cutoff, not a full-project benchmark.",
+    "Warning confirmation is a heuristic outcome measure, not overall accuracy or recall."
+  ]
+}

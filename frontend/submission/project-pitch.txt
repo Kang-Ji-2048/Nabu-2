@@ -1,0 +1,3 @@
+Nabu
+
+Nabu helps delivery leads catch missing work, estimate risks and dependencies before committing to a plan, using evidence from their team's ticket history.
