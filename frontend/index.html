@@ -88,8 +88,15 @@ main { display: grid; align-items: start; grid-template-columns: minmax(0, 5fr) 
 .agent.active.k-miss { border-color: var(--bad); background: var(--bad-tint); }
 .agent.active.k-suppressed, .agent.active.k-revise, .agent.active.k-recovered { border-color: var(--warn); background: var(--warn-tint); }
 .loop { padding: 0 16px 12px; font-size: 12px; color: var(--ink-3); }
+#plan-form { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) auto; gap: 10px 12px; padding: 12px 16px; align-items: start; }
+#plan-form label { display: grid; gap: 4px; font-size: 12px; color: var(--ink-2); }
+#plan-form input, #plan-form textarea { font: inherit; font-size: 13px; color: var(--ink); background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 6px 8px; width: 100%; }
+#plan-form textarea { font-family: var(--mono); font-size: 12px; min-height: 76px; resize: vertical; }
+#plan-form button { font: inherit; background: var(--accent); color: #fff; border: 0; border-radius: 6px; padding: 8px 14px; cursor: pointer; align-self: end; }
+#plan-form button:disabled { opacity: .6; cursor: default; }
+#plan-msg { padding: 0 16px 12px; font-size: 12px; color: var(--ink-2); }
 .mock { background: var(--warn-tint); color: var(--warn); }
-@media (max-width: 900px) { #team { flex-wrap: wrap; } #team .arrow { display: none; } main { grid-template-columns: 1fr; padding: 16px; } header { padding: 16px; } #log { height: 360px; } .row { grid-template-columns: 84px 1fr; } .row > span:last-child { grid-column: 1 / -1; } .tiles { margin-left: 0; } }
+@media (max-width: 900px) { #plan-form { grid-template-columns: 1fr; } #team { flex-wrap: wrap; } #team .arrow { display: none; } main { grid-template-columns: 1fr; padding: 16px; } header { padding: 16px; } #log { height: 360px; } .row { grid-template-columns: 84px 1fr; } .row > span:last-child { grid-column: 1 / -1; } .tiles { margin-left: 0; } }
 </style>
 </head>
 <body>
@@ -104,6 +111,18 @@ main { display: grid; align-items: start; grid-template-columns: minmax(0, 5fr) 
     <div class="tile"><span class="label">Withheld by ring-fence</span><b id="t-fence">0</b></div>
   </div>
 </header>
+<section class="panel" style="margin: 16px 24px 0">
+  <h2>Review a new epic <span class="spacer"></span><span class="label">As if just created in the tracker; checked against the whole history</span></h2>
+  <form id="plan-form">
+    <label>Epic title<input id="plan-title" required value="Support Kafka as a message bus transport"></label>
+    <label>Tickets, one per line: title | points | component
+      <textarea id="plan-tickets" required>Kafka message bus implementation | 8 | Runtime
+Configure Kafka connection properties | 3 | Configuration
+Kafka source and sink stream modules | 5 | Stream Module</textarea></label>
+    <button type="submit" id="plan-go">Review it</button>
+  </form>
+  <div id="plan-msg"></div>
+</section>
 <section class="panel" style="margin: 16px 24px 0">
   <h2>Agent team <span class="spacer"></span><span class="label">Boxes light up as each agent acts</span></h2>
   <div id="team">
@@ -163,6 +182,23 @@ const params = new URLSearchParams(location.search);
 const API = (params.get("api") || window.NABU_API || "").replace(/\/$/, "");
 let run = params.get("run"), after = 0, data = null, selected = null, timer = null;
 const seenAgents = new Set();
+
+$("plan-form").onsubmit = async ev => {
+  ev.preventDefault();
+  const tickets = $("plan-tickets").value.split("\n").map(l => l.split("|").map(x => x.trim())).filter(p => p[0])
+    .map(([title, points, component]) => ({ title, estimate: points ? Number(points) : null, component: component || null }));
+  $("plan-go").disabled = true;
+  $("plan-msg").textContent = "Sent to the agents. Watch the team light up below.";
+  try {
+    const res = await fetch(`${API}/api/plan`, { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: $("plan-title").value, tickets }) });
+    if (!res.ok) throw new Error(await res.text());
+    const { run: live } = await res.json();
+    if (run !== live) { params.set("run", live); location.search = params.toString(); return; }
+    selected = null;
+  } catch (e) { $("plan-msg").textContent = "Couldn't reach the agents: " + e.message; }
+  setTimeout(() => { $("plan-go").disabled = false; }, 4000);
+};
 
 // Static mode: with no server (e.g. on Vercel) the page replays a run exported to runs/<id>.json.
 let recorded = null, shown = 0;
