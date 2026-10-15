@@ -172,6 +172,9 @@ td code { font-family: var(--mono); font-size: 11.5px; color: var(--ink-2); }
 .workflow-image:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
 .workflow-reference figcaption { margin-top: 10px; font-size: 12px; line-height: 1.5; color: var(--ink-2); }
 .workflow-reference figcaption a { color: var(--accent); text-underline-offset: 3px; }
+
+/* Scan the risk and next step first; expand for reasoning and evidence. */
+.risk{padding:16px 18px;border-left-width:3px;margin-bottom:12px;border-radius:12px}.risk .head{margin-bottom:9px}.risk .tag{font-size:10px;padding:3px 7px;font-weight:500}.risk .badge{font-size:10px;padding:3px 9px}.risk-title{font-size:16px;font-weight:600;letter-spacing:-.25px;line-height:1.4;margin:0 0 5px}.risk .epic{display:flex;align-items:baseline;gap:7px;font-size:11.5px;color:var(--ink-2);font-weight:400;margin:0;flex-wrap:wrap}.risk .epic code{font-size:10.5px;margin:0;flex-shrink:0}.risk .epic span{overflow-wrap:anywhere}.risk-action{display:flex;gap:10px;align-items:start;margin:15px 0 0;padding:11px 12px;border-radius:8px;background:var(--accent-tint)}.action-icon{color:var(--accent);font-size:17px;line-height:1.3}.action-label{font-size:10px;color:var(--accent);font-weight:600}.risk-action p{font-size:12px;line-height:1.5;margin:2px 0 0}.risk-more{margin-top:13px}.risk-more>summary{display:flex;gap:9px;align-items:center;list-style:none;font-size:11px;min-height:26px;width:fit-content}.risk-more>summary::-webkit-details-marker{display:none}.risk-more>summary:before{content:'+';font-size:15px;width:12px;color:var(--accent)}.risk-more[open]>summary:before{content:'−'}.risk-more .evidence-count{color:var(--ink-3);font-size:10px;padding-left:9px;border-left:1px solid var(--border)}.risk-more .show-less,.risk-more[open] .show-more{display:none}.risk-more[open] .show-less{display:inline}.risk-more-content{border-top:1px solid var(--border);padding-top:12px;margin-top:8px}.risk-more-content .conf{margin:0 0 14px;font-size:10.5px}.risk-more-content section{margin:0 0 14px}.risk-more-content section:last-child{margin-bottom:0}.risk-more-content h4{font-size:11px;color:var(--ink);font-weight:600;margin:0 0 4px}.risk-more-content p,.risk-more-content li{font-size:12px;line-height:1.65;margin:0;color:var(--ink-2)}.risk-more-content ul{margin-top:5px}.risk-more>summary:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:3px}@media(max-width:600px){.risk{padding:14px}.risk-title{font-size:15px}.risk-more>summary{min-height:32px}}
 </style>
 </head>
 <body>
@@ -263,7 +266,7 @@ Kafka source and sink stream modules | 5 | Stream Module</textarea></label>
       <section class="card">
         <div class="tabs" role="tablist">
           <button class="tab" role="tab" data-tab="open" aria-selected="true">Open risks<span class="n" id="n-open">0</span></button>
-          <button class="tab" role="tab" data-tab="graded" aria-selected="false">Checked against outcome<span class="n" id="n-graded">0</span></button>
+          <button class="tab" role="tab" data-tab="graded" aria-selected="false">Checked risks<span class="n" id="n-graded">0</span></button>
         </div>
         <div id="risks"><p class="empty">Risks appear here as the agents find them.</p></div>
       </section>
@@ -511,31 +514,62 @@ function fixFor(r) {
   return t || "Review this with the team before the plan is committed.";
 }
 
+// Compact card copy; the full agent reasoning remains available in details.
+function riskHeadline(r) {
+  const c = r.claim || "";
+  if (r.agent === "estimator") {
+    const m = c.match(/'([^']+)' work took ([\d.]+)x/);
+    return m ? `${m[1]} work may run late` : "Delivery estimate may be too low";
+  }
+  if (r.agent === "dependency_hunter") {
+    const m = c.match(/by '([^']+)' work/);
+    return m ? `${m[1]} dependency is unplanned` : "An unplanned dependency may block delivery";
+  }
+  if (r.agent === "gap_finder") {
+    const m = c.match(/no (.+?) tickets/);
+    return m ? `Missing ${m[1]} work` : "Required work is missing from the plan";
+  }
+  return RISK[r.agent] || "Review this delivery risk";
+}
+function riskNextStep(r) {
+  const c = r.claim || "";
+  if (r.agent === "estimator") return "Re-estimate this work using similar past tickets.";
+  if (r.agent === "dependency_hunter") return "Add the dependency and confirm its owner before work starts.";
+  if (r.agent === "gap_finder") {
+    const m = c.match(/no (.+?) tickets/);
+    return m ? `Add a ${m[1]} ticket with an owner and estimate.` : "Add the missing work, with an owner and estimate.";
+  }
+  return r.suggested_ticket || "Review this risk with the team.";
+}
 function renderRisks() {
   if (!data) return;
+  const expanded = new Set([...$("risks").querySelectorAll('details[open][data-risk]')].map(n => n.dataset.risk));
   const all = risksOf(data), list = all.filter(r => tab === "open" ? !r.score : r.score);
   if (!list.length) {
     $("risks").innerHTML = `<p class="empty">${tab === "open" ? "No open risks right now." : "No risks have reached their outcome yet."}</p>`;
     return;
   }
   $("risks").innerHTML = list.map(r => {
-    const badge = !r.score ? `<span class="badge wait">Waiting for outcome</span>`
-      : r.score.hit ? `<span class="badge hit">&#10003; Came true</span>` : `<span class="badge miss">&#10007; Didn't happen</span>`;
+    const badge = !r.score ? `<span class="badge wait">Open</span>`
+      : r.score.hit ? `<span class="badge hit">&#10003; Confirmed</span>` : `<span class="badge miss">Not observed</span>`;
     const cites = (r.evidence || []).map(id => {
       const it = data.items[id];
       return `<li><code>${esc(it ? it.key : id)}</code> ${esc(it ? it.title : "")}</li>`;
     }).join("");
     const fresh = !firstRender && !seen.has(r.id + (r.score ? "s" : ""));
     seen.add(r.id + (r.score ? "s" : ""));
-    return `<article class="risk ${esc(r.agent)}${fresh ? " flash" : ""}"><div class="head"><span class="tag">${esc(RISK[r.agent] || r.agent)}</span>` +
-      `<span class="conf">${esc(r.confidence || "")} confidence · found ${esc(day(r.as_of))}</span>${badge}</div>` +
-      `<div class="epic"><code>${esc(r.epic)}</code>${esc(r.title)}</div>` +
-      `<p class="claim">${esc(r.claim)}</p>` +
-      `<div class="why"><b>Why it's a risk:</b> ${esc(whyFor(r))}</div>` +
-      `<div class="fix"><b>Suggested fix:</b> ${esc(fixFor(r))}</div>` +
-      (r.score && r.score.detail ? `<div class="detail">Outcome: ${esc(r.score.detail)}</div>` : "") +
-      (cites ? `<details><summary>Evidence: ${r.evidence.length} past tickets</summary><ul>${cites}</ul></details>` : "") +
-      `</article>`;
+    const count=(r.evidence || []).length;
+    return `<article class="risk ${esc(r.agent)}${fresh ? " flash" : ""}"><div class="head"><span class="tag">${esc(RISK[r.agent] || r.agent)}</span>${badge}</div>` +
+      `<h3 class="risk-title">${esc(riskHeadline(r))}</h3>` +
+      `<div class="epic"><code>${esc(r.epic)}</code><span>${esc(r.title)}</span></div>` +
+      `<div class="risk-action"><span class="action-icon" aria-hidden="true">↗</span><div><span class="action-label">Next step</span><p>${esc(riskNextStep(r))}</p></div></div>` +
+      `<details class="risk-more" data-risk="${esc(r.id)}" ${expanded.has(String(r.id)) ? "open" : ""}><summary><span class="show-more">View details</span><span class="show-less">Hide details</span><span class="evidence-count">${count} evidence ticket${count === 1 ? "" : "s"}</span></summary>` +
+      `<div class="risk-more-content"><p class="conf">${esc(r.confidence || "Unrated")} confidence · Found ${esc(day(r.as_of))}</p>` +
+      `<section><h4>Finding</h4><p>${esc(r.claim)}</p></section>` +
+      `<section><h4>Why it matters</h4><p>${esc(whyFor(r))}</p></section>` +
+      `<section><h4>Suggested fix</h4><p>${esc(fixFor(r))}</p></section>` +
+      (r.score && r.score.detail ? `<section><h4>Actual outcome</h4><p>${esc(r.score.detail)}</p></section>` : "") +
+      (cites ? `<section><h4>Supporting tickets</h4><ul>${cites}</ul></section>` : "") + `</div></details></article>`;
   }).join("");
   if (firstRender) for (const r of all) seen.add(r.id + (r.score ? "s" : ""));
 }
